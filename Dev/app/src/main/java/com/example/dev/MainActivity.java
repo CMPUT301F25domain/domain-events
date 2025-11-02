@@ -1,6 +1,8 @@
 package com.example.dev;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,15 +12,17 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        setContentView(R.layout.activity_home);
+
+        findViewById(R.id.btnOrganizer).setOnClickListener(v ->
+                Toast.makeText(this, "Organizer dashboard here", Toast.LENGTH_SHORT).show());
+
+        findViewById(R.id.btnEntrant).setOnClickListener(v ->
+                Toast.makeText(this, "Entrant dashboard here", Toast.LENGTH_SHORT).show());
+
+        findViewById(R.id.btnAdmin).setOnClickListener(v ->
+                startActivity(new Intent(this, com.example.dev.admin.AdminNavActivity.class)));
     }
 }

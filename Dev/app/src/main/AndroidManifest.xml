@@ -12,10 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Dev">
         <activity
-            android:name=".entrant.EntrantNavActivity"
+            android:name=".organizer.OrganizerNavActivity"
             android:exported="false" />
         <activity
-            android:name=".organizer.OrganizerNavActivity"
+            android:name=".entrant.EntrantNavActivity"
             android:exported="false" />
         <activity
             android:name=".admin.AdminNavActivity"
