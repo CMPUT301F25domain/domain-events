@@ -12,23 +12,26 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Dev">
         <activity
-            android:name=".organizer.OrganizerNavActivity"
-            android:exported="false" />
-        <activity
-            android:name=".entrant.EntrantNavActivity"
-            android:exported="false" />
-        <activity
-            android:name=".admin.AdminNavActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <activity
+            android:name=".admin.AdminNavActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".organizer.OrganizerNavActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".entrant.EntrantNavActivity"
+            android:exported="false" />
+
+
+    </application>
 </manifest>
