@@ -28,7 +28,7 @@ import com.example.dev.R;
  * Design Pattern:
  * - Uses the Fragment pattern for reusable, switchable UI sections inside the main activity.
  *
- * Outstanding Issues / Future Work:
+ * Outstanding Issues:
  * - Make the bell icon open the notification logs.
  * - Make remove actually delete the event from Firebase instead of just hiding it.
  * - Finish and polish the UI design later.
