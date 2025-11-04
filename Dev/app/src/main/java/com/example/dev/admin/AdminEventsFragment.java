@@ -68,9 +68,17 @@ public class AdminEventsFragment extends Fragment {
             removeButton.setOnClickListener(v -> eventLayout.setVisibility(View.GONE));
         }
 
-        // Bell icon setup
         ImageView bellIcon = view.findViewById(R.id.bellIcon);
-        // bellIcon.setOnClickListener(v -> openNotificationLogs());
+        bellIcon.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new AdminNotifFragment())
+                    .addToBackStack(null) // allows back button to return to Events
+                    .commit();
+        });
+
+
+
     }
 
 }
