@@ -41,6 +41,14 @@ public class AdminNavActivity extends AppCompatActivity {
                         .commit();
                 return true;
             }
+            // Click images icon to go to image screen
+            else if (id == R.id.navImages) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new AdminImageFragment())
+                        .commit();
+                return true;
+            }
             //Click profile icon to go to profile screen
             else if (id == R.id.navProfile) {
                 getSupportFragmentManager()
