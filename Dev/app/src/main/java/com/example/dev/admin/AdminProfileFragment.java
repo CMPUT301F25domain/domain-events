@@ -46,19 +46,18 @@ public class AdminProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // User layouts and remove buttons
-        LinearLayout user1 = view.findViewById(R.id.user1);
-        TextView remove1 = view.findViewById(R.id.removeUser1);
+        // Array of layout and remove TextView pairs
+        int[][] userPairs = {
+                {R.id.user1, R.id.removeUser1},
+                {R.id.user2, R.id.removeUser2},
+                {R.id.user3, R.id.removeUser3}
+        };
 
-        LinearLayout user2 = view.findViewById(R.id.user2);
-        TextView remove2 = view.findViewById(R.id.removeUser2);
-
-        LinearLayout user3 = view.findViewById(R.id.user3);
-        TextView remove3 = view.findViewById(R.id.removeUser3);
-
-        // Remove profile functionality
-        remove1.setOnClickListener(v -> user1.setVisibility(View.GONE));
-        remove2.setOnClickListener(v -> user2.setVisibility(View.GONE));
-        remove3.setOnClickListener(v -> user3.setVisibility(View.GONE));
+        // Loop through all user-remove pairs and attach listeners
+        for (int[] pair : userPairs) {
+            LinearLayout userLayout = view.findViewById(pair[0]);
+            TextView removeButton = view.findViewById(pair[1]);
+            removeButton.setOnClickListener(v -> userLayout.setVisibility(View.GONE));
+        }
     }
 }

@@ -52,41 +52,25 @@ public class AdminEventsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Event layouts and remove buttons
-        LinearLayout event1 = view.findViewById(R.id.event1);
-        TextView remove1 = view.findViewById(R.id.removeEvent1);
+        // Array of event layouts and remove button pairs
+        int[][] eventPairs = {
+                {R.id.event1, R.id.removeEvent1},
+                {R.id.event2, R.id.removeEvent2},
+                {R.id.event3, R.id.removeEvent3},
+                {R.id.event4, R.id.removeEvent4},
+                {R.id.event5, R.id.removeEvent5}
+        };
 
-        LinearLayout event2 = view.findViewById(R.id.event2);
-        TextView remove2 = view.findViewById(R.id.removeEvent2);
+        // Loop through all event pairs to attach remove listeners
+        for (int[] pair : eventPairs) {
+            LinearLayout eventLayout = view.findViewById(pair[0]);
+            TextView removeButton = view.findViewById(pair[1]);
+            removeButton.setOnClickListener(v -> eventLayout.setVisibility(View.GONE));
+        }
 
-        LinearLayout event3 = view.findViewById(R.id.event3);
-        TextView remove3 = view.findViewById(R.id.removeEvent3);
-
-        LinearLayout event4 = view.findViewById(R.id.event4);
-        TextView remove4 = view.findViewById(R.id.removeEvent4);
-
-        LinearLayout event5 = view.findViewById(R.id.event5);
-        TextView remove5 = view.findViewById(R.id.removeEvent5);
-
-        // Remove event functionality
-        remove1.setOnClickListener(v -> event1.setVisibility(View.GONE));
-        remove2.setOnClickListener(v -> event2.setVisibility(View.GONE));
-        remove3.setOnClickListener(v -> event3.setVisibility(View.GONE));
-        remove4.setOnClickListener(v -> event4.setVisibility(View.GONE));
-        remove5.setOnClickListener(v -> event5.setVisibility(View.GONE));
-
-        // Bell icons
+        // Bell icon setup
         ImageView bellIcon = view.findViewById(R.id.bellIcon);
-
-        // When bell is clicked
-        //bellIcon.setOnClickListener(v -> {
-            // Replace current fragment with AdminLogsFragment
-           // requireActivity().getSupportFragmentManager()
-                    //.beginTransaction()
-                   // .replace(R.id.fragment_container, new AdminLogsFragment())
-                    //.addToBackStack(null)
-                   // .commit();
-        //});
-
+        // bellIcon.setOnClickListener(v -> openNotificationLogs());
     }
+
 }

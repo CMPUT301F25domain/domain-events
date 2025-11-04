@@ -26,22 +26,20 @@ public class AdminImageFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        LinearLayout image1 = view.findViewById(R.id.image1);
-        LinearLayout image2 = view.findViewById(R.id.image2);
-        LinearLayout image3 = view.findViewById(R.id.image3);
-        LinearLayout image4 = view.findViewById(R.id.image4);
-        LinearLayout image5 = view.findViewById(R.id.image5);
+        // Array of image layout and remove button pairs
+        int[][] imagePairs = {
+                {R.id.image1, R.id.removeImage1},
+                {R.id.image2, R.id.removeImage2},
+                {R.id.image3, R.id.removeImage3},
+                {R.id.image4, R.id.removeImage4},
+                {R.id.image5, R.id.removeImage5}
+        };
 
-        TextView remove1 = view.findViewById(R.id.removeImage1);
-        TextView remove2 = view.findViewById(R.id.removeImage2);
-        TextView remove3 = view.findViewById(R.id.removeImage3);
-        TextView remove4 = view.findViewById(R.id.removeImage4);
-        TextView remove5 = view.findViewById(R.id.removeImage5);
-
-        remove1.setOnClickListener(v -> image1.setVisibility(View.GONE));
-        remove2.setOnClickListener(v -> image2.setVisibility(View.GONE));
-        remove3.setOnClickListener(v -> image3.setVisibility(View.GONE));
-        remove4.setOnClickListener(v -> image4.setVisibility(View.GONE));
-        remove5.setOnClickListener(v -> image5.setVisibility(View.GONE));
+        // Loop through all image pairs to attach remove listeners
+        for (int[] pair : imagePairs) {
+            LinearLayout imageLayout = view.findViewById(pair[0]);
+            TextView removeButton = view.findViewById(pair[1]);
+            removeButton.setOnClickListener(v -> imageLayout.setVisibility(View.GONE));
+        }
     }
 }
