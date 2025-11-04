@@ -1,5 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/TV_create_new_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="@string/create_new_event"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/ET_event_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#444444"
+            android:hint="@string/event_name"
+            android:padding="15dp"
+            android:textColor="@color/white"
+            android:textColorHint="#999999" />
+
+        <EditText
+            android:id="@+id/ET_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#444444"
+            android:hint="@string/location"
+            android:padding="15dp"
+            android:textColor="@color/white"
+            android:textColorHint="#999999" />
+
+        <EditText
+            android:id="@+id/ET_event_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#444444"
+            android:hint="@string/event_date"
+            android:inputType="date"
+            android:padding="15dp"
+            android:textColor="@color/white"
+            android:textColorHint="#999999" />
+
+        <EditText
+            android:id="@+id/ET_event_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#444444"
+            android:hint="@string/event_time"
+            android:inputType="time"
+            android:padding="15dp"
+            android:textColor="@color/white"
+            android:textColorHint="#999999" />
+
+        <EditText
+            android:id="@+id/ET_registration_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#444444"
+            android:hint="@string/registration_start"
+            android:inputType="date"
+            android:padding="15dp"
+            android:textColor="@color/white"
+            android:textColorHint="#999999" />
+
+        <EditText
+            android:id="@+id/ET_registration_end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#444444"
+            android:hint="@string/registration_end"
+            android:inputType="date"
+            android:padding="15dp"
+            android:textColor="@color/white"
+            android:textColorHint="#999999" />
+
+        <Button
+            android:id="@+id/btn_upload_poster_and_event"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="#9C27B0"
+            android:padding="15dp"
+            android:text="@string/upload_poster_amp_create_event"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</ScrollView>
+
+
+
+
+
+
+
+
+
+
+
+    </LinearLayout>
