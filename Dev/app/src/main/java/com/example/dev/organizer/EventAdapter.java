@@ -44,7 +44,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.locationCategory.setText(locationCategory);
 
         holder.closingTime.setText(event.getClosingTime());
-        holder.capacity.setText(String.valueOf(event.getCapacity()));
+        holder.capacity.setText(String.valueOf("Capacity" + event.getCapacity()));
         //holder.poster.setImageResource(event.getImageResourse());
 
         holder.cardLayout.setOnClickListener(v -> {

@@ -41,13 +41,11 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_events"
-        android:layout_width="409dp"
-        android:layout_height="319dp"
-        android:layout_marginBottom="204dp"
+        android:layout_width="381dp"
+        android:layout_height="500dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TV_dashboard_title"
-        app:layout_constraintVertical_bias="0.984" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_create_event" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

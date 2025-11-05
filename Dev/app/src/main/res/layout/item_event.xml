@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardBackgroundColor="#212121"
     app:cardCornerRadius="8dp">
@@ -22,7 +22,7 @@
             app:srcCompat="@android:drawable/btn_dialog" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"

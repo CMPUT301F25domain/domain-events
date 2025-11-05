@@ -15,4 +15,10 @@
     <string name="registration_start">Registration Start</string>
     <string name="registration_end">Registration End</string>
     <string name="upload_poster_amp_create_event"><![CDATA[Upload Poster & Create Event]]></string>
+    <string name="event_details">Event Details</string>
+    <string name="placeholder_title">[Placeholder Title]</string>
+    <string name="placeholder_location">[Placeholder Location]</string>
+    <string name="date_amp_time"><![CDATA[Date & Time:]]></string>
+    <string name="registration_attendees_x">Registration: | Attendees: [X]</string>
+    <string name="view_qr_code">View QR Code</string>
 </resources>
