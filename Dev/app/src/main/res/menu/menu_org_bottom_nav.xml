@@ -10,4 +10,3 @@
         android:id="@+id/nav_confirmed"
         android:title="Confirmed" />
 </menu>
-
