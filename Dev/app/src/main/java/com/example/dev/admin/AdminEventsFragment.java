@@ -26,12 +26,11 @@ import com.example.dev.R;
  * - Each event has a “Remove” button that hides it from the list.
  *
  * Design Pattern:
- * - Uses the Fragment pattern for reusable, switchable UI sections inside the main activity.
+ * - Uses the Fragment pattern for reusable, switchable UI sections inside the main admin activity.
  *
  * Outstanding Issues:
- * - Make the bell icon open the notification logs.
+ * - Not have the events be mockdata but instead the result of organizers uploading events
  * - Make remove actually delete the event from Firebase instead of just hiding it.
- * - Finish and polish the UI design later.
  */
 
 
@@ -68,9 +67,18 @@ public class AdminEventsFragment extends Fragment {
             removeButton.setOnClickListener(v -> eventLayout.setVisibility(View.GONE));
         }
 
-        // Bell icon setup
+        // Have the bell icon go to the notification screen
         ImageView bellIcon = view.findViewById(R.id.bellIcon);
-        // bellIcon.setOnClickListener(v -> openNotificationLogs());
+        bellIcon.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new AdminNotifFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+
+
     }
 
 }

@@ -11,6 +11,26 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.dev.R;
 
+/**
+ * AdminImageFragment
+ *
+ * This fragment shows the Admin Images screen in the Event Lottery app.
+ * It’s part of the Admin section and uses the Fragment pattern to keep the UI
+ * modular and easy to manage across different screens.
+ *
+ * Purpose:
+ * - Displays a list of uploaded images that admins can view or remove.
+ * - Each event has a “Remove” button that hides it from the list.
+ *
+ * Design Pattern:
+ * - Uses the Fragment pattern for reusable, switchable UI sections inside the main admin activity.
+ *
+ * Outstanding Issues:
+ * - Not have the images be mock data but instead the result of organizers uploading images
+ * - Make remove actually delete the image from Firebase instead of just hiding it.
+ */
+
+
 public class AdminImageFragment extends Fragment {
     public AdminImageFragment() {}
 

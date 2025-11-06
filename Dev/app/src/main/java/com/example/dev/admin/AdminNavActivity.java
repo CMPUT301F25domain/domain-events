@@ -12,6 +12,25 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.dev.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * AdminNavActivity
+ *
+ * This activity serves as the main navigation area for the Admin section of the Event Lottery app.
+ * It manages the bottom navigation bar and swaps between events, images, and profile screens.
+ *
+ * Purpose:
+ * - Provides a bottom navigation bar for switching between different screens.
+ * - Loads the Admin Events screen by default when the activity is launched.
+ * - Handles navigation logic for Events, Images, and Profile sections.
+ *
+ * Design Pattern:
+ * - Uses the Activity–Fragment pattern, where this activity serves as the host
+ *   and each screen is a Fragment loaded dynamically.
+ *
+ * Outstanding Issues:
+ * - Connect each fragment to Firebase to display and manage the actual event, image, and profile data.
+ */
+
 public class AdminNavActivity extends AppCompatActivity {
 
     @Override

@@ -17,17 +17,19 @@ import com.example.dev.R;
  * AdminProfileFragment
  *
  * This fragment shows the Admin Profile screen in the Event Lottery app.
- * It lists user profiles that admins can remove.
+ * It’s part of the Admin section and uses the Fragment pattern to keep the UI
+ * modular and easy to manage across different screens.
  *
  * Purpose:
- * - Displays a list of users with their name, email, and role.
- * - Each user card has a “Remove” option that hides that profile.
+ * - Displays a list of sample user profiles that admins can view or remove.
+ * - Each user layout has a “Remove” button that hides that user’s profile from the list.
  *
  * Design Pattern:
- * - Uses the Fragment pattern for modular UI and navigation via BottomNavigationView.
+ * - Uses the Fragment pattern for reusable, switchable UI sections inside the main admin activity.
  *
  * Outstanding Issues:
- * - Make remove actually delete the event from Firebase instead of just hiding it.
+ * - Replace mock data users with data loaded from Firebase.
+ * - Make remove actually delete the profile from Firebase instead of just hiding it.
  */
 public class AdminProfileFragment extends Fragment {
 
