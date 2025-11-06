@@ -8,6 +8,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dev.admin.AdminNavActivity;
+import com.example.dev.organizer.OrganizerDashboardActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,8 +19,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         // Organizer button
-        findViewById(R.id.btnOrganizer).setOnClickListener(v ->
-                Toast.makeText(this, "Organizer dashboard here", Toast.LENGTH_SHORT).show());
+        findViewById(R.id.btnOrganizer).setOnClickListener(v -> {
+            Intent intent = new Intent(this, OrganizerDashboardActivity.class);
+            startActivity(intent);
+        });
 
         // Entrant button
         findViewById(R.id.btnEntrant).setOnClickListener(v ->
