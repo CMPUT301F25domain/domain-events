@@ -1,10 +1,12 @@
 package com.example.dev.organizer;
 
 import android.content.Intent;
+import android.graphics.Bitmap;     //Bitmap is needed for QR Code Generation
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +18,9 @@ import com.google.firebase.Firebase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.google.zxing.BarcodeFormat;                  //Zebra Crossing Barcode Scanner
+import com.google.zxing.WriterException;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 public class EventDetailActivity extends AppCompatActivity {
 
@@ -28,12 +33,15 @@ public class EventDetailActivity extends AppCompatActivity {
     private TextView textViewDateTime;
     private TextView textViewRegistration;
 
+
     private ProgressBar progressBar;
-    private Button viewCodeBtn;
+    private Button viewQRCodeBtn;
+    private ImageView imageViewQRcode;
+
     private String eventId = null;
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
 
@@ -42,28 +50,35 @@ public class EventDetailActivity extends AppCompatActivity {
 
         getEventIdFromDashboardIntent(getIntent());
 
-        if (eventId != null){
+        if (eventId != null) {
             getEventDetails(eventId);
-        }else{
+        } else {
             Toast.makeText(this, "Error: Event ID not found.", Toast.LENGTH_LONG).show();
             finish();
         }
 
-//        viewCodeBtn.setOnClickListener(v -> {
-//            Toast.makeText(this, "View QR code for ID: " + eventId, Toast.LENGTH_SHORT).show();
-//        });
-        }
+        viewQRCodeBtn.setOnClickListener(v -> {
+            try {
+                generateQRcode();
+            } catch (WriterException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
 
-     private void initializeViews(){
+
+
+
+    private void initializeViews(){
         textViewName = findViewById(R.id.TV_detail_name);
         textViewLocation = findViewById(R.id.TV_detail_location);
         textViewDateTime = findViewById(R.id.TV_detail_date_time);
         textViewRegistration = findViewById(R.id.TV_detail_registration);
         progressBar = findViewById(R.id.progress_bar);
-        viewCodeBtn = findViewById(R.id.btn_create_event);
+        viewQRCodeBtn = findViewById(R.id.btn_view_QR_code);
+        imageViewQRcode = findViewById(R.id.IV_qr_code);
 
         setDetailsVisibility(View.GONE);
-
     }
 
     private void getEventIdFromDashboardIntent(Intent intent){
@@ -71,7 +86,6 @@ public class EventDetailActivity extends AppCompatActivity {
             eventId = intent.getStringExtra("Event_ID");
             Log.d(TAG, "ID found in Extras: " + eventId);
         }
-
     }
 
     private void getEventDetails(String id){
@@ -113,5 +127,20 @@ public class EventDetailActivity extends AppCompatActivity {
         textViewLocation.setVisibility(visibility);
         textViewDateTime.setVisibility(visibility);
         textViewRegistration.setVisibility(visibility);
+    }
+
+    private void generateQRcode() throws WriterException {
+        if (eventId == null) {
+            Toast.makeText(this, "Error: Event ID not found. Not my fault I think", Toast.LENGTH_LONG).show();
+        }
+        else {
+            String qrData = "event:" + eventId;
+
+            BarcodeEncoder qrEncoder = new BarcodeEncoder();
+            Bitmap qrBitmap = qrEncoder.encodeBitmap(qrData, BarcodeFormat.QR_CODE, 800, 800);
+
+            imageViewQRcode.setImageBitmap(qrBitmap);
+            imageViewQRcode.setVisibility(View.VISIBLE);
+        }
     }
 }
