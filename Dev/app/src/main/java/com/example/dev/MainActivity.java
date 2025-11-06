@@ -1,12 +1,14 @@
 package com.example.dev;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.example.dev.admin.AdminNavActivity;
+import com.example.dev.organizer.OrganizerDashboardActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,11 +16,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        setContentView(R.layout.activity_home);
+
+        // Organizer button
+        findViewById(R.id.btnOrganizer).setOnClickListener(v -> {
+            Intent intent = new Intent(this, OrganizerDashboardActivity.class);
+            startActivity(intent);
+        });
+
+        // Entrant button
+        findViewById(R.id.btnEntrant).setOnClickListener(v ->
+                Toast.makeText(this, "Entrant dashboard here", Toast.LENGTH_SHORT).show());
+
+        // Admin button
+        findViewById(R.id.btnAdmin).setOnClickListener(v -> {
+            Intent intent = new Intent(this, AdminNavActivity.class);
+            startActivity(intent);
         });
     }
 }

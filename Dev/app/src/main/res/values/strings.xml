@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">Dev</string>
+    <string name="organizer_dashboard">Organizer Dashboard</string>
+    <string name="create_event">Create Event</string>
+    <string name="swimming_lessons">Swimming Lessons</string>
+    <string name="ymca_pool_fitness">YMCA pool | Fitness</string>
+    <string name="registration_closes_in_2d_5hrs">Registration Closes in 2d 5hrs</string>
+    <string name="total_capacity_25"><![CDATA[Total Capacity -> 25]]></string>
+    <string name="activity_image">activity Image</string>
+    <string name="create_new_event">Create New Event</string>
+    <string name="event_name">Event Name</string>
+    <string name="location">Location</string>
+    <string name="event_date">Event Date</string>
+    <string name="event_time">Event Time</string>
+    <string name="registration_start">Registration Start</string>
+    <string name="registration_end">Registration End</string>
+    <string name="upload_poster_amp_create_event"><![CDATA[Upload Poster & Create Event]]></string>
+    <string name="event_details">Event Details</string>
+    <string name="placeholder_title">[Placeholder Title]</string>
+    <string name="placeholder_location">[Placeholder Location]</string>
+    <string name="date_amp_time"><![CDATA[Date & Time:]]></string>
+    <string name="registration_attendees_x">Registration: | Attendees: [X]</string>
+    <string name="view_qr_code">View QR Code</string>
 </resources>
