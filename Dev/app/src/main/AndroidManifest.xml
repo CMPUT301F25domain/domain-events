@@ -36,6 +36,9 @@
         <activity
             android:name=".organizer.CreateEventActivity"
             android:exported="true"/>
+        <activity
+            android:name=".organizer.UploadPosterActivity"
+            android:exported="false" />
 
         <activity
             android:name=".organizer.EventDetailActivity"

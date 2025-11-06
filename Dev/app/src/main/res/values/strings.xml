@@ -15,10 +15,20 @@
     <string name="registration_start">Registration Start</string>
     <string name="registration_end">Registration End</string>
     <string name="upload_poster_amp_create_event"><![CDATA[Upload Poster & Create Event]]></string>
+    <string name="upload_poster_title">Upload Poster</string>
+    <string name="upload_poster_placeholder">Poster upload functionality coming soon. Continue to keep drafting your event.</string>
+    <string name="upload_poster_back_to_create">Back to details</string>
+    <string name="upload_poster_continue">Continue</string>
+    <string name="upload_poster_summary_template">Drafting %1$s @ %2$s</string>
+    <string name="upload_poster_unknown_value">TBD</string>
+    <string name="upload_poster_missing_draft">Unable to publish event draft.</string>
+    <string name="event_created_success">Event '%1$s' created successfully!</string>
+    <string name="error_saving_event">Error saving event!</string>
     <string name="event_details">Event Details</string>
     <string name="placeholder_title">[Placeholder Title]</string>
     <string name="placeholder_location">[Placeholder Location]</string>
     <string name="date_amp_time"><![CDATA[Date & Time:]]></string>
     <string name="registration_attendees_x">Registration: | Attendees: [X]</string>
     <string name="view_qr_code">View QR Code</string>
+
 </resources>
