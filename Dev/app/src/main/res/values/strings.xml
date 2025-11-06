@@ -21,4 +21,5 @@
     <string name="date_amp_time"><![CDATA[Date & Time:]]></string>
     <string name="registration_attendees_x">Registration: | Attendees: [X]</string>
     <string name="view_qr_code">View QR Code</string>
+    <string name="turn_geolocation_on">Turn Geolocation on?</string>
 </resources>
