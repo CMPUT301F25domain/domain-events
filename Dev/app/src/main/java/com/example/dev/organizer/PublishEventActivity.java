@@ -70,7 +70,9 @@ public class PublishEventActivity extends AppCompatActivity {
 
         DocumentReference newEventRef = firestore.collection("events").document();
         String eventId = newEventRef.getId();
-        FirebaseEvent newEvent = new FirebaseEvent(eventId, eventName, location, eventDate, eventTime, eventStart, eventEnd, 0);
+        String posterUriString = posterUri != null ? posterUri.toString() : eventDraft.getPosterUri();
+        FirebaseEvent newEvent = new FirebaseEvent(eventId, eventName, location, eventDate, eventTime,
+                eventStart, eventEnd, posterUriString, 0);
 
         newEventRef.set(newEvent)
                 .addOnSuccessListener(aVoid -> onPublishSuccess(eventName))

@@ -84,14 +84,21 @@ public class CreateEventActivity extends AppCompatActivity {
         uploadPosterLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        String returnedPosterUri = result.getData().getStringExtra(EXTRA_EVENT_POSTER_URI);
-                        if (returnedPosterUri != null) {
-                            posterUri = returnedPosterUri;
+                    if (result.getResultCode() == RESULT_OK) {
+                        if (result.getData() != null && result.getData().getBooleanExtra(EXTRA_EVENT_PUBLISHED, false)) {
+                            setResult(RESULT_OK, result.getData());
+                            finish();
+                            return;
                         }
-                        EventDraft returnedDraft = result.getData().getParcelableExtra(EXTRA_EVENT_DRAFT);
-                        if (returnedDraft != null) {
-                            populateForm(returnedDraft);
+                        if (result.getData() != null) {
+                            String returnedPosterUri = result.getData().getStringExtra(EXTRA_EVENT_POSTER_URI);
+                            if (returnedPosterUri != null) {
+                                posterUri = returnedPosterUri;
+                            }
+                            EventDraft returnedDraft = result.getData().getParcelableExtra(EXTRA_EVENT_DRAFT);
+                            if (returnedDraft != null) {
+                                populateForm(returnedDraft);
+                            }
                         }
                     }
                 }

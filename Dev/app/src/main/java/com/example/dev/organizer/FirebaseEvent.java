@@ -8,6 +8,7 @@ public class FirebaseEvent {
     private String eventTime;
     private String eventStart;
     private String eventEnd;
+    private String posterUri;
     private int attendingCount;
 
 
@@ -15,7 +16,7 @@ public class FirebaseEvent {
 
     }
 
-    public FirebaseEvent(String eventId, String eventName, String location, String eventDate, String eventTime,String eventStart, String eventEnd, int attendingCount){
+    public FirebaseEvent(String eventId, String eventName, String location, String eventDate, String eventTime,String eventStart, String eventEnd,String posterUri, int attendingCount){
         this.eventId = eventId;
         this.eventName = eventName;
         this.location = location;
@@ -23,6 +24,7 @@ public class FirebaseEvent {
         this.eventTime = eventTime;
         this.eventStart = eventStart;
         this.eventEnd = eventEnd;
+        this.posterUri = posterUri;
         this.attendingCount = attendingCount;
     }
 
@@ -72,6 +74,8 @@ public class FirebaseEvent {
     public void setEventEnd(String eventEnd){
         this.eventEnd=eventEnd;
     }
+    public String getPosterUri() { return posterUri; }
+    public void setPosterUri(String posterUri) { this.posterUri = posterUri; }
     public int getAttendingCount(){
         return attendingCount;
     }

@@ -22,8 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.dev.R;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
+
 
 /**
  * Displays the poster upload screen, allowing organizers to pick an image preview that
@@ -34,12 +33,12 @@ public class UploadPosterActivity extends AppCompatActivity {
     private static final String STATE_POSTER_URI = "state_poster_uri";
 
     private EventDraft eventDraft;
-    private FirebaseFirestore firestore;
     private boolean isPublishing;
     private Uri selectedPosterUri;
 
     private ActivityResultLauncher<PickVisualMediaRequest> pickPosterLauncher;
     private ActivityResultLauncher<String> permissionLauncher;
+    private ActivityResultLauncher<Intent> publishEventLauncher;
 
     private ImageView posterPreview;
     private TextView previewPlaceholder;
@@ -55,7 +54,6 @@ public class UploadPosterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_upload_poster);
 
         eventDraft = getIntent().getParcelableExtra(CreateEventActivity.EXTRA_EVENT_DRAFT);
-        firestore = FirebaseFirestore.getInstance();
 
         registerLaunchers();
         bindViews();
@@ -83,7 +81,7 @@ public class UploadPosterActivity extends AppCompatActivity {
 
         continueButton.setOnClickListener(v -> {
             if (!isPublishing) {
-                publishEvent();
+                launchPublishFlow();
             }
         });
 
@@ -119,6 +117,32 @@ public class UploadPosterActivity extends AppCompatActivity {
                 statusView.setText(R.string.upload_poster_status_permission_required);
             }
         });
+
+        publishEventLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null
+                            && result.getData().getBooleanExtra(CreateEventActivity.EXTRA_EVENT_PUBLISHED, false)) {
+                        setResult(RESULT_OK, result.getData());
+                        finish();
+                        return;
+                    }
+
+                    setPublishingState(false);
+
+                    if (result.getResultCode() == RESULT_CANCELED && result.getData() != null) {
+                        EventDraft returnedDraft = result.getData().getParcelableExtra(CreateEventActivity.EXTRA_EVENT_DRAFT);
+                        if (returnedDraft != null) {
+                            eventDraft = returnedDraft;
+                        }
+                        Uri returnedPosterUri = result.getData().getParcelableExtra(PublishEventActivity.EXTRA_POSTER_URI);
+                        if (returnedPosterUri != null) {
+                            selectedPosterUri = returnedPosterUri;
+                            updatePosterPreview();
+                        }
+                        statusView.setText(R.string.upload_poster_status_error);
+                    }
+                });
     }
 
     private void bindViews() {
@@ -194,7 +218,7 @@ public class UploadPosterActivity extends AppCompatActivity {
         finish();
     }
 
-    private void publishEvent() {
+    private void launchPublishFlow() {
         if (eventDraft == null) {
             Toast.makeText(this, R.string.upload_poster_missing_draft, Toast.LENGTH_LONG).show();
             return;
@@ -203,39 +227,13 @@ public class UploadPosterActivity extends AppCompatActivity {
         syncPosterUriToDraft();
         setPublishingState(true);
 
-        String eventName = eventDraft.getEventName();
-        String location = eventDraft.getLocation();
-        String eventDate = eventDraft.getEventDate();
-        String eventTime = eventDraft.getEventTime();
-        String eventStart = eventDraft.getRegistrationStart();
-        String eventEnd = eventDraft.getRegistrationEnd();
+        Intent intent = new Intent(this, PublishEventActivity.class);
+        intent.putExtra(CreateEventActivity.EXTRA_EVENT_DRAFT, eventDraft);
+        if (selectedPosterUri != null) {
+            intent.putExtra(PublishEventActivity.EXTRA_POSTER_URI, selectedPosterUri);
+        }
 
-        DocumentReference newEventRef = firestore.collection("events").document();
-        String eventId = newEventRef.getId();
-        FirebaseEvent newEvent = new FirebaseEvent(eventId, eventName, location, eventDate, eventTime, eventStart, eventEnd, 0);
-
-        newEventRef.set(newEvent)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(UploadPosterActivity.this,
-                            getString(R.string.event_created_success, valueOrPlaceholder(eventName)),
-                            Toast.LENGTH_LONG).show();
-                    Intent result = new Intent();
-                    syncPosterUriToDraft();
-                    if (eventDraft != null) {
-                        result.putExtra(CreateEventActivity.EXTRA_EVENT_DRAFT, eventDraft);
-                    }
-                    if (selectedPosterUri != null) {
-                        result.putExtra(CreateEventActivity.EXTRA_EVENT_POSTER_URI, selectedPosterUri.toString());
-                    }
-                    result.putExtra(CreateEventActivity.EXTRA_EVENT_PUBLISHED, true);
-                    setResult(RESULT_OK, result);
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    setPublishingState(false);
-                    statusView.setText(R.string.upload_poster_status_error);
-                    Toast.makeText(UploadPosterActivity.this, R.string.error_saving_event, Toast.LENGTH_LONG).show();
-                });
+        publishEventLauncher.launch(intent);
     }
 
     private void setPublishingState(boolean publishing) {
