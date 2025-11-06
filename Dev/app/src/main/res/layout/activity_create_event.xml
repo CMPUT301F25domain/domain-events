@@ -91,6 +91,7 @@
             android:textColor="@color/white"
             android:textColorHint="#999999" />
 
+
         <Switch
             android:id="@+id/switch_geolocation"
             android:layout_width="match_parent"
@@ -104,6 +105,28 @@
             android:thumbTint="#9c27b0"
             android:trackTint="#F6F0F0"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <CheckBox
+            android:id="@+id/checkbox_limit_waitlist"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp"
+            android:buttonTint="#9C27B0"
+            android:text="@string/limit_the_wait_list_capacity"
+            android:textColor="@color/white" />
+
+        <EditText
+            android:id="@+id/ET_waitlist_limit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="#444444"
+            android:hint="@string/maximum_wait_list_entrants"
+            android:inputType="number"
+            android:padding="15dp"
+            android:textColorHint="#999999"
+            android:visibility="gone" />
 
 
         <Button
