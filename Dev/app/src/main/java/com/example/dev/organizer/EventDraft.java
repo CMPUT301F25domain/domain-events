@@ -16,6 +16,7 @@ public class EventDraft implements Parcelable {
     private final String eventTime;
     private final String registrationStart;
     private final String registrationEnd;
+    private final String posterUri;
 
     public EventDraft(@Nullable String eventName,
                       @Nullable String location,
@@ -23,12 +24,23 @@ public class EventDraft implements Parcelable {
                       @Nullable String eventTime,
                       @Nullable String registrationStart,
                       @Nullable String registrationEnd) {
+        this(eventName, location, eventDate, eventTime, registrationStart, registrationEnd, null);
+    }
+
+    public EventDraft(@Nullable String eventName,
+                      @Nullable String location,
+                      @Nullable String eventDate,
+                      @Nullable String eventTime,
+                      @Nullable String registrationStart,
+                      @Nullable String registrationEnd,
+                      @Nullable String posterUri) {
         this.eventName = eventName;
         this.location = location;
         this.eventDate = eventDate;
         this.eventTime = eventTime;
         this.registrationStart = registrationStart;
         this.registrationEnd = registrationEnd;
+        this.posterUri = posterUri;
     }
 
     protected EventDraft(Parcel in) {
@@ -38,6 +50,7 @@ public class EventDraft implements Parcelable {
         eventTime = in.readString();
         registrationStart = in.readString();
         registrationEnd = in.readString();
+        posterUri = in.readString();
     }
 
     public static final Creator<EventDraft> CREATOR = new Creator<EventDraft>() {
@@ -82,6 +95,15 @@ public class EventDraft implements Parcelable {
         return registrationEnd;
     }
 
+    @Nullable
+    public String getPosterUri() {
+        return posterUri;
+    }
+
+    public EventDraft withPosterUri(@Nullable String newPosterUri) {
+        return new EventDraft(eventName, location, eventDate, eventTime, registrationStart, registrationEnd, newPosterUri);
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -95,5 +117,6 @@ public class EventDraft implements Parcelable {
         dest.writeString(eventTime);
         dest.writeString(registrationStart);
         dest.writeString(registrationEnd);
+        dest.writeString(posterUri);
     }
 }

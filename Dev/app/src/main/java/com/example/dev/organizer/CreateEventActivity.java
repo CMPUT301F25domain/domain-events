@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
 
 import com.example.dev.R;
 
@@ -28,6 +29,7 @@ import com.example.dev.R;
 public class CreateEventActivity extends AppCompatActivity {
     static final String EXTRA_EVENT_DRAFT = "com.example.dev.organizer.EXTRA_EVENT_DRAFT";
     static final String EXTRA_EVENT_PUBLISHED = "com.example.dev.organizer.EXTRA_EVENT_PUBLISHED";
+    static final String EXTRA_EVENT_POSTER_URI = "com.example.dev.organizer.EXTRA_EVENT_POSTER_URI";
     private EditText editTextEventName;
     private EditText editTextLocation;
     private EditText editTextEventTime;
@@ -38,6 +40,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private Button createButton;
     private ActivityResultLauncher<android.content.Intent> uploadPosterLauncher;
+    @Nullable
+    private String posterUri;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -81,6 +85,10 @@ public class CreateEventActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        String returnedPosterUri = result.getData().getStringExtra(EXTRA_EVENT_POSTER_URI);
+                        if (returnedPosterUri != null) {
+                            posterUri = returnedPosterUri;
+                        }
                         EventDraft returnedDraft = result.getData().getParcelableExtra(EXTRA_EVENT_DRAFT);
                         if (returnedDraft != null) {
                             populateForm(returnedDraft);
@@ -129,7 +137,7 @@ public class CreateEventActivity extends AppCompatActivity {
 //            Toast.makeText(CreateEventActivity.this, "Error saving event!", Toast.LENGTH_LONG).show();
 //
 //        });
-        return new EventDraft(eventName, location, eventDate, eventTime, eventStart, eventEnd);
+        return new EventDraft(eventName, location, eventDate, eventTime, eventStart, eventEnd, posterUri);
     }
 
     private void populateForm(EventDraft draft) {
@@ -151,5 +159,6 @@ public class CreateEventActivity extends AppCompatActivity {
         if (draft.getRegistrationEnd() != null) {
             editTextEndDate.setText(draft.getRegistrationEnd());
         }
+        posterUri = draft.getPosterUri();
     }
 }

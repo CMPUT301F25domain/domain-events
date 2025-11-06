@@ -16,7 +16,6 @@
     <string name="registration_end">Registration End</string>
     <string name="upload_poster_amp_create_event"><![CDATA[Upload Poster & Create Event]]></string>
     <string name="upload_poster_title">Upload Poster</string>
-    <string name="upload_poster_placeholder">Poster upload functionality coming soon. Continue to keep drafting your event.</string>
     <string name="upload_poster_back_to_create">Back to details</string>
     <string name="upload_poster_continue">Continue</string>
     <string name="upload_poster_summary_template">Drafting %1$s @ %2$s</string>
@@ -24,6 +23,15 @@
     <string name="upload_poster_missing_draft">Unable to publish event draft.</string>
     <string name="event_created_success">Event '%1$s' created successfully!</string>
     <string name="error_saving_event">Error saving event!</string>
+    <string name="upload_poster_select_image">Select poster image</string>
+    <string name="upload_poster_preview_placeholder">Tap to choose a poster image</string>
+    <string name="upload_poster_preview_content_description">Selected poster preview</string>
+    <string name="upload_poster_status_prompt">Select an image to continue.</string>
+    <string name="upload_poster_status_ready">Poster ready! You can continue.</string>
+    <string name="upload_poster_status_selection_cleared">No image selected.</string>
+    <string name="upload_poster_status_permission_required">Grant photo access to choose a poster.</string>
+    <string name="upload_poster_status_publishing">Publishing event…</string>
+    <string name="upload_poster_status_error">Something went wrong. Please try again.</string>
     <string name="event_details">Event Details</string>
     <string name="placeholder_title">[Placeholder Title]</string>
     <string name="placeholder_location">[Placeholder Location]</string>
