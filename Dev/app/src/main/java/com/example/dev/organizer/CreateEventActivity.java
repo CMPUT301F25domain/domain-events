@@ -13,12 +13,6 @@ import com.example.dev.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-/**
- * Activity responsible for allowing Organizer to create a new event.
- * This class will handle form input such as: EventName, Event Location, Event TIme, Event Date, Registration start date/end date
- * Validation is also done in this class, along with saving the new data to the Firebase database.
- *
- */
 
 public class CreateEventActivity extends AppCompatActivity {
     private EditText editTextEventName;
@@ -48,11 +42,6 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Finds and assigns the UI elements from the XML layout .
-     * Related XML -> "activity_create_event.xml"
-     */
-
     private void initializeViews(){
         editTextEventName = findViewById(R.id.ET_event_name);
         editTextEventDate = findViewById(R.id.ET_event_date);
@@ -65,10 +54,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Validates required input fields to check that they are not empty
-     * @return: true if all fields filled; false otherwise
-     */
     private boolean validateInput(){
         if (editTextEventName.getText().toString().trim().isEmpty() || editTextLocation.getText().toString().trim().isEmpty() || editTextEventDate.getText().toString().trim().isEmpty() || editTextEventTime.getText().toString().trim().isEmpty()){
             String error = "Form Not Completed -> Please FIll all required fields.";
@@ -79,9 +64,6 @@ public class CreateEventActivity extends AppCompatActivity {
         return true;
     }
 
-    /**
-     * Collects all data from the form, creates a unique event ID and links Firebase object.
-     */
     private void saveEventToFirebase(){
         String eventName = editTextEventName.getText().toString().trim();
         String location = editTextLocation.getText().toString().trim();

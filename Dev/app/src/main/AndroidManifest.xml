@@ -11,6 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Dev">
+        <!--        <activity-->
+        <!--            android:name=".organizer.OrganizerNavActivity"-->
+        <!--            android:exported="false" />-->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -18,6 +21,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <activity
@@ -32,14 +36,19 @@
             android:name=".organizer.OrganizerDashboardActivity"
             android:exported="true" />
 
-
         <activity
             android:name=".organizer.CreateEventActivity"
             android:exported="true"/>
-
+        <activity
+            android:name=".organizer.UploadPosterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".organizer.PublishEventActivity"
+            android:exported="false" />
         <activity
             android:name=".organizer.EventDetailActivity"
             android:exported="true"/>
-</application>
+
+    </application>
 
 </manifest>

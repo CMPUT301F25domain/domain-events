@@ -1,5 +1,6 @@
 package com.example.dev.admin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.dev.MainActivity;
 import com.example.dev.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -68,6 +70,14 @@ public class AdminEventsFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         });
+
+        ImageView backIcon = view.findViewById(R.id.backIcon);
+        backIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
+            requireActivity().finish();
+        });
+
 
         loadFirestoreEvents();
     }
