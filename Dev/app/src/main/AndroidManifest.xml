@@ -32,6 +32,17 @@
             android:name=".entrant.EntrantNavActivity"
             android:exported="false" />
 
+        <activity android:name="com.example.dev.entrant.EntrantMainActivity"
+                  android:exported="false"/>
+
+        <activity
+            android:name="com.example.dev.entrant.EntrantMessagesActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.dev.entrant.EventDetailsActivity"
+            android:exported="false" />
+
         <activity
             android:name=".organizer.OrganizerDashboardActivity"
             android:exported="true" />

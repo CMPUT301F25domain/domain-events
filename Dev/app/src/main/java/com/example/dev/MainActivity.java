@@ -25,8 +25,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Entrant button
-        findViewById(R.id.btnEntrant).setOnClickListener(v ->
-                Toast.makeText(this, "Entrant dashboard here", Toast.LENGTH_SHORT).show());
+// Entrant button → go to entrant event list
+        findViewById(R.id.btnEntrant).setOnClickListener(v -> {
+            Intent intent = new Intent(this, com.example.dev.entrant.EntrantMainActivity.class);
+            startActivity(intent);
+        });
 
         // Admin button
         findViewById(R.id.btnAdmin).setOnClickListener(v -> {
