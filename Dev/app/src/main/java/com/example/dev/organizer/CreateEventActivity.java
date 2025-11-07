@@ -17,6 +17,12 @@ import com.example.dev.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Activity responsible for allowing Organizer to create a new event.
+ * This class will handle form input such as: EventName, Event Location, Event TIme, Event Date, Registration start date/end date
+ * Validation is also done in this class, along with saving the new data to the Firebase database.
+ *
+ */
 
 /**
  * CreateEventActivity
@@ -79,6 +85,11 @@ public class CreateEventActivity extends AppCompatActivity {
         outState.putParcelable(EXTRA_EVENT_DRAFT, buildDraftFromInputs());
     }
 
+    /**
+     * Finds and assigns the UI elements from the XML layout .
+     * Related XML -> "activity_create_event.xml"
+     */
+
     private void initializeViews(){
         editTextEventName = findViewById(R.id.ET_event_name);
         editTextEventDate = findViewById(R.id.ET_event_date);
@@ -91,6 +102,10 @@ public class CreateEventActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Validates required input fields to check that they are not empty
+     * @return: true if all fields filled; false otherwise
+     */
     private void setupUploadPosterLauncher() {
         uploadPosterLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -128,6 +143,9 @@ public class CreateEventActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Collects all data from the form, creates a unique event ID and links Firebase object.
+     */
     private void launchUploadPoster() {
         EventDraft draft = buildDraftFromInputs();
         android.content.Intent intent = new android.content.Intent(this, UploadPosterActivity.class);

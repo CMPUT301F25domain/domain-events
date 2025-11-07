@@ -30,6 +30,10 @@ import com.google.firebase.storage.UploadTask;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Activity displays the full details of a single event.
+ * Launched when a specific event is clicked on the organizer dashboard.
+ */
 
 public class EventDetailActivity extends AppCompatActivity {
 
@@ -109,6 +113,11 @@ public class EventDetailActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Handles the process to retrieve documents from Firebase.
+     * Shows progress bar during this
+     * @param id: Unique id of the event document to retrieve
+     */
     private void getEventDetails(String id){
         isLoadingEvent = true;
         updateLoadingIndicator();
@@ -138,6 +147,10 @@ public class EventDetailActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Fills TextView elements with data retrieved from Firebase object
+     * @param event: The Firebase object containing fetched data
+     */
     private void displayEventData(FirebaseEvent event){
         textViewName.setText(event.getEventName());
         textViewLocation.setText("Location: " + event.getLocation());

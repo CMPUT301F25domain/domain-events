@@ -20,6 +20,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity for the main dashboard -> Used by Event Organizers
+ * Screen displays list of all events created by the organizer using RecyclerView
+ * Retrieves data from the Firebase events collection
+ * Navigates to event creation and event detail screen.
+ */
+
+
 public class OrganizerDashboardActivity extends AppCompatActivity implements EventAdapter.EventClickListener{
 
     private Button createEventbtn;
@@ -60,6 +68,10 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
         super.onResume();
         getEventsFromFirebase();
     }
+
+    /**
+     * Retrieves event documents from Firebase events collection
+     */
 
     private void getEventsFromFirebase(){
         db.collection("events").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

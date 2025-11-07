@@ -28,7 +28,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
  *   and each screen is a Fragment loaded dynamically.
  *
  * Outstanding Issues:
- * - Connect each fragment to Firebase to display and manage the actual event, image, and profile data.
+ * - Connect each fragment to Firebase to display and manage the actual image, and profile data.
  */
 
 public class AdminNavActivity extends AppCompatActivity {
