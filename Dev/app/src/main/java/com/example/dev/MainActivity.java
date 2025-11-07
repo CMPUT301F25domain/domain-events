@@ -1,21 +1,37 @@
 package com.example.dev;
 
+import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
+import android.widget.Toast;
 
-import com.example.dev.admin.AdminEventsFragment;
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.dev.admin.AdminNavActivity;
+import com.example.dev.organizer.OrganizerDashboardActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_home);
 
-        // Load the AdminEventsFragment
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment_container, new AdminEventsFragment());
-        ft.commit();
+        // Organizer button
+        findViewById(R.id.btnOrganizer).setOnClickListener(v -> {
+            Intent intent = new Intent(this, OrganizerDashboardActivity.class);
+            startActivity(intent);
+        });
+
+        // Entrant button
+        findViewById(R.id.btnEntrant).setOnClickListener(v ->
+                Toast.makeText(this, "Entrant dashboard here", Toast.LENGTH_SHORT).show());
+
+        // Admin button
+        findViewById(R.id.btnAdmin).setOnClickListener(v -> {
+            Intent intent = new Intent(this, AdminNavActivity.class);
+            startActivity(intent);
+        });
     }
 }
