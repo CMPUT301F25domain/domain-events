@@ -1,10 +1,10 @@
-package com.example.entrantscreenactivity.views;
+package com.example.dev.views;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
-import com.example.entrantscreenactivity.R;
+import com.example.dev.R;
 
 public class EventDetailsActivity extends AppCompatActivity {
 

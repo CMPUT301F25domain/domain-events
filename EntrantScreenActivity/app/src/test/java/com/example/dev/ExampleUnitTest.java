@@ -1,4 +1,4 @@
-package com.example.entrantscreenactivity;
+package com.example.dev;
 
 import org.junit.Test;
 
