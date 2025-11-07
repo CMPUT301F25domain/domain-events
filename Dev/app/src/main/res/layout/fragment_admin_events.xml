@@ -32,7 +32,7 @@
                     android:contentDescription="Back to Home"/>
                 <!-- Title -->
                 <TextView
-                    android:id="@+id/notifTitle"
+                    android:id="@+id/eventTitle"
                     android:text="Events"
                     android:textColor="#FFFFFF"
                     android:textSize="28sp"
