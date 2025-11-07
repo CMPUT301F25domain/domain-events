@@ -21,7 +21,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-
+/**
+ * Displays a list of available events for the entrant user role.
+ * Allows navigation to view individual event details and to access the messages screen.
+ *
+ * Responsibilities:
+ *  - Initializes RecyclerView with event data from Firestore.
+ *  - Handles toolbar actions, including navigation to MessagesActivity.
+ *
+ * Outstanding Issues:
+ *  - Pending: implement filtering and searching.
+ */
 public class EntrantMainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;

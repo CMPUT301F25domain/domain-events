@@ -1,3 +1,23 @@
+/**
+ * EventDetailsActivity
+ *
+ * This activity displays detailed information for a selected event, including:
+ *  - Event title
+ *  - Location
+ *  - Date
+ *
+ * The entrant can toggle between joining or leaving the waiting list for the event.
+ *
+ * Current Behavior:
+ *  - Displays event data passed through Intent extras
+ *  - Simulates join/leave state locally (temporary)
+ *
+ * Outstanding Issues:
+ *  - Replace temporary join/leave toggle with Firestore enrollment logic
+ *  - Ensure updates reflect real-time event capacity limits
+ *  - Add more details to display such as poster once we have image from database
+ */
+
 package com.example.dev.entrant;
 
 import android.os.Bundle;

@@ -1,3 +1,19 @@
+/**
+ * EntrantMessagesActivity
+ *
+ * This activity displays a placeholder "Messages" screen for the entrant user.
+ * In the final version, this screen will list notifications such as:
+ *  - Whether the entrant has been selected in a draw
+ *  - Any updates from event organizers
+ *
+ * Current Behavior:
+ *  - Shows a toolbar titled "Messages"
+ *  - Allows returning to the previous screen via the back arrow
+ *
+ * Outstanding Issues:
+ *  - Connect to Firestore to load actual messages
+ *  - Replace static UI with a RecyclerView message list
+ */
 package com.example.dev.entrant;
 
 import android.os.Bundle;

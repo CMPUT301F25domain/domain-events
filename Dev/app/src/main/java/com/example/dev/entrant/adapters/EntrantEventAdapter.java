@@ -1,3 +1,20 @@
+/**
+ * EntrantEventAdapter
+ *
+ * RecyclerView adapter that binds event data to the entrant event list UI.
+ * Each event item displays:
+ *  - Event name
+ *  - Location
+ *  - Date
+ *
+ * When an item is clicked, the user is taken to EventDetailsActivity.
+ *
+ * Responsibilities:
+ *  - Inflate event list item layout
+ *  - Bind model data to UI elements
+ *  - Handle click navigation
+ */
+
 package com.example.dev.entrant.adapters;
 
 import android.content.Context;

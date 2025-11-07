@@ -1,3 +1,10 @@
+/**
+ * EntrantEvent
+ *
+ * Model class representing an event as seen by entrant users.
+ * This class maps directly to Firestore documents stored in the "events" collection.
+ */
+
 package com.example.dev.entrant.models;
 
 public class EntrantEvent {
