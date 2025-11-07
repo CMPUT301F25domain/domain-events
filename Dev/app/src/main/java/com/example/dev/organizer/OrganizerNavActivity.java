@@ -14,7 +14,7 @@ public class OrganizerNavActivity extends AppCompatActivity {
 
         BottomNavigationView bnv = findViewById(R.id.organizer_bottom_nav);
 
-        // Default tab on first launch
+        // default tab
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.organizer_container, new OrganizerWaitingListFragment())
