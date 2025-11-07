@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dev.MainActivity;
 import com.example.dev.R;
 import com.example.dev.entrant.adapters.EntrantEventAdapter;
 import com.example.dev.entrant.models.EntrantEvent;
@@ -36,6 +37,8 @@ public class EntrantMainActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.event_list_toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24);
         getSupportActionBar().setTitle("Events");
 
         toolbar.setOnMenuItemClickListener(item -> {
@@ -45,6 +48,12 @@ public class EntrantMainActivity extends AppCompatActivity {
                 return true;
             }
             return false;
+        });
+
+        toolbar.setNavigationOnClickListener(v -> {
+            Intent intent = new Intent(EntrantMainActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // prevents stacking screens
+            startActivity(intent);
         });
 
         recyclerView = findViewById(R.id.eventRecyclerView);
