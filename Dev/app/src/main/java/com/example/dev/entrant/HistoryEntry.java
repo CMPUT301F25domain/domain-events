@@ -41,6 +41,18 @@ public final class HistoryEntry {
         public int getSecondaryRes() {
             return secondaryRes;
         }
+
+        @NonNull
+        public static State fromStorageValue(@Nullable String value) {
+            if (value == null) {
+                return NOT_SELECTED;
+            }
+            try {
+                return State.valueOf(value.toUpperCase(java.util.Locale.US));
+            } catch (IllegalArgumentException ex) {
+                return NOT_SELECTED;
+            }
+        }
     }
 
     private final String eventName;

@@ -13,11 +13,15 @@
     <string name="profile_error_name">Please enter your name.</string>
     <string name="profile_error_email">Enter a valid email address.</string>
     <string name="profile_saved_message">Profile saved.</string>
+    <string name="profile_save_error">Could not save your profile. Please try again.</string>
+    <string name="profile_load_error">Could not load your profile information.</string>
     <string name="profile_delete_title">Delete profile?</string>
     <string name="profile_delete_message">This will remove your saved details from the app.</string>
     <string name="profile_delete_confirm">Delete</string>
     <string name="profile_delete_history">View history</string>
     <string name="profile_deleted_message">Profile deleted.</string>
+    <string name="profile_delete_error">Unable to delete profile right now.</string>
+    <string name="profile_delete_missing">There is no profile to delete yet.</string>
     <string name="history_title">Enrollment History</string>
     <string name="history_empty_title">No history yet</string>
     <string name="history_empty_subtitle">Join an event waitlist to see it here.</string>
@@ -36,4 +40,6 @@
     <string name="history_event_food_fest">Night Market Food Fest</string>
     <string name="history_event_charity_run">Charity Fun Run</string>
     <string name="history_event_hackathon">Civic Innovation Hackathon</string>
+    <string name="history_load_error">Unable to load your history.</string>
+    <string name="history_no_profile">Create your profile to start tracking event history.</string>
 </resources>
