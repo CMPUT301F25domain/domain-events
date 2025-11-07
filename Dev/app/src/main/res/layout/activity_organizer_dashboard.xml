@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="#171717" >
 
+
     <TextView
         android:id="@+id/TV_dashboard_title"
         android:layout_width="wrap_content"
