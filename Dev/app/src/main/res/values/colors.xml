@@ -2,4 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="history_state_upcoming">#FFB74D</color>
+    <color name="history_state_completed">#388E3C</color>
+    <color name="history_state_selected">#2962FF</color>
+    <color name="history_state_not_selected">#90A4AE</color>
+    <color name="history_state_on_chip">#FFFFFFFF</color>
+
 </resources>

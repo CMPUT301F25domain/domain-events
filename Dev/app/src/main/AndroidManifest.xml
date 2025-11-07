@@ -18,6 +18,12 @@
             android:name=".organizer.OrganizerNavActivity"
             android:exported="false" />
         <activity
+            android:name=".entrant.EntrantProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".entrant.HistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".admin.AdminNavActivity"
             android:exported="true">
             <intent-filter>
