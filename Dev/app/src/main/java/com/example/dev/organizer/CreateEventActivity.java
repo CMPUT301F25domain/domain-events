@@ -1,6 +1,5 @@
 package com.example.dev.organizer;
 
-import android.media.metrics.BundleSession;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -160,6 +159,8 @@ public class CreateEventActivity extends AppCompatActivity {
         String eventTime = editTextEventTime.getText().toString().trim();
         String eventStart = editTextStartDate.getText().toString().trim();
         String eventEnd = editTextEndDate.getText().toString().trim();
+        return new EventDraft(eventName, location, eventDate, eventTime, eventStart, eventEnd, posterUri);
+
     }
     private void populateForm(EventDraft draft) {
         if (draft.getEventName() != null) {
@@ -195,7 +196,8 @@ public class CreateEventActivity extends AppCompatActivity {
         DocumentReference newEventRef = db.collection("events").document();
         String eventId = newEventRef.getId();
 
-        FirebaseEvent newEvent = new FirebaseEvent(eventId, eventName,location, eventDate, eventTime, eventStart, eventEnd,0,locationRequired);
+        FirebaseEvent newEvent = new FirebaseEvent(eventId, eventName, location, eventDate, eventTime,
+                eventStart, eventEnd, 0, locationRequired);
 
         newEventRef.set(newEvent).addOnSuccessListener(aVoid -> {
             Toast.makeText(CreateEventActivity.this, "Event '" + eventName + "' created successfully!", Toast.LENGTH_LONG).show();
