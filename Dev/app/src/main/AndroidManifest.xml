@@ -38,6 +38,10 @@
             android:name=".entrant.EntrantNavActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".organizer.OrganizerWaitingListActivity"
+            android:exported="false" />
+
         <!-- Organizer flow screens -->
         <activity
             android:name=".organizer.CreateEventActivity"
