@@ -4,6 +4,7 @@ import android.media.metrics.BundleSession;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,8 @@ public class CreateEventActivity extends AppCompatActivity {
     private FirebaseFirestore db;
 
     private Button createButton;
+    private Switch locationSwitch;
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -46,6 +49,7 @@ public class CreateEventActivity extends AppCompatActivity {
         editTextLocation = findViewById(R.id.ET_location);
         editTextStartDate = findViewById(R.id.ET_registration_start);
         editTextEndDate = findViewById(R.id.ET_registration_end);
+        locationSwitch = findViewById(R.id.switch_geolocation);
         createButton = findViewById(R.id.btn_upload_poster_and_event);
 
     }
@@ -68,10 +72,12 @@ public class CreateEventActivity extends AppCompatActivity {
         String eventStart = editTextStartDate.getText().toString().trim();
         String eventEnd = editTextEndDate.getText().toString().trim();
 
+        boolean locationRequired = locationSwitch.isChecked();
+
         DocumentReference newEventRef = db.collection("events").document();
         String eventId = newEventRef.getId();
 
-        FirebaseEvent newEvent = new FirebaseEvent(eventId, eventName,location, eventDate, eventTime, eventStart, eventEnd,0);
+        FirebaseEvent newEvent = new FirebaseEvent(eventId, eventName,location, eventDate, eventTime, eventStart, eventEnd,0,locationRequired);
 
         newEventRef.set(newEvent).addOnSuccessListener(aVoid -> {
             Toast.makeText(CreateEventActivity.this, "Event '" + eventName + "' created successfully!", Toast.LENGTH_LONG).show();

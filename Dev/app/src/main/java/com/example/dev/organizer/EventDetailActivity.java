@@ -16,6 +16,7 @@ import com.google.firebase.Firebase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+
 public class EventDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "EventDetailActivity";

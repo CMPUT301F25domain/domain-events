@@ -9,13 +9,16 @@ public class FirebaseEvent {
     private String eventStart;
     private String eventEnd;
     private int attendingCount;
+    private boolean locationRequired;
+
+
 
 
     public FirebaseEvent(){
 
     }
 
-    public FirebaseEvent(String eventId, String eventName, String location, String eventDate, String eventTime,String eventStart, String eventEnd, int attendingCount){
+    public FirebaseEvent(String eventId, String eventName, String location, String eventDate, String eventTime,String eventStart, String eventEnd, int attendingCount, boolean locationRequired){
         this.eventId = eventId;
         this.eventName = eventName;
         this.location = location;
@@ -24,6 +27,9 @@ public class FirebaseEvent {
         this.eventStart = eventStart;
         this.eventEnd = eventEnd;
         this.attendingCount = attendingCount;
+        this.locationRequired = locationRequired;
+   
+
     }
 
     public String getEventId(){
@@ -78,4 +84,13 @@ public class FirebaseEvent {
     public void setAttendingCount(int attendingCount){
         this.attendingCount=attendingCount;
     }
+
+    public boolean isLocationRequired(){
+        return locationRequired;
+    }
+
+    public void setLocationRequired(boolean locationRequired) {
+        this.locationRequired = locationRequired;
+    }
+
 }
