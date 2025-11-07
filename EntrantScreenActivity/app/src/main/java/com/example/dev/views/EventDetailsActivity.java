@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import com.example.dev.R;
+import com.google.android.material.appbar.MaterialToolbar;
 
 public class EventDetailsActivity extends AppCompatActivity {
 
@@ -18,6 +19,12 @@ public class EventDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
+
+        MaterialToolbar toolbar = findViewById(R.id.eventDetailsToolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Event Details");
+
 
         title = findViewById(R.id.title);
         location = findViewById(R.id.location);
@@ -40,6 +47,14 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
 
     }
+
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish(); // closes current screen and returns to previous
+        return true;
+    }
+
 
     private void updateButtonUI() {
         if (isJoined) {

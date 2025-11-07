@@ -17,6 +17,7 @@
 
         <!-- Activities stay the same -->
         <activity android:name=".views.EventDetailsActivity" />
+        <activity android:name=".views.MessagesActivity" />
 
         <activity
             android:name=".MainActivity"
