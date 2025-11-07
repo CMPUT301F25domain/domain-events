@@ -21,7 +21,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <activity
@@ -49,7 +48,7 @@
 
         <activity
             android:name=".organizer.CreateEventActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".organizer.UploadPosterActivity"
             android:exported="false" />
@@ -58,7 +57,9 @@
             android:exported="false" />
         <activity
             android:name=".organizer.EventDetailActivity"
-            android:exported="true"/>
+            android:exported="true" />
+
+    </application>
 
     </application>
 
