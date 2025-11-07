@@ -12,6 +12,8 @@ public class FirebaseEvent {
     private boolean locationRequired;
 
 
+
+
     public FirebaseEvent(){
 
     }
@@ -26,6 +28,7 @@ public class FirebaseEvent {
         this.eventEnd = eventEnd;
         this.attendingCount = attendingCount;
         this.locationRequired = locationRequired;
+   
 
     }
 
@@ -89,4 +92,5 @@ public class FirebaseEvent {
     public void setLocationRequired(boolean locationRequired) {
         this.locationRequired = locationRequired;
     }
+
 }
