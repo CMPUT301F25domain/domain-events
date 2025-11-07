@@ -38,5 +38,10 @@
     <string name="date_amp_time"><![CDATA[Date & Time:]]></string>
     <string name="registration_attendees_x">Registration: | Attendees: [X]</string>
     <string name="view_qr_code">View QR Code</string>
+    <string name="event_poster_placeholder">No poster uploaded yet.</string>
+    <string name="event_poster_content_description">Poster preview</string>
+    <string name="update_poster">Update poster</string>
+    <string name="update_poster_cta_placeholder">Poster updates coming soon.</string>
+
 
 </resources>

@@ -1,5 +1,7 @@
 package com.example.dev.organizer;
 
+import androidx.annotation.Nullable;
+
 public class FirebaseEvent {
     private String eventId;
     private String eventName;
@@ -8,6 +10,7 @@ public class FirebaseEvent {
     private String eventTime;
     private String eventStart;
     private String eventEnd;
+    private String posterUrl;
     private String posterUri;
     private int attendingCount;
 
@@ -16,15 +19,15 @@ public class FirebaseEvent {
 
     }
 
-    public FirebaseEvent(String eventId, String eventName, String location, String eventDate, String eventTime,String eventStart, String eventEnd,String posterUri, int attendingCount){
-        this.eventId = eventId;
+    public FirebaseEvent(String eventId, String eventName, String location, String eventDate, String eventTime,String eventStart, String eventEnd,String posterUrl, int attendingCount){        this.eventId = eventId;
         this.eventName = eventName;
         this.location = location;
         this.eventDate = eventDate;
         this.eventTime = eventTime;
         this.eventStart = eventStart;
         this.eventEnd = eventEnd;
-        this.posterUri = posterUri;
+        this.posterUrl = posterUrl;
+        this.posterUri = posterUrl;
         this.attendingCount = attendingCount;
     }
 
@@ -74,8 +77,35 @@ public class FirebaseEvent {
     public void setEventEnd(String eventEnd){
         this.eventEnd=eventEnd;
     }
-    public String getPosterUri() { return posterUri; }
-    public void setPosterUri(String posterUri) { this.posterUri = posterUri; }
+    @Nullable
+    public String getPosterUrl() {
+        if (posterUrl != null && !posterUrl.isEmpty()) {
+            return posterUrl;
+        }
+        return posterUri;
+    }
+
+    public void setPosterUrl(@Nullable String posterUrl) {
+        this.posterUrl = posterUrl;
+        this.posterUri = posterUrl;
+    }
+
+    /**
+     * Backwards compatible accessor for older code paths still expecting a URI-named field.
+     */
+    @Deprecated
+    @Nullable
+    public String getPosterUri() {
+        return getPosterUrl();
+    }
+
+    @Deprecated
+    public void setPosterUri(@Nullable String posterUri) {
+        this.posterUri = posterUri;
+        if (posterUrl == null || posterUrl.isEmpty()) {
+            posterUrl = posterUri;
+        }
+    }
     public int getAttendingCount(){
         return attendingCount;
     }
