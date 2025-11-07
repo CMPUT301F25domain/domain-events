@@ -11,18 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Dev">
-
-        <!-- Nav / entry activities -->
-        <activity
-            android:name=".admin.AdminNavActivity"
-            android:exported="false" />
-
+        <!--        <activity-->
+        <!--            android:name=".organizer.OrganizerNavActivity"-->
+        <!--            android:exported="false" />-->
         <activity
             android:name=".MainActivity"
-            android:exported="true" />
-
-        <activity
-            android:name=".organizer.OrganizerDashboardActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +24,7 @@
         </activity>
 
         <activity
-            android:name=".organizer.OrganizerNavActivity"
+            android:name=".admin.AdminNavActivity"
             android:exported="false" />
 
         <activity
@@ -39,10 +32,9 @@
             android:exported="false" />
 
         <activity
-            android:name=".organizer.OrganizerWaitingListActivity"
-            android:exported="false" />
+            android:name=".organizer.OrganizerDashboardActivity"
+            android:exported="true" />
 
-        <!-- Organizer flow screens -->
         <activity
             android:name=".organizer.CreateEventActivity"
             android:exported="true" />
@@ -56,16 +48,7 @@
             android:name=".organizer.EventDetailActivity"
             android:exported="true" />
 
-        <!-- File provider for sharing files (e.g., posters/photos) -->
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
+    </application>
 
     </application>
 
