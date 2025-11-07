@@ -3,7 +3,6 @@ package com.example.dev.organizer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dev.R;
 
 import java.util.List;
+
+/**
+ * Adapter for the RecyclerView in the Organizer Dashboard -> Displays a list of Event objects
+ */
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
@@ -43,7 +46,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         String locationCategory = event.getLocation() + " | " + event.getCategory();
         holder.locationCategory.setText(locationCategory);
 
-        holder.closingTime.setText(event.getClosingTime());
+        holder.eventEnd.setText(event.getClosingTime());
         holder.capacity.setText(String.valueOf("Capacity" + event.getCapacity()));
         //holder.poster.setImageResource(event.getImageResourse());
 
@@ -60,7 +63,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public static class EventViewHolder extends RecyclerView.ViewHolder{
         public TextView title;
         public TextView locationCategory;
-        public TextView closingTime;
+        public TextView eventEnd;
         public TextView capacity;
 
         public CardView cardLayout;
@@ -69,7 +72,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             super(itemView);
             title = itemView.findViewById(R.id.TV_event_title);
             locationCategory = itemView.findViewById(R.id.TV_event_loc_category);
-            closingTime = itemView.findViewById(R.id.TV_registration_closes);
+            eventEnd = itemView.findViewById(R.id.TV_registration_closes);
             capacity = itemView.findViewById(R.id.TV_capacity);
             cardLayout = itemView.findViewById(R.id.card_view1);
         }

@@ -1,5 +1,9 @@
 package com.example.dev.organizer;
 
+/**
+ * Data Model representing the Event document stored in Firebase database
+ */
+
 public class FirebaseEvent {
     private String eventId;
     private String eventName;
@@ -17,6 +21,19 @@ public class FirebaseEvent {
     public FirebaseEvent(){
 
     }
+
+    /**
+     * Constructor for FirebaseEvent object
+     * @param eventId: Unique event ID
+     * @param eventName: Name of event
+     * @param location: location of the event
+     * @param eventDate: Date of the event
+     * @param eventTime: Time of the event
+     * @param eventStart: When the registration starts
+     * @param eventEnd: When the registration Ends
+     * @param attendingCount: Capacity (Place holder for now)
+     * @param locationRequired: Switch for if geolocation is required.
+     */
 
     public FirebaseEvent(String eventId, String eventName, String location, String eventDate, String eventTime,String eventStart, String eventEnd, int attendingCount, boolean locationRequired){
         this.eventId = eventId;
