@@ -100,7 +100,7 @@ public class AdminEventsFragment extends Fragment {
 
 
                         for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                            String eventName = doc.getString("eventName");
+                            String eventName = doc.getString("title");
                             String eventStart = doc.getString("eventStart");
                             String eventEnd = doc.getString("eventEnd");
                             String eventTime = doc.getString("eventTime");
