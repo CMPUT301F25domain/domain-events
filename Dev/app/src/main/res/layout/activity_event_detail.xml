@@ -25,6 +25,40 @@
         android:indeterminateTint="#9C27B0"
         android:visibility="visible" />
 
+    <FrameLayout
+        android:id="@+id/layout_event_poster_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/bg_event_poster_placeholder"
+        android:padding="8dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/image_event_poster"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/event_poster_content_description"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/text_event_poster_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="32dp"
+            android:text="@string/event_poster_placeholder"
+            android:textColor="#DDFFFFFF"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+
     <TextView
         android:id="@+id/TV_detail_name"
         android:layout_width="match_parent"
@@ -67,6 +101,11 @@
         android:textStyle="italic"
         android:visibility="gone" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
     <Button
         android:id="@+id/btn_view_code"
         android:layout_width="match_parent"
@@ -75,8 +114,18 @@
         android:backgroundTint="#D76A6A"
         android:padding="12dp"
         android:text="@string/view_qr_code"
-        android:textColor="@color/white" />
-
+        android:textColor="@color/white"
+        android:visibility="gone"/>
+    <Button
+        android:id="@+id/button_update_poster"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="#9C27B0"
+        android:padding="12dp"
+        android:text="@string/update_poster"
+        android:textColor="@color/white"
+        android:visibility="gone" />
     <Button
         android:id="@+id/btn_view_lottery_winners"
         android:layout_width="match_parent"
@@ -86,6 +135,8 @@
         android:padding="12dp"
         android:text="View Lottery Winners"
         android:textColor="@color/white" />
+
+
 
 
 </LinearLayout>
