@@ -623,10 +623,16 @@ import com.google.firebase.storage.UploadTask;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.zxing.BarcodeFormat;      //Zebra Crossing Barcode Scanner
+import com.google.zxing.WriterException;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
+
 /**
  * Activity displays the full details of a single event.
  * Launched when a specific event is clicked on the organizer dashboard.
  */
+
+    public class EventDetailActivity extends AppCompatActivity {
 public class EventDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "EventDetailActivity";
@@ -643,7 +649,8 @@ public class EventDetailActivity extends AppCompatActivity {
     private View posterContainer;
 
     private ProgressBar progressBar;
-    private Button viewCodeBtn;
+    private Button viewQRCodeBtn; 
+    private ImageView imageViewQRcode;
     private Button updatePosterBtn;
 
     // Button to view waiting list (must exist in activity_event_detail.xml)
@@ -670,6 +677,16 @@ public class EventDetailActivity extends AppCompatActivity {
 
         getEventIdFromDashboardIntent(getIntent());
 
+        viewQRCodeBtn.setOnClickListener(v -> {
+            if (eventId == null) {
+                Toast.makeText(this, "Error: Event ID not found.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Intent intent = new Intent(EventDetailActivity.this, QRCodeDisplayActivity.class);
+            intent.putExtra("Event_ID", eventId);
+            startActivity(intent);
+        });
         if (eventId != null){
             getEventDetails(eventId);
         } else {
@@ -687,7 +704,7 @@ public class EventDetailActivity extends AppCompatActivity {
         posterImageView = findViewById(R.id.image_event_poster);
         posterPlaceholderView = findViewById(R.id.text_event_poster_placeholder);
         progressBar = findViewById(R.id.progress_bar);
-        viewCodeBtn = findViewById(R.id.btn_view_code);
+        viewQRCodeBtn = findViewById(R.id.btn_view_QR_code);
         updatePosterBtn = findViewById(R.id.button_update_poster);
 
         // Waiting list button (add to XML: @id/button_view_waiting_list)
@@ -769,7 +786,7 @@ public class EventDetailActivity extends AppCompatActivity {
         textViewDateTime.setVisibility(visibility);
         textViewRegistration.setVisibility(visibility);
         posterContainer.setVisibility(visibility);
-        viewCodeBtn.setVisibility(visibility);
+        viewQRCodeBtn.setVisibility(visibility);
         updatePosterBtn.setVisibility(visibility);
 
         if (viewWaitingListBtn != null) viewWaitingListBtn.setVisibility(visibility);
@@ -781,6 +798,8 @@ public class EventDetailActivity extends AppCompatActivity {
             posterPlaceholderView.setVisibility(visibility);
         }
     }
+
+
 
     private void updatePosterDisplay(@Nullable String posterUrl) {
         if (posterContainer.getVisibility() != View.VISIBLE) return;
