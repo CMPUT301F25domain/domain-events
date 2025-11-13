@@ -58,7 +58,6 @@
 
     </FrameLayout>
 
-
     <TextView
         android:id="@+id/TV_detail_name"
         android:layout_width="match_parent"
@@ -107,7 +106,7 @@
         android:layout_weight="1" />
 
     <Button
-        android:id="@+id/btn_view_code"
+        android:id="@+id/btn_view_QR_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -116,6 +115,7 @@
         android:text="@string/view_qr_code"
         android:textColor="@color/white"
         android:visibility="gone"/>
+
     <Button
         android:id="@+id/button_update_poster"
         android:layout_width="match_parent"
@@ -126,6 +126,7 @@
         android:text="@string/update_poster"
         android:textColor="@color/white"
         android:visibility="gone" />
+
     <Button
         android:id="@+id/btn_view_lottery_winners"
         android:layout_width="match_parent"
@@ -135,8 +136,12 @@
         android:padding="12dp"
         android:text="View Lottery Winners"
         android:textColor="@color/white" />
-
-
+    <Button
+        android:id="@+id/button_view_waiting_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View Waiting List"
+        android:layout_marginTop="12dp"/>
 
 
 </LinearLayout>

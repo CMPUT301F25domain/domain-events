@@ -1,0 +1,149 @@
+// LLM was used for outlining initial ideas for RecyclerView adapter/ViewHolder
+// structure and refresh(); I reviewed, implemented, and tested the code myself.
+
+package com.example.dev.organizer;
+
+import static com.example.dev.Keys.DEMO_EVENT_ID;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.dev.R;
+import com.example.dev.organizer.di.ServiceLocator;
+
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
+public class OrganizerWaitingListFragment extends Fragment {
+
+    private RecyclerView rv;
+    private TextView countTv;
+    private final List<Entrant> data = new ArrayList<>();
+    private boolean newestFirst = true; // simple filter: toggle sort order
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_organizer_waiting_list, container, false);
+
+        countTv = v.findViewById(R.id.textCount);
+        rv = v.findViewById(R.id.recyclerWaitingList);
+        rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        rv.setAdapter(new WaitingAdapter(data));
+
+        // Simple toggle sort to make the filter button useful (no extra UI needed)
+        View filterBtn = v.findViewById(R.id.buttonFilter);
+        if (filterBtn != null) {
+            filterBtn.setOnClickListener(btn -> {
+                newestFirst = !newestFirst;
+                Toast.makeText(getContext(),
+                        newestFirst ? "Sorting by newest first" : "Sorting by oldest first",
+                        Toast.LENGTH_SHORT).show();
+                refresh();
+            });
+        }
+
+        refresh();
+        return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Keep the list fresh if returning to this screen
+        refresh();
+    }
+
+    private void refresh() {
+        // Fetch latest list
+        List<Entrant> latest = ServiceLocator.waiting().list(DEMO_EVENT_ID);
+        data.clear();
+        if (latest != null) {
+            data.addAll(latest);
+        }
+
+        // Sort by join time (newest first by default)
+        Comparator<Entrant> cmp = Comparator.comparingLong(e -> e.joinedAtMillis);
+        if (newestFirst) {
+            cmp = Collections.reverseOrder(cmp);
+        }
+        Collections.sort(data, cmp);
+
+        // Update count from repo (US 01.05.04)
+        int total = ServiceLocator.waiting().count(DEMO_EVENT_ID);
+        countTv.setText("Waiting: " + total);
+
+        // Notify adapter
+        RecyclerView.Adapter<?> adapter = rv.getAdapter();
+        if (adapter == null) {
+            rv.setAdapter(new WaitingAdapter(data));
+        } else {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    // --- Adapter & ViewHolder ---
+
+    static class WaitingAdapter extends RecyclerView.Adapter<VH> {
+        private final List<Entrant> items;
+
+        WaitingAdapter(List<Entrant> items) {
+            this.items = items;
+            setHasStableIds(false);
+        }
+
+        @NonNull
+        @Override
+        public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_waiting_entrant, parent, false);
+            return new VH(v);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull VH h, int pos) {
+            Entrant e = items.get(pos);
+            h.name.setText(e.name);
+            h.email.setText(e.email);
+            h.joined.setText(formatJoined(e.joinedAtMillis));
+        }
+
+        @Override
+        public int getItemCount() {
+            return items.size();
+        }
+
+        private static String formatJoined(long millis) {
+            return "Joined: " + DateFormat.getDateTimeInstance().format(new Date(millis));
+        }
+    }
+
+    static class VH extends RecyclerView.ViewHolder {
+        TextView name, email, joined;
+
+        VH(View v) {
+            super(v);
+            name = v.findViewById(R.id.textName);
+            email = v.findViewById(R.id.textEmail);
+            // Make sure your layout uses this ID; if your XML has textJoined instead,
+            // change this findViewById to R.id.textJoined.
+            joined = v.findViewById(R.id.textJoinedAt);
+        }
+    }
+}
