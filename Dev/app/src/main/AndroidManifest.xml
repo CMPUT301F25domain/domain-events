@@ -59,6 +59,11 @@
             android:name=".organizer.EventDetailActivity"
             android:exported="true" />
 
+        <activity
+            android:name=".organizer.QRCodeDisplayActivity"
+            android:exported="false" />
+
+
     </application>
 
 
