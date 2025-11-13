@@ -33,6 +33,9 @@ public class QRCodeDisplayActivity extends AppCompatActivity {
         eventIdTextView = findViewById(R.id.TV_event_id_display);
         downloadButton = findViewById(R.id.btn_download_qr);
 
+        Button backButton = findViewById(R.id.btn_back);
+        backButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
         downloadButton.setOnClickListener(v -> {
             if (qrCodeImageView.getDrawable() == null) {
                 Toast.makeText(this, "QR code not available to save", Toast.LENGTH_SHORT).show();

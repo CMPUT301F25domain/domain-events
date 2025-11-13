@@ -632,7 +632,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
  * Launched when a specific event is clicked on the organizer dashboard.
  */
 
-    public class EventDetailActivity extends AppCompatActivity {
+
 public class EventDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "EventDetailActivity";
@@ -687,6 +687,7 @@ public class EventDetailActivity extends AppCompatActivity {
             intent.putExtra("Event_ID", eventId);
             startActivity(intent);
         });
+
         if (eventId != null){
             getEventDetails(eventId);
         } else {
