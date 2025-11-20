@@ -27,7 +27,7 @@ public class QRCodeDisplayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_qr_code_display);
+        setContentView(R.layout.activity_organizer_qr_code_display);
 
         qrCodeImageView = findViewById(R.id.IV_qr_code_display);
         eventIdTextView = findViewById(R.id.TV_event_id_display);

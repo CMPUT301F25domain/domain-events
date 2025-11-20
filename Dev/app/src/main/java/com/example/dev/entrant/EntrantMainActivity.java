@@ -60,6 +60,15 @@ public class EntrantMainActivity extends AppCompatActivity {
             return false;
         });
 
+        toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.qr_scanner) {
+                Intent intent = new Intent(EntrantMainActivity.this, QRCodeScannerActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            return false;
+        });
+
         toolbar.setNavigationOnClickListener(v -> {
             Intent intent = new Intent(EntrantMainActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // prevents stacking screens
