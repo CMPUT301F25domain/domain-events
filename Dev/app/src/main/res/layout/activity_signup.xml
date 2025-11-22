@@ -25,14 +25,16 @@
             android:id="@+id/spi_account_type"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:background="@drawable/spinner_background"
             android:layout_marginBottom="16dp"
             android:padding="12dp"/>
 
         <EditText
             android:id="@+id/ET_clearance_password"
-            android:hint="@string/password"
+            android:hint="Clearance Code"
             android:textColorHint="#AAAAAA"
             android:textColor="@color/white"
+            android:backgroundTint="#9C27B0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
