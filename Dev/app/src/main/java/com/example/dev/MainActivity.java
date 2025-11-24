@@ -8,6 +8,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dev.admin.AdminNavActivity;
+import com.example.dev.entrant.EntrantMainActivity;
 import com.example.dev.organizer.OrganizerDashboardActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         // Entrant button
 // Entrant button → go to entrant event list
         findViewById(R.id.btnEntrant).setOnClickListener(v -> {
-            Intent intent = new Intent(this, com.example.dev.entrant.EntrantMainActivity.class);
+            Intent intent = new Intent(this, EntrantMainActivity.class);
             startActivity(intent);
         });
 
