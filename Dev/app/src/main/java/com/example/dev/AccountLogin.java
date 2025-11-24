@@ -16,15 +16,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.dev.admin.AdminNavActivity;
 import com.example.dev.entrant.EntrantMainActivity;
 import com.example.dev.organizer.OrganizerDashboardActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Objects;
 
 public class AccountLogin extends AppCompatActivity {
-
     private EditText usernameEditText, passwordEditText;
     private Button loginBtn;
     private TextView signupRedirectText;
@@ -44,8 +41,9 @@ public class AccountLogin extends AppCompatActivity {
 
 
         loginBtn.setOnClickListener(view -> {
-            String inputUsername = usernameEditText.getText().toString().trim();
+            String inputUsername = usernameEditText.getText().toString().trim().toLowerCase(); //Case insensitify the input for convenience
             String inputPassword = passwordEditText.getText().toString().trim();
+            DocumentReference docRef = database.collection("accounts").document(inputUsername);
 
             if (TextUtils.isEmpty(inputUsername)) {
                 usernameEditText.setError("Username is required");
@@ -57,15 +55,14 @@ public class AccountLogin extends AppCompatActivity {
                 return;
             }
 
-            database.collection("accounts").whereEqualTo("username", inputUsername).get().addOnSuccessListener(querySnapshot -> {
-                if (querySnapshot.isEmpty()) {
+            docRef.get().addOnSuccessListener(doc -> {
+                if (!doc.exists()) {
                     Toast.makeText(AccountLogin.this, "Username or password is incorrect", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
                 String storedPassword = doc.getString("password");
-                int accountType = doc.getLong("account type").intValue();
+                int accountType = doc.getLong("accountType").intValue();
 
                 if (storedPassword != null && storedPassword.equals(inputPassword)) {
                     if (accountType == 1) {
