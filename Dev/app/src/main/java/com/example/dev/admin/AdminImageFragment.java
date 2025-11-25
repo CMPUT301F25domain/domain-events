@@ -44,7 +44,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 
 public class AdminImageFragment extends Fragment {
-    private LinearLayout eventsContainer;
+    private LinearLayout imagesContainer;
     private FirebaseFirestore db;
 
     public AdminImageFragment() {}
@@ -86,15 +86,15 @@ public class AdminImageFragment extends Fragment {
                             // Clear existing views before reloading
                             imagesContainer.removeAllViews();
 
-                            for (DocumentSnapshot doc : snapshots.getDocuments()) {
+                            for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                                 String imageUrl = doc.getString("imageUrl");
                                 String imageTitle = doc.getString("title");
 
-                                View imageView = getLayoutInflater().inflate(R.layout.item_admin_image, imagesContainer, false);
+                                View imageView = getLayoutInflater().inflate(R.layout.item_admin_images, imagesContainer, false);
 
-                                ImageView uploadedImage = imageView.findViewById(R.id.uploadedImage);
-                                TextView titleText = imageView.findViewById(R.id.imageTitle);
-                                TextView removeButton = imageView.findViewById(R.id.removeImageButton);
+                                ImageView uploadedImage = imageView.findViewById(R.id.imageThumbnail);
+                                TextView titleText = imageView.findViewById(R.id.imageTitleText);
+                                TextView removeButton = imageView.findViewById(R.id.removeButton);
 
                                 if (imageTitle != null) {
                                     titleText.setText(imageTitle);
@@ -111,7 +111,7 @@ public class AdminImageFragment extends Fragment {
                                 if (imageUrl != null && !imageUrl.isEmpty()) {
                                     Glide.with(requireContext())
                                             .load(imageUrl)
-                                            .placeholder(R.drawable.placeholder)
+                                            .placeholder(R.drawable.profile)
                                             .into(uploadedImage);
                                 }
 

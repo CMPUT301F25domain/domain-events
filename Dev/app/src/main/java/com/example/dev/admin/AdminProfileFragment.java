@@ -65,7 +65,7 @@ public class AdminProfileFragment extends Fragment {
         loadFirestoreProfiles();
     }
 
-    private void loadAdminProfile() {
+    private void loadFirestoreProfiles() {
         db.collection("users")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -87,31 +87,31 @@ public class AdminProfileFragment extends Fragment {
 
                         // Loop through all user documents
                         for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                            String name = doc.getString("name");
-                            String email = doc.getString("email");
-                            String role = doc.getString("role");
+                            String profileName = doc.getString("name");
+                            String profileEmail = doc.getString("email");
+                            String profileRole = doc.getString("role");
 
                             View profileView = getLayoutInflater().inflate(R.layout.item_admin_profile, profilesContainer, false);
 
-                            TextView nameText = profileView.findViewById(R.id.userName);
-                            TextView emailText = profileView.findViewById(R.id.userEmail);
-                            TextView roleText = profileView.findViewById(R.id.userRole);
+                            TextView nameText = profileView.findViewById(R.id.profileName);
+                            TextView emailText = profileView.findViewById(R.id.profileEmail);
+                            TextView roleText = profileView.findViewById(R.id.profileRole);
                             TextView removeButton = profileView.findViewById(R.id.removeButton);
 
-                            if (name != null) {
-                                nameText.setText(name);
+                            if (profileName != null) {
+                                nameText.setText(profileName);
                             } else {
                                 nameText.setText("Unknown User");
                             }
 
-                            if (email != null) {
-                                emailText.setText(email);
+                            if (profileEmail != null) {
+                                emailText.setText(profileEmail);
                             } else {
                                 emailText.setText("No Email Provided");
                             }
 
-                            if (role != null) {
-                                roleText.setText(role);
+                            if (profileRole != null) {
+                                roleText.setText(profileRole);
                             } else {
                                 roleText.setText("No Role Assigned");
                             }
