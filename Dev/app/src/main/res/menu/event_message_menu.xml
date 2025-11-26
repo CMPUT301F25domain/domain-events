@@ -5,4 +5,10 @@
         android:title="Messages"
         android:icon="@drawable/ic_message"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/qr_scanner"
+        android:title="scanner"
+        android:icon="@drawable/ic_qrscan"
+        app:showAsAction="always"/>
 </menu>

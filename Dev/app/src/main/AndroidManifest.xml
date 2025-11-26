@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,38 +20,47 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".AccountLogin"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
         <activity
+            android:name=".AccountSignup"
+            android:exported="false"/>
+
+        <activity
             android:name=".admin.AdminNavActivity"
-            android:exported="false" />
+            android:exported="false"/>
 
         <activity
             android:name=".entrant.EntrantNavActivity"
-            android:exported="false" />
-
-        <activity android:name="com.example.dev.entrant.EntrantMainActivity"
-                  android:exported="false"/>
-
+            android:exported="false"/>
         <activity
-            android:name="com.example.dev.entrant.EntrantMessagesActivity"
-            android:exported="false" />
-
+            android:name=".entrant.EntrantMainActivity"
+            android:exported="false"/>
         <activity
-            android:name="com.example.dev.entrant.EventDetailsActivity"
+            android:name=".entrant.EntrantMessagesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".entrant.EventDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".entrant.QRCodeScannerActivity"
             android:exported="false" />
 
         <activity
             android:name=".organizer.OrganizerDashboardActivity"
-            android:exported="true" />
-
+            android:exported="false"/>
         <activity
             android:name=".organizer.CreateEventActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".organizer.UploadPosterActivity"
             android:exported="false" />
@@ -58,7 +70,6 @@
         <activity
             android:name=".organizer.EventDetailActivity"
             android:exported="true" />
-
         <activity
             android:name=".organizer.QRCodeDisplayActivity"
             android:exported="false" />

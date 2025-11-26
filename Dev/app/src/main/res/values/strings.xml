@@ -95,5 +95,7 @@
     <string name="upload_poster_status_permission_required">Grant photo access to choose a poster.</string>
     <string name="upload_poster_status_error">Something went wrong. Please try again.</string>
     <string name="upload_poster_status_publishing">Publishing event…</string>
+    <string name="account_username">Username</string>
+    <string name="password">Password</string>
 
 </resources>
