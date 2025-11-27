@@ -1,6 +1,9 @@
-package com.example.dev.organizer;
+package com.example.dev.firebaseobjects;
 
 import androidx.annotation.Nullable;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Data Model representing the Event document stored in Firebase database.
@@ -19,6 +22,7 @@ public class FirebaseEvent {
     private String posterUri;
     private int attendingCount;
     private boolean locationRequired;
+    private Set<String> wishListAccounts;
 
     public FirebaseEvent() {
         // Needed for Firestore serialization
@@ -34,6 +38,7 @@ public class FirebaseEvent {
                          @Nullable String posterUrl,
                          int attendingCount) {
         this(eventId, eventName, location, eventDate, eventTime, eventStart, eventEnd, posterUrl, attendingCount, false);
+        this.wishListAccounts = Collections.<String> emptySet();
     }
 
     public FirebaseEvent(String eventId,
@@ -46,6 +51,7 @@ public class FirebaseEvent {
                          int attendingCount,
                          boolean locationRequired) {
         this(eventId, eventName, location, eventDate, eventTime, eventStart, eventEnd, null, attendingCount, locationRequired);
+        this.wishListAccounts = Collections.<String> emptySet();
     }
 
     public FirebaseEvent(String eventId,
@@ -68,12 +74,12 @@ public class FirebaseEvent {
         setPosterUrl(posterUrl);
         this.attendingCount = attendingCount;
         this.locationRequired = locationRequired;
+        this.wishListAccounts = Collections.<String> emptySet();
     }
 
     public String getEventId() {
         return eventId;
     }
-
     public void setEventId(String eventId) {
         this.eventId = eventId;
     }
@@ -81,7 +87,6 @@ public class FirebaseEvent {
     public String getEventName() {
         return eventName;
     }
-
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
@@ -89,7 +94,6 @@ public class FirebaseEvent {
     public String getEventDate() {
         return eventDate;
     }
-
     public void setEventDate(String eventDate) {
         this.eventDate = eventDate;
     }
@@ -97,7 +101,6 @@ public class FirebaseEvent {
     public String getLocation() {
         return location;
     }
-
     public void setLocation(String location) {
         this.location = location;
     }
@@ -105,7 +108,6 @@ public class FirebaseEvent {
     public String getEventTime() {
         return eventTime;
     }
-
     public void setEventTime(String eventTime) {
         this.eventTime = eventTime;
     }
@@ -113,7 +115,6 @@ public class FirebaseEvent {
     public String getEventStart() {
         return eventStart;
     }
-
     public void setEventStart(String eventStart) {
         this.eventStart = eventStart;
     }
@@ -170,5 +171,18 @@ public class FirebaseEvent {
 
     public void setLocationRequired(boolean locationRequired) {
         this.locationRequired = locationRequired;
+    }
+
+    public boolean existsInWishListEvents(FirebaseAccount account) {
+        String accountID = account.getAccountID();
+        return wishListAccounts.contains(accountID);
+    }
+    public void addToWishListEvents(FirebaseAccount account) {
+        String accountID = account.getAccountID();
+        wishListAccounts.add(accountID);
+    }
+    public void removeFromWishListEvents(FirebaseAccount account) {
+        String accountID = account.getAccountID();
+        wishListAccounts.remove(accountID);
     }
 }

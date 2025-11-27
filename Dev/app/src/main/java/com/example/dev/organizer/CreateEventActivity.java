@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.Nullable;
 
 import com.example.dev.R;
+import com.example.dev.firebaseobjects.FirebaseEvent;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 

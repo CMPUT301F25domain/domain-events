@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/black"
+    android:padding="24dp"
+    android:gravity="top|center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/TV_title"
+        android:text="Draw Status"
+        android:textColor="@color/white"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <RecyclerView
+        android:id="@+id/entrantRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/btn_Default_Size_Start"
+        android:text="Replace Entrant"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#9C27B0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btn_Custom_Size_Start"
+        android:text="Delete Entrant"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#9C27B0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+</LinearLayout>

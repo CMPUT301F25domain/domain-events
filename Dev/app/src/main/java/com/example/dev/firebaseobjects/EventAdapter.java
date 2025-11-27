@@ -1,4 +1,4 @@
-package com.example.dev.organizer;
+package com.example.dev.firebaseobjects;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +10,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dev.R;
+import com.example.dev.organizer.Event;
 
 import java.util.List;
 

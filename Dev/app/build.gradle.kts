@@ -41,7 +41,7 @@ dependencies {
     implementation(libs.material)
 
     //Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
     implementation(libs.firebase.firestore)
     implementation("com.google.firebase:firebase-storage")
     implementation(libs.firebase.firestore)
@@ -59,4 +59,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    //RecyclerView
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
 }
