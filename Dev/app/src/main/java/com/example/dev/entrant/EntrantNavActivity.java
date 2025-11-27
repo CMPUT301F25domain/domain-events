@@ -29,3 +29,6 @@ public class EntrantNavActivity extends AppCompatActivity {
         profileButton.setOnClickListener(v -> startActivity(new Intent(this, EntrantProfileActivity.class)));
     }
 }
+
+
+

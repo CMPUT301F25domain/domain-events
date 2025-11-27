@@ -74,8 +74,10 @@
             android:name=".organizer.QRCodeDisplayActivity"
             android:exported="false" />
 
-
+        <!-- Added: Organizer waiting list screen -->
+        <activity
+            android:name=".organizer.OrganizerWaitingListActivity"
+            android:exported="false" />
     </application>
-
 
 </manifest>

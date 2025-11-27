@@ -73,9 +73,9 @@ public class EventDetailActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
     private Button viewQRCodeBtn;
-    private ImageView imageViewQRcode;  // still unused but harmless
+    private ImageView imageViewQRcode;
     private Button updatePosterBtn;
-    private Button viewWaitingListBtn;  // waiting-list button
+    private Button viewWaitingListBtn;
 
     private String eventId = null;
 
@@ -110,6 +110,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
         getEventIdFromDashboardIntent(getIntent());
 
+        // Open QR screen
         viewQRCodeBtn.setOnClickListener(v -> {
             if (eventId == null) {
                 Toast.makeText(this, "Error: Event ID not found.", Toast.LENGTH_LONG).show();
@@ -118,6 +119,17 @@ public class EventDetailActivity extends AppCompatActivity {
             Intent intent = new Intent(EventDetailActivity.this, QRCodeDisplayActivity.class);
             intent.putExtra("Event_ID", eventId);
             startActivity(intent);
+        });
+
+        // Open Waiting List screen
+        viewWaitingListBtn.setOnClickListener(v -> {
+            if (eventId == null) {
+                Toast.makeText(this, "Missing event id", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Intent i = new Intent(this, OrganizerWaitingListActivity.class);
+            i.putExtra("extra_event_id", eventId);   // keep literal key to avoid dependency
+            startActivity(i);
         });
 
         if (eventId != null){
@@ -139,24 +151,12 @@ public class EventDetailActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
         viewQRCodeBtn = findViewById(R.id.btn_view_QR_code);
         updatePosterBtn = findViewById(R.id.button_update_poster);
-        viewWaitingListBtn = findViewById(R.id.button_view_waiting_list);
+        viewWaitingListBtn = findViewById(R.id.buttonViewWaitingList);
 
         setDetailsVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
 
         updatePosterBtn.setOnClickListener(v -> showUpdatePosterDialog());
-
-        if (viewWaitingListBtn != null) {
-            viewWaitingListBtn.setOnClickListener(v -> {
-                if (eventId == null) {
-                    Toast.makeText(this, "Missing event id", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Intent i = new Intent(this, OrganizerWaitingListActivity.class);
-                i.putExtra("extra_event_id", eventId);
-                startActivity(i);
-            });
-        }
     }
 
     private void getEventIdFromDashboardIntent(Intent intent){
@@ -219,7 +219,7 @@ public class EventDetailActivity extends AppCompatActivity {
         posterContainer.setVisibility(visibility);
         viewQRCodeBtn.setVisibility(visibility);
         updatePosterBtn.setVisibility(visibility);
-        if (viewWaitingListBtn != null) viewWaitingListBtn.setVisibility(visibility);
+        viewWaitingListBtn.setVisibility(visibility);
 
         if (visibility == View.VISIBLE) {
             updatePosterDisplay(currentPosterUrl);
