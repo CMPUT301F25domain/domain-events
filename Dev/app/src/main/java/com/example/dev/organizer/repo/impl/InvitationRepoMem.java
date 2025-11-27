@@ -57,7 +57,6 @@ public class InvitationRepoMem implements InvitationRepository {
         }
     }
 
-    @Override
     public Invitation get(String invitationId) {
         return byId.get(invitationId);
     }
