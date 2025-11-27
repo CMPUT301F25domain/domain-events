@@ -12,7 +12,6 @@
         android:id="@+id/eventImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/swimming"
         android:scaleType="centerCrop"
         android:contentDescription="Event image" />
 
