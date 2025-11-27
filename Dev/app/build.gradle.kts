@@ -43,9 +43,12 @@ dependencies {
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
     implementation(libs.firebase.firestore)
-    implementation("com.google.firebase:firebase-storage")
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.database)
+
+    //AWS Storage
+    implementation("com.amazonaws:aws-android-sdk-core:2.81.1")
+    implementation("com.amazonaws:aws-android-sdk-s3:2.81.1")
 
     //Image loading
     implementation("com.github.bumptech.glide:glide:5.0.5")
