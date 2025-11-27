@@ -22,6 +22,8 @@ public class OrganizerDrawStatusActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EntrantAdapter entrantAdapter;
     private List<FirebaseEntrant> entrantList;
+    private List<String> statusList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +35,7 @@ public class OrganizerDrawStatusActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.entrantRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         entrantList = new ArrayList<FirebaseEntrant>();
-        entrantAdapter = new EntrantAdapter(entrantList);
+        entrantAdapter = new EntrantAdapter(entrantList, statusList);
         recyclerView.setAdapter(entrantAdapter);
 
         fetchEntrants();

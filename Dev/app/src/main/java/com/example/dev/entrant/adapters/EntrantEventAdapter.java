@@ -52,7 +52,7 @@ public class EntrantEventAdapter extends RecyclerView.Adapter<EntrantEventAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EntrantEvent event = eventList.get(position); // <-- UPDATED
+        EntrantEvent event = eventList.get(position);
 
         holder.name.setText(event.getEventName());
         holder.location.setText("Location: " + event.getLocation());
@@ -69,12 +69,13 @@ public class EntrantEventAdapter extends RecyclerView.Adapter<EntrantEventAdapte
     public int getItemCount() { return eventList.size(); }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name, location, date;
+        TextView name, location, date, joinedTextView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.eventName);
             location = itemView.findViewById(R.id.eventLocation);
             date = itemView.findViewById(R.id.eventDate);
+            joinedTextView = itemView.findViewById(R.id.joined_text_view);
         }
     }
 }

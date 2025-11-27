@@ -28,7 +28,7 @@ public class PublishEventActivity extends AppCompatActivity {
 
     private static final String STATE_IS_PUBLISHING = "state_is_publishing";
 
-    private FirebaseFirestore firestore;
+    private FirebaseFirestore database;
     private FirebaseStorage storage;
     private EventDraft eventDraft;
     @Nullable
@@ -39,7 +39,7 @@ public class PublishEventActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        firestore = FirebaseFirestore.getInstance();
+        database = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         eventDraft = getIntent().getParcelableExtra(CreateEventActivity.EXTRA_EVENT_DRAFT);
         posterUri = getIntent().getParcelableExtra(EXTRA_POSTER_URI);
@@ -69,7 +69,7 @@ public class PublishEventActivity extends AppCompatActivity {
     private void publishEvent() {
         isPublishing = true;
 
-        DocumentReference newEventRef = firestore.collection("events").document();
+        DocumentReference newEventRef = database.collection("events").document();
         String eventId = newEventRef.getId();
         if (posterUri != null) {
             uploadPosterThenPublish(newEventRef, eventId);
@@ -119,16 +119,18 @@ public class PublishEventActivity extends AppCompatActivity {
     private void writeEventDocument(@NonNull DocumentReference newEventRef,
                                     @NonNull String eventId,
                                     @Nullable String posterUrl) {
+        String organizerId = eventDraft.getOrganizerId();
         String eventName = eventDraft.getEventName();
         String location = eventDraft.getLocation();
         String eventDate = eventDraft.getEventDate();
         String eventTime = eventDraft.getEventTime();
         String eventStart = eventDraft.getRegistrationStart();
         String eventEnd = eventDraft.getRegistrationEnd();
+        boolean locationRequired = eventDraft.isLocationRequired();
         String finalPosterUrl = !TextUtils.isEmpty(posterUrl) ? posterUrl : "";
 
-        FirebaseEvent newEvent = new FirebaseEvent(eventId, eventName, location, eventDate, eventTime,
-                eventStart, eventEnd, finalPosterUrl, 0);
+        FirebaseEvent newEvent = new FirebaseEvent(eventId, organizerId, eventName, location, eventDate, eventTime,
+                eventStart, eventEnd, finalPosterUrl, 0, locationRequired);
 
         newEventRef.set(newEvent)
                 .addOnSuccessListener(aVoid -> onPublishSuccess(eventName))
