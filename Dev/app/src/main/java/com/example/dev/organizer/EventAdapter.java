@@ -3,12 +3,14 @@ package com.example.dev.organizer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.dev.R;
 
 import java.util.List;
@@ -48,7 +50,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         holder.eventEnd.setText(event.getClosingTime());
         holder.capacity.setText(String.valueOf("Capacity" + event.getCapacity()));
-        //holder.poster.setImageResource(event.getImageResourse());
+        Glide.with(holder.poster.getContext())
+                .load(event.getPosterUrl())
+                .placeholder(R.drawable.bg_event_poster_placeholder)
+                .error(R.drawable.bg_event_poster_placeholder)
+                .into(holder.poster);
 
         holder.cardLayout.setOnClickListener(v -> {
             clickListener.onEventClick(event.getEventId());
@@ -65,8 +71,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         public TextView locationCategory;
         public TextView eventEnd;
         public TextView capacity;
-
         public CardView cardLayout;
+        public ImageView poster;
 
         public EventViewHolder(@NonNull View itemView){
             super(itemView);
@@ -75,6 +81,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             eventEnd = itemView.findViewById(R.id.TV_registration_closes);
             capacity = itemView.findViewById(R.id.TV_capacity);
             cardLayout = itemView.findViewById(R.id.card_view1);
+            poster = itemView.findViewById(R.id.activity_image_view);
         }
     }
 

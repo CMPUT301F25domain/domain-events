@@ -24,10 +24,6 @@ import com.example.dev.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
-
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
@@ -45,14 +41,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Activity displays the full details of a single event.
- * Launched when a specific event is clicked on the organizer dashboard.
+ * Shows full details for a single event and lets the organizer update the poster.
  */
 public class EventDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "EventDetailActivity";
 
-    // AWS S3 config – SAME values as in PublishEventActivity
+    // Must match PublishEventActivity
     private static final String S3_BUCKET_NAME = "domain-events-posters";
     private static final Regions S3_REGION = Regions.fromName("ca-west-1");
     private static final String COGNITO_POOL_ID =
@@ -73,7 +68,6 @@ public class EventDetailActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
     private Button viewQRCodeBtn;
-    private ImageView imageViewQRcode;
     private Button updatePosterBtn;
     private Button viewWaitingListBtn;
 
@@ -88,11 +82,11 @@ public class EventDetailActivity extends AppCompatActivity {
             registerForActivityResult(new ActivityResultContracts.GetContent(), this::onPosterSelected);
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
 
-        // Init AWS S3
+        // AWS client (for uploads)
         CognitoCachingCredentialsProvider credentialsProvider =
                 new CognitoCachingCredentialsProvider(
                         getApplicationContext(),
@@ -128,11 +122,11 @@ public class EventDetailActivity extends AppCompatActivity {
                 return;
             }
             Intent i = new Intent(this, OrganizerWaitingListActivity.class);
-            i.putExtra("extra_event_id", eventId);   // keep literal key to avoid dependency
+            i.putExtra("extra_event_id", eventId);
             startActivity(i);
         });
 
-        if (eventId != null){
+        if (eventId != null) {
             getEventDetails(eventId);
         } else {
             Toast.makeText(this, "Error: Event ID not found.", Toast.LENGTH_LONG).show();
@@ -140,7 +134,7 @@ public class EventDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void initializeViews(){
+    private void initializeViews() {
         textViewName = findViewById(R.id.TV_detail_name);
         textViewLocation = findViewById(R.id.TV_detail_location);
         textViewDateTime = findViewById(R.id.TV_detail_date_time);
@@ -159,46 +153,51 @@ public class EventDetailActivity extends AppCompatActivity {
         updatePosterBtn.setOnClickListener(v -> showUpdatePosterDialog());
     }
 
-    private void getEventIdFromDashboardIntent(Intent intent){
-        if (intent != null && intent.hasExtra("Event_ID")){
+    private void getEventIdFromDashboardIntent(Intent intent) {
+        if (intent != null && intent.hasExtra("Event_ID")) {
             eventId = intent.getStringExtra("Event_ID");
             Log.d(TAG, "ID found in Extras: " + eventId);
         }
     }
 
     /** Fetch a single event document and display it. */
-    private void getEventDetails(String id){
+    private void getEventDetails(String id) {
         isLoadingEvent = true;
         updateLoadingIndicator();
-        DocumentReference eventRef = db.collection("events").document(id);
-        eventRef.get().addOnSuccessListener(documentSnapshot -> {
-            isLoadingEvent = false;
-            updateLoadingIndicator();
 
-            if (documentSnapshot.exists()){
-                FirebaseEvent event = documentSnapshot.toObject(FirebaseEvent.class);
-                if (event != null){
-                    displayEventData(event);
-                    setDetailsVisibility(View.VISIBLE);
-                }
-            } else {
-                currentPosterUrl = null;
-                Toast.makeText(EventDetailActivity.this,
-                        "Event not found in database.", Toast.LENGTH_LONG).show();
-                finish();
-            }
-        }).addOnFailureListener(e -> {
-            isLoadingEvent = false;
-            updateLoadingIndicator();
-            Log.e(TAG, "Error getting event: ", e);
-            Toast.makeText(EventDetailActivity.this,
-                    "Error: could not load event", Toast.LENGTH_LONG).show();
-            finish();
-        });
+        DocumentReference eventRef = db.collection("events").document(id);
+        eventRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    isLoadingEvent = false;
+                    updateLoadingIndicator();
+
+                    Log.d(TAG, "Event doc for " + id + ": " + documentSnapshot.getData());
+
+                    if (documentSnapshot.exists()) {
+                        FirebaseEvent event = documentSnapshot.toObject(FirebaseEvent.class);
+                        if (event != null) {
+                            displayEventData(event);
+                            setDetailsVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        currentPosterUrl = null;
+                        Toast.makeText(EventDetailActivity.this,
+                                "Event not found in database.", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    isLoadingEvent = false;
+                    updateLoadingIndicator();
+                    Log.e(TAG, "Error getting event: ", e);
+                    Toast.makeText(EventDetailActivity.this,
+                            "Error: could not load event", Toast.LENGTH_LONG).show();
+                    finish();
+                });
     }
 
     /** Fill UI with event data. */
-    private void displayEventData(FirebaseEvent event){
+    private void displayEventData(FirebaseEvent event) {
         textViewName.setText(event.getEventName());
         textViewLocation.setText("Location: " + event.getLocation());
         textViewDateTime.setText("Date: " + event.getEventDate() + " at " + event.getEventTime());
@@ -207,11 +206,12 @@ public class EventDetailActivity extends AppCompatActivity {
                 event.getEventStart(), event.getEventEnd(), event.getAttendingCount());
         textViewRegistration.setText(registrationInformation);
 
-        currentPosterUrl = event.getPosterUrl();
+        currentPosterUrl = event.getPosterUrl();  // uses posterUrl or posterUri in model
+        Log.d(TAG, "Loaded posterUrl from Firestore: " + currentPosterUrl);
         updatePosterDisplay(currentPosterUrl);
     }
 
-    private void setDetailsVisibility(int visibility){
+    private void setDetailsVisibility(int visibility) {
         textViewName.setVisibility(visibility);
         textViewLocation.setVisibility(visibility);
         textViewDateTime.setVisibility(visibility);
@@ -229,9 +229,9 @@ public class EventDetailActivity extends AppCompatActivity {
         }
     }
 
+    /** Actually show / hide the poster image. */
     private void updatePosterDisplay(@Nullable String posterUrl) {
-        if (posterContainer.getVisibility() != View.VISIBLE) return;
-
+        // Always try to update image; container visibility is already handled by caller
         if (TextUtils.isEmpty(posterUrl)) {
             Glide.with(this).clear(posterImageView);
             posterImageView.setImageDrawable(null);
@@ -309,7 +309,8 @@ public class EventDetailActivity extends AppCompatActivity {
             @Override
             public void onStateChanged(int id, TransferState state) {
                 if (state == TransferState.COMPLETED) {
-                    String url = s3Client.getResourceUrl(S3_BUCKET_NAME, key);
+                    String url = buildS3PublicUrl(key);
+                    Log.d(TAG, "S3 upload complete, URL = " + url);
                     persistPosterUrl(url);
                 } else if (state == TransferState.FAILED
                         || state == TransferState.CANCELED) {
@@ -350,6 +351,7 @@ public class EventDetailActivity extends AppCompatActivity {
                 .update(updates)
                 .addOnSuccessListener(aVoid -> {
                     currentPosterUrl = posterUrl;
+                    Log.d(TAG, "Poster URL updated in Firestore: " + posterUrl);
                     updatePosterDisplay(currentPosterUrl);
                     setPosterUpdatingState(false);
                     Toast.makeText(EventDetailActivity.this,
@@ -377,6 +379,11 @@ public class EventDetailActivity extends AppCompatActivity {
     private void updateLoadingIndicator() {
         progressBar.setVisibility(
                 (isLoadingEvent || isPosterUpdating) ? View.VISIBLE : View.GONE);
+    }
+    private String buildS3PublicUrl(String key) {
+        return "https://" + S3_BUCKET_NAME
+                + ".s3." + S3_REGION.getName()
+                + ".amazonaws.com/" + key;
     }
 
     /** Copy a content:// Uri to a temp file so S3 TransferUtility can upload it. */
