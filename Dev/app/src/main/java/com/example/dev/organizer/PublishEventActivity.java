@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import com.google.firebase.storage.StorageReference;
 public class PublishEventActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSTER_URI = "com.example.dev.organizer.EXTRA_POSTER_URI";
+    public static final String EXTRA_UPLOAD_ERROR_MESSAGE = "com.example.dev.organizer.EXTRA_UPLOAD_ERROR_MESSAGE";
 
     private static final String STATE_IS_PUBLISHING = "state_is_publishing";
 
@@ -33,6 +35,8 @@ public class PublishEventActivity extends AppCompatActivity {
     @Nullable
     private Uri posterUri;
     private boolean isPublishing;
+
+    private static final String TAG = "PublishEventActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,9 +82,7 @@ public class PublishEventActivity extends AppCompatActivity {
     }
 
     private void onPublishSuccess(@Nullable String eventName) {
-        Toast.makeText(this,
-                getString(R.string.event_created_success, valueOrPlaceholder(eventName)),
-                Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(R.string.event_created_success, valueOrPlaceholder(eventName)), Toast.LENGTH_LONG).show();
         Intent result = new Intent();
         result.putExtra(CreateEventActivity.EXTRA_EVENT_PUBLISHED, true);
         setResult(RESULT_OK, result);
@@ -112,7 +114,7 @@ public class PublishEventActivity extends AppCompatActivity {
                     eventDraft = eventDraft.withPosterUri(posterUrl);
                     writeEventDocument(newEventRef, eventId, posterUrl);
                 })
-                .addOnFailureListener(e -> onPosterUploadFailure());
+                .addOnFailureListener(e -> onPosterUploadFailure(e));
     }
 
     private void writeEventDocument(@NonNull DocumentReference newEventRef,
@@ -134,7 +136,8 @@ public class PublishEventActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> onPublishFailure());
     }
 
-    private void onPosterUploadFailure() {
+    private void onPosterUploadFailure(@NonNull Exception exception) {
+        String errorMessage = logAndExtractStorageError(exception);
         isPublishing = false;
         Toast.makeText(this, R.string.error_uploading_poster, Toast.LENGTH_LONG).show();
         Intent result = new Intent();
@@ -142,8 +145,32 @@ public class PublishEventActivity extends AppCompatActivity {
         if (posterUri != null) {
             result.putExtra(EXTRA_POSTER_URI, posterUri);
         }
+        if (!TextUtils.isEmpty(errorMessage)) {
+            result.putExtra(EXTRA_UPLOAD_ERROR_MESSAGE, errorMessage);
+        }
         setResult(RESULT_CANCELED, result);
         finish();
+    }
+
+    @Nullable
+    private String logAndExtractStorageError(@NonNull Exception exception) {
+        String message = exception.getMessage();
+        Throwable cause = exception.getCause();
+        if (exception instanceof com.google.firebase.storage.StorageException) {
+            com.google.firebase.storage.StorageException storageException =
+                    (com.google.firebase.storage.StorageException) exception;
+            Log.e(TAG,
+                    "Poster upload failed. Code: " + storageException.getErrorCode()
+                            + ", message: " + storageException.getMessage()
+                            + (cause != null ? ", cause: " + cause : ""),
+                    exception);
+            if (!TextUtils.isEmpty(storageException.getMessage())) {
+                message = storageException.getMessage();
+            }
+        } else {
+            Log.e(TAG, "Poster upload failed", exception);
+        }
+        return message;
     }
 
     @NonNull

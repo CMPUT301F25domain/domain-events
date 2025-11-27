@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -37,7 +38,6 @@ public class UploadPosterActivity extends AppCompatActivity {
     private Uri selectedPosterUri;
 
     private ActivityResultLauncher<PickVisualMediaRequest> pickPosterLauncher;
-    private ActivityResultLauncher<String> permissionLauncher;
     private ActivityResultLauncher<Intent> publishEventLauncher;
 
     private ImageView posterPreview;
@@ -110,14 +110,6 @@ public class UploadPosterActivity extends AppCompatActivity {
             }
         });
 
-        permissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
-            if (granted) {
-                launchPosterPicker();
-            } else {
-                statusView.setText(R.string.upload_poster_status_permission_required);
-            }
-        });
-
         publishEventLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -140,8 +132,13 @@ public class UploadPosterActivity extends AppCompatActivity {
                             selectedPosterUri = returnedPosterUri;
                             updatePosterPreview();
                         }
-                        statusView.setText(R.string.upload_poster_status_error);
-                    }
+                        String errorMessage = result.getData().getStringExtra(PublishEventActivity.EXTRA_UPLOAD_ERROR_MESSAGE);
+                        if (!TextUtils.isEmpty(errorMessage)) {
+                            statusView.setText(errorMessage);
+                            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+                        } else {
+                            statusView.setText(R.string.upload_poster_status_error);
+                        }                    }
                 });
     }
 
@@ -156,23 +153,7 @@ public class UploadPosterActivity extends AppCompatActivity {
     }
 
     private void launchPosterSelection() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
-                    == PackageManager.PERMISSION_GRANTED) {
-                launchPosterPicker();
-            } else {
-                permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES);
-            }
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                launchPosterPicker();
-            } else {
-                permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
-            }
-        } else {
-            launchPosterPicker();
-        }
+        launchPosterPicker();
     }
 
     private void launchPosterPicker() {
