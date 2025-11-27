@@ -13,8 +13,6 @@ import com.example.dev.MainActivity;
 import com.example.dev.R;
 import com.example.dev.entrant.adapters.EntrantEventAdapter;
 import com.example.dev.entrant.models.EntrantEvent;
-import com.example.dev.organizer.EventAdapter;
-import com.example.dev.entrant.EntrantMessagesActivity;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
