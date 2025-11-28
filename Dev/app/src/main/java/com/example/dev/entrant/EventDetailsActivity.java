@@ -17,12 +17,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dev.R;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FieldValue;
 
 import com.example.dev.utils.DeviceIdUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EventDetailsActivity extends AppCompatActivity {
@@ -102,6 +105,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                     entrantData.put("entrantId", deviceId);
                     entrantData.put("name", name);
                     entrantData.put("email", email);
+                    entrantData.put("joinedAtMillis", System.currentTimeMillis());
 
                     db.runTransaction(t -> {
                         t.update(db.collection("events").document(eventId),
@@ -128,20 +132,26 @@ public class EventDetailsActivity extends AppCompatActivity {
                     String name = entrantDoc.getString("name");
                     String email = entrantDoc.getString("email");
 
-                    Map<String, Object> entrantData = new HashMap<>();
-                    entrantData.put("entrantId", deviceId);
-                    entrantData.put("name", name);
-                    entrantData.put("email", email);
-
                     db.runTransaction(t -> {
+                        var eventRef = db.collection("events").document(eventId);
+                        var entrantRef = db.collection("entrants").document(deviceId);
 
-                        // remove from event.waitingList
-                        t.update(db.collection("events").document(eventId),
-                                "waitingList", FieldValue.arrayRemove(entrantData));
+                        DocumentSnapshot eventSnapshot = t.get(eventRef);
+                        List<Map<String, Object>> waitingList = (List<Map<String, Object>>) eventSnapshot.get("waitingList");
+
+                        if (waitingList != null) {
+                            List<Map<String, Object>> updatedList = new ArrayList<>();
+                            for (Map<String, Object> item : waitingList) {
+                                if (item != null && deviceId.equals(item.get("entrantId"))) {
+                                    continue;
+                                }
+                                updatedList.add(item);
+                            }
+                            t.update(eventRef, "waitingList", updatedList);
+                        }
 
                         // remove from entrant.joinedEvents
-                        t.update(db.collection("entrants").document(deviceId),
-                                "joinedEvents", FieldValue.arrayRemove(eventId));
+                        t.update(entrantRef, "joinedEvents", FieldValue.arrayRemove(eventId));
 
                         return null;
                     }).addOnSuccessListener(a -> {

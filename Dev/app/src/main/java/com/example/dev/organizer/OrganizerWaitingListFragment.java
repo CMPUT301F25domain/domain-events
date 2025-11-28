@@ -214,6 +214,9 @@ public class OrganizerWaitingListFragment extends Fragment {
         }
 
         private static String formatJoined(long millis) {
+            if (millis <= 0) {
+                return "Joined: Pending";
+            }
             return "Joined: " + DateFormat.getDateTimeInstance().format(new Date(millis));
         }
     }
