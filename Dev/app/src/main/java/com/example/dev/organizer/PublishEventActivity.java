@@ -34,9 +34,11 @@ import java.io.OutputStream;
  */
 public class PublishEventActivity extends AppCompatActivity {
 
-    // TODO: make sure this bucket actually exists in this region
+    private static final String TAG = "PublishEventActivity";
+
+    // AWS S3 configuration
     private static final String S3_BUCKET_NAME = "domain-events-posters";
-    // If Regions.CA_WEST_1 does not exist in your SDK, use fromName("ca-west-1")
+    // Use fromName so it works even if the enum constant isn't present
     private static final Regions S3_REGION = Regions.fromName("ca-west-1");
     private static final String COGNITO_POOL_ID =
             "ca-west-1:70a2ceb7-8665-43fc-88e2-bb68e662bd68";
@@ -54,14 +56,14 @@ public class PublishEventActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private EventDraft eventDraft;
     @Nullable
-    private Uri posterUri;
+    private Uri posterUri;        // content:// URI passed from UploadPosterActivity
     private boolean isPublishing;
-
-    private static final String TAG = "PublishEventActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // optional: if you have a layout for a spinner/progress
+        // setContentView(R.layout.activity_publish_event);
 
         // Init Cognito + S3 client
         CognitoCachingCredentialsProvider credentialsProvider =
@@ -72,7 +74,6 @@ public class PublishEventActivity extends AppCompatActivity {
                 );
 
         s3Client = new AmazonS3Client(credentialsProvider);
-
         transferUtility = TransferUtility.builder()
                 .context(getApplicationContext())
                 .s3Client(s3Client)
@@ -106,6 +107,11 @@ public class PublishEventActivity extends AppCompatActivity {
         outState.putBoolean(STATE_IS_PUBLISHING, isPublishing);
     }
 
+    /**
+     * Entry point: create a new event document id and either:
+     *  - upload the poster to S3 (if we have a local Uri), then write the event
+     *  - or just write the event using any existing URL stored in the draft
+     */
     private void publishEvent() {
         isPublishing = true;
 
@@ -113,8 +119,10 @@ public class PublishEventActivity extends AppCompatActivity {
         String eventId = newEventRef.getId();
 
         if (posterUri != null) {
+            // New poster chosen for this draft → upload to S3
             uploadPosterThenPublish(newEventRef, eventId);
         } else {
+            // No local Uri; fall back to whatever URL is already in the draft (may be null/empty)
             writeEventDocument(newEventRef, eventId, eventDraft.getPosterUri());
         }
     }
@@ -148,19 +156,21 @@ public class PublishEventActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Upload the local poster image to S3, then write the event with the resulting S3 URL.
+     */
     private void uploadPosterThenPublish(DocumentReference newEventRef, String eventId) {
         Uri uriToUpload = posterUri;
         if (uriToUpload == null) {
-            // nothing to upload, just write event
+            // Nothing to upload, just write event without a poster URL.
             writeEventDocument(newEventRef, eventId, null);
             return;
         }
 
-        // Copy the content:// URI to a temporary File (TransferUtility needs a File)
+        // Copy the content:// URI to a temporary File (TransferUtility requires a File)
         File tempFile;
         try {
-            tempFile = copyUriToTempFile(uriToUpload,
-                    "poster-" + eventId + ".jpg");
+            tempFile = copyUriToTempFile(uriToUpload, "poster-" + eventId + ".jpg");
         } catch (IOException e) {
             onPosterUploadFailure(e);
             return;
@@ -178,11 +188,12 @@ public class PublishEventActivity extends AppCompatActivity {
             @Override
             public void onStateChanged(int id, TransferState state) {
                 if (state == TransferState.COMPLETED) {
-                    // public URL if bucket / object ACL allows it
-                    String url = s3Client.getResourceUrl(S3_BUCKET_NAME, key);
+                    // Construct public URL (assuming bucket policy / ACL allows public read)
+                    String url = buildS3PublicUrl(key);
+                    Log.d(TAG, "S3 upload complete. URL = " + url);
+
                     writeEventDocument(newEventRef, eventId, url);
-                } else if (state == TransferState.FAILED
-                        || state == TransferState.CANCELED) {
+                } else if (state == TransferState.FAILED || state == TransferState.CANCELED) {
                     onPosterUploadFailure(
                             new RuntimeException("S3 upload failed, state = " + state)
                     );
@@ -190,10 +201,8 @@ public class PublishEventActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onProgressChanged(int id,
-                                          long bytesCurrent,
-                                          long bytesTotal) {
-                // no-op; hook progress bar here if you want
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                // Hook a progress bar here if desired
             }
 
             @Override
@@ -203,6 +212,9 @@ public class PublishEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Copy a content:// Uri into app cache directory so we can upload it as a File.
+     */
     private File copyUriToTempFile(Uri uri, String fileName) throws IOException {
         File tempFile = new File(getCacheDir(), fileName);
 
@@ -220,6 +232,14 @@ public class PublishEventActivity extends AppCompatActivity {
         return tempFile;
     }
 
+    /**
+     * Create and store the FirebaseEvent document in Firestore.
+     *
+     * posterUrl is:
+     *  - a full S3 URL when an upload succeeded, or
+     *  - an existing URL from the draft, or
+     *  - null/empty when no poster is used.
+     */
     private void writeEventDocument(@NonNull DocumentReference newEventRef,
                                     @NonNull String eventId,
                                     @Nullable String posterUrl) {
@@ -230,8 +250,7 @@ public class PublishEventActivity extends AppCompatActivity {
         String eventTime = eventDraft.getEventTime();
         String eventStart = eventDraft.getRegistrationStart();
         String eventEnd = eventDraft.getRegistrationEnd();
-        String finalPosterUrl =
-                !TextUtils.isEmpty(posterUrl) ? posterUrl : "";
+        String finalPosterUrl = !TextUtils.isEmpty(posterUrl) ? posterUrl : "";
 
         FirebaseEvent newEvent = new FirebaseEvent(
                 eventId,
@@ -272,8 +291,14 @@ public class PublishEventActivity extends AppCompatActivity {
     }
 
     private String valueOrPlaceholder(@Nullable String value) {
-        return value == null || value.isEmpty()
+        return (value == null || value.isEmpty())
                 ? getString(R.string.upload_poster_unknown_value)
                 : value;
     }
+    private String buildS3PublicUrl(String key) {
+        return "https://" + S3_BUCKET_NAME
+                + ".s3." + S3_REGION.getName()
+                + ".amazonaws.com/" + key;
+    }
+
 }

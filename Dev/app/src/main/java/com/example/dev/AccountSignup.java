@@ -3,7 +3,6 @@ package com.example.dev;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,7 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dev.admin.AdminNavActivity;
-import com.example.dev.entrant.EntrantMainActivity;
+import com.example.dev.entrant.EntrantBottomNavActivity;
 import com.example.dev.organizer.OrganizerDashboardActivity;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -127,7 +126,7 @@ public class AccountSignup extends AppCompatActivity {
                             if (selectedAccountType == ROLE_ORGANIZER) {
                                 startActivity(new Intent(AccountSignup.this, OrganizerDashboardActivity.class));
                             } else if (selectedAccountType == ROLE_ENTRANT) {
-                                startActivity(new Intent(AccountSignup.this, EntrantMainActivity.class));
+                                startActivity(new Intent(AccountSignup.this, EntrantBottomNavActivity.class));
                             } else if (selectedAccountType == ROLE_ADMIN) {
                                 startActivity(new Intent(AccountSignup.this, AdminNavActivity.class));
                             }

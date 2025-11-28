@@ -3,8 +3,6 @@ package com.example.dev;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,12 +12,10 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dev.admin.AdminNavActivity;
-import com.example.dev.entrant.EntrantMainActivity;
+import com.example.dev.entrant.EntrantBottomNavActivity;
 import com.example.dev.organizer.OrganizerDashboardActivity;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.Objects;
 
 public class AccountLogin extends AppCompatActivity {
     private EditText usernameEditText, passwordEditText;
@@ -69,7 +65,7 @@ public class AccountLogin extends AppCompatActivity {
                         startActivity(new Intent(AccountLogin.this, OrganizerDashboardActivity.class));
                     }
                     else if (accountType == 2) {
-                        startActivity(new Intent(AccountLogin.this, EntrantMainActivity.class));
+                        startActivity(new Intent(AccountLogin.this, EntrantBottomNavActivity.class));
                     }
                     else if (accountType == 3) {
                         startActivity(new Intent(AccountLogin.this, AdminNavActivity.class));

@@ -40,21 +40,18 @@
             android:exported="false"/>
 
         <activity
-            android:name=".entrant.EntrantNavActivity"
+            android:name=".entrant.EntrantBottomNavActivity"
             android:exported="false"/>
-        <activity
-            android:name=".entrant.EntrantMainActivity"
-            android:exported="false"/>
-        <activity
-            android:name=".entrant.EntrantMessagesActivity"
-            android:exported="false" />
+
         <activity
             android:name=".entrant.EventDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".entrant.QRCodeScannerActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".entrant.InvitationDetailsActivity"
+            android:exported="false" />
         <activity
             android:name=".organizer.OrganizerDashboardActivity"
             android:exported="false"/>
