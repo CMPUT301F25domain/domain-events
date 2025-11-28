@@ -68,11 +68,20 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private void loadCurrentJoinState() {
         String deviceId = DeviceIdUtil.getDeviceId(this);
+
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
-                        var list = (java.util.List<String>) doc.get("waitingList");
-                        if (list != null && list.contains(deviceId)) isJoined = true;
+                        var list = (java.util.List<Map<String,Object>>) doc.get("waitingList");
+
+                        if (list != null) {
+                            for (Map<String, Object> item : list) {
+                                if (deviceId.equals(item.get("entrantId"))) {
+                                    isJoined = true;
+                                    break;
+                                }
+                            }
+                        }
                         updateButtonUI();
                     }
                 });
@@ -116,18 +125,30 @@ public class EventDetailsActivity extends AppCompatActivity {
         db.collection("entrants").document(deviceId).get()
                 .addOnSuccessListener(entrantDoc -> {
 
+                    String name = entrantDoc.getString("name");
+                    String email = entrantDoc.getString("email");
+
                     Map<String, Object> entrantData = new HashMap<>();
                     entrantData.put("entrantId", deviceId);
-                    entrantData.put("name", entrantDoc.getString("name"));
-                    entrantData.put("email", entrantDoc.getString("email"));
+                    entrantData.put("name", name);
+                    entrantData.put("email", email);
 
-                    db.collection("events").document(eventId)
-                            .update("waitingList", FieldValue.arrayRemove(entrantData))
-                            .addOnSuccessListener(a -> {
-                                isJoined = false;
-                                updateButtonUI();
-                                Toast.makeText(this, "Left waiting list.", Toast.LENGTH_SHORT).show();
-                            });
+                    db.runTransaction(t -> {
+
+                        // remove from event.waitingList
+                        t.update(db.collection("events").document(eventId),
+                                "waitingList", FieldValue.arrayRemove(entrantData));
+
+                        // remove from entrant.joinedEvents
+                        t.update(db.collection("entrants").document(deviceId),
+                                "joinedEvents", FieldValue.arrayRemove(eventId));
+
+                        return null;
+                    }).addOnSuccessListener(a -> {
+                        isJoined = false;
+                        updateButtonUI();
+                        Toast.makeText(this, "Left waiting list.", Toast.LENGTH_SHORT).show();
+                    });
                 });
     }
 

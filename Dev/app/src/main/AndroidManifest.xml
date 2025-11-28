@@ -40,9 +40,6 @@
             android:exported="false"/>
 
         <activity
-            android:name=".entrant.EntrantNavActivity"
-            android:exported="false"/>
-        <activity
             android:name=".entrant.EntrantBottomNavActivity"
             android:exported="false"/>
 
@@ -52,7 +49,9 @@
         <activity
             android:name=".entrant.QRCodeScannerActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".entrant.InvitationDetailsActivity"
+            android:exported="false" />
         <activity
             android:name=".organizer.OrganizerDashboardActivity"
             android:exported="false"/>

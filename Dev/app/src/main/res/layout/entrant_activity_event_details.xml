@@ -32,7 +32,7 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/images"
                 android:background="#333333"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginBottom="20dp" />
 
             <!-- Title -->
             <TextView
@@ -42,7 +42,7 @@
                 android:textColor="#FFFFFF"
                 android:layout_marginBottom="12dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <!-- Location -->
             <TextView
@@ -51,7 +51,7 @@
                 android:textColor="#CCCCCC"
                 android:layout_marginBottom="6dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <!-- Date -->
             <TextView
@@ -60,9 +60,9 @@
                 android:textColor="#CCCCCC"
                 android:layout_marginBottom="20dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
-            <!-- Join Button -->
+            <!-- Join / Leave Button -->
             <Button
                 android:id="@+id/joinLeaveButton"
                 android:text="Join Waiting List"
@@ -71,7 +71,9 @@
                 android:backgroundTint="#3A7BFF"
                 android:textColor="#FFFFFF"
                 android:padding="12dp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
         </LinearLayout>
+
     </ScrollView>
+
 </LinearLayout>

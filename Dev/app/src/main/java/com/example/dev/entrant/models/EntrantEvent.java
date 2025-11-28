@@ -1,8 +1,7 @@
 /**
- * EntrantEvent
+ * EntrantEvent (Model)
  *
- * Model class representing an event as seen by entrant users.
- * This class maps directly to Firestore documents stored in the "events" collection.
+ * Represents a single event from Firestore.
  */
 
 package com.example.dev.entrant.models;
@@ -19,10 +18,8 @@ public class EntrantEvent {
     private String location;
     private boolean locationRequired;
 
-    // Required empty constructor for Firestore
-    public EntrantEvent() { }
+    public EntrantEvent() {}
 
-    // Full constructor (use this when creating an event in code)
     public EntrantEvent(int attendingCount, String eventDate, String eventEnd, String eventId,
                         String eventName, String eventStart, String eventTime,
                         String location, boolean locationRequired) {
@@ -38,7 +35,6 @@ public class EntrantEvent {
         this.locationRequired = locationRequired;
     }
 
-    // Getters (supports Firestore reads + RecyclerView binding)
     public int getAttendingCount() { return attendingCount; }
     public String getEventDate() { return eventDate; }
     public String getEventEnd() { return eventEnd; }
@@ -49,7 +45,6 @@ public class EntrantEvent {
     public String getLocation() { return location; }
     public boolean isLocationRequired() { return locationRequired; }
 
-    // Setters (allows updating fields or writing back to Firestore)
     public void setAttendingCount(int attendingCount) { this.attendingCount = attendingCount; }
     public void setEventDate(String eventDate) { this.eventDate = eventDate; }
     public void setEventEnd(String eventEnd) { this.eventEnd = eventEnd; }
