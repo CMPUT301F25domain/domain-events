@@ -20,6 +20,9 @@ public class FirebaseEvent {
     private int attendingCount;
     private boolean locationRequired;
 
+    private boolean isWaitListLimited;
+    private int waitlistLimit;
+
     public FirebaseEvent() {
         // Needed for Firestore serialization
     }
@@ -68,6 +71,32 @@ public class FirebaseEvent {
         setPosterUrl(posterUrl);
         this.attendingCount = attendingCount;
         this.locationRequired = locationRequired;
+    }
+
+    public FirebaseEvent(String eventId,
+                         String eventName,
+                         String location,
+                         String eventDate,
+                         String eventTime,
+                         String eventStart,
+                         String eventEnd,
+                         @Nullable String posterUrl,
+                         int attendingCount,
+                         boolean locationRequired,
+                         boolean isWaitListLimited,
+                         int waitlistLimit){
+        this.eventId = eventId;
+        this.eventName = eventName;
+        this.location = location;
+        this.eventDate = eventDate;
+        this.eventTime = eventTime;
+        this.eventStart = eventStart;
+        this.eventEnd = eventEnd;
+        setPosterUrl(posterUrl);
+        this.attendingCount = attendingCount;
+        this.locationRequired = locationRequired;
+        this.isWaitListLimited = isWaitListLimited;
+        this.waitlistLimit =waitlistLimit;
     }
 
     public String getEventId() {
@@ -170,5 +199,17 @@ public class FirebaseEvent {
 
     public void setLocationRequired(boolean locationRequired) {
         this.locationRequired = locationRequired;
+    }
+
+    public boolean isWaitListLimited(){
+        return isWaitListLimited;
+    }
+
+    public int getWaitlistLimit(){
+        return waitlistLimit;
+    }
+
+    public void setWaitlistLimit(int waitlistLimit){
+        this.waitlistLimit = waitlistLimit;
     }
 }
