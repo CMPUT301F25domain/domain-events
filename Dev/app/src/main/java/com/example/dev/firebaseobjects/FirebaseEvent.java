@@ -2,8 +2,8 @@ package com.example.dev.firebaseobjects;
 
 import androidx.annotation.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Data Model representing the Event document stored in Firebase database.
@@ -23,11 +23,10 @@ public class FirebaseEvent {
     private String posterUri;
     private int attendingCount;
     private boolean locationRequired;
-    private Set<String> wishlistedEntrants = new HashSet<>();
-    private Set<String> signedUpEntrants = new HashSet<>();
+    private List<String> wishlistedEntrants = new ArrayList<>();
+    private List<String> signedUpEntrants = new ArrayList<>();
 
     public FirebaseEvent() {
-        // Needed for Firestore serialization
     }
 
     public FirebaseEvent(String eventId, String organizerId, String eventName, String location, String eventDate, String eventTime, String eventStart, String eventEnd, @Nullable String posterUrl, int attendingCount, boolean locationRequired) {
@@ -131,17 +130,33 @@ public class FirebaseEvent {
         this.locationRequired = locationRequired;
     }
 
-    public Set<String> getWishlistedEntrants() {
+    public List<String> getWishlistedEntrants() {
         return wishlistedEntrants;
     }
-    public void setWishlistedEntrants(Set<String> wishlistedEntrants) {
-        this.wishlistedEntrants = wishlistedEntrants;
+    public boolean existsInWishlistedEntrants(String entrantId) {
+        return wishlistedEntrants.contains(entrantId);
+    }
+    public void addToWishlistedEntrants(String entrantId) {
+        if (!wishlistedEntrants.contains(entrantId)) {
+            wishlistedEntrants.add(entrantId);
+        }
+    }
+    public void removeFromWishlistedEntrants(String entrantId) {
+        wishlistedEntrants.remove(entrantId);
     }
 
-    public Set<String> getSignedUpEntrants() {
+    public List<String> getSignedUpEntrants() {
         return signedUpEntrants;
     }
-    public void setSignedUpEntrants(Set<String> signedUpEntrants) {
-        this.signedUpEntrants = signedUpEntrants;
+    public boolean existsInSignedUpEntrants(String entrantId) {
+        return signedUpEntrants.contains(entrantId);
+    }
+    public void addToSignedUpEntrants(String entrantId) {
+        if (!signedUpEntrants.contains(entrantId)) {
+            signedUpEntrants.add(entrantId);
+        }
+    }
+    public void removeFromSignedUpEntrants(String entrantId) {
+        signedUpEntrants.remove(entrantId);
     }
 }

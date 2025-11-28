@@ -43,38 +43,38 @@
             android:visibility="gone" />
 
         <EditText
-            android:id="@+id/ET_username"
-            android:hint="@string/account_username"
+            android:id="@+id/ET_name"
+            android:hint="Name"
             android:textColorHint="#AAAAAA"
             android:textColor="@color/white"
             android:backgroundTint="#9C27B0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
+            android:inputType="textPersonName"
             android:layout_marginBottom="16dp"
             android:padding="12dp"/>
 
         <EditText
-            android:id="@+id/ET_password"
-            android:hint="@string/password"
+            android:id="@+id/ET_gmail"
+            android:hint="Gmail"
             android:textColorHint="#AAAAAA"
             android:textColor="@color/white"
             android:backgroundTint="#9C27B0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
+            android:inputType="textEmailAddress"
             android:layout_marginBottom="16dp"
             android:padding="12dp"/>
 
         <EditText
-            android:id="@+id/ET_confirm_password"
-            android:hint="Confirm Password"
+            android:id="@+id/ET_phone_number"
+            android:hint="Phone Number"
             android:textColorHint="#AAAAAA"
             android:textColor="@color/white"
             android:backgroundTint="#9C27B0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
+            android:inputType="phone"
             android:layout_marginBottom="24dp"
             android:padding="12dp"/>
 

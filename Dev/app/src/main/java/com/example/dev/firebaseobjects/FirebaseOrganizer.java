@@ -1,13 +1,13 @@
 package com.example.dev.firebaseobjects;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FirebaseOrganizer {
     private String email;
     private String name;
     private String phone;
-    private Set<String> createdEvents = new HashSet<>();
+    private List<String> createdEvents = new ArrayList<>();
 
     public FirebaseOrganizer() {
     }
@@ -18,7 +18,7 @@ public class FirebaseOrganizer {
         this.phone = phone;
     }
 
-    public FirebaseOrganizer(String email, String name, String phone, Set<String> createdEvents) {
+    public FirebaseOrganizer(String email, String name, String phone, List<String> createdEvents) {
         this.email = email;
         this.name = name;
         this.phone = phone;
@@ -46,7 +46,7 @@ public class FirebaseOrganizer {
         this.phone = phone;
     }
 
-    public Set<String> getCreatedEvents() {
+    public List<String> getCreatedEvents() {
         return createdEvents;
     }
     public boolean existsInCreatedEvents(FirebaseEvent event) {
@@ -55,7 +55,9 @@ public class FirebaseOrganizer {
     }
     public void addToCreatedEvents(FirebaseEvent event) {
         String eventID = event.getEventId();
-        createdEvents.add(eventID);
+        if (!createdEvents.contains(eventID)) {
+            createdEvents.add(eventID);
+        }
     }
     public void removeFromCreatedEvents(FirebaseEvent event) {
         String eventID = event.getEventId();

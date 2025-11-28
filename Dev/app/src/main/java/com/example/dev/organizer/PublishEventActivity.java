@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dev.R;
 import com.example.dev.firebaseobjects.FirebaseEvent;
+import com.example.dev.firebaseobjects.FirebaseOrganizer;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -133,7 +134,24 @@ public class PublishEventActivity extends AppCompatActivity {
                 eventStart, eventEnd, finalPosterUrl, 0, locationRequired);
 
         newEventRef.set(newEvent)
-                .addOnSuccessListener(aVoid -> onPublishSuccess(eventName))
+                .addOnSuccessListener(aVoid -> {
+                    DocumentReference organizerRef = database.collection("organizers").document(organizerId);
+                    organizerRef.get().addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            FirebaseOrganizer organizer = documentSnapshot.toObject(FirebaseOrganizer.class);
+                            if (organizer != null) {
+                                organizer.addToCreatedEvents(newEvent);
+                                organizerRef.set(organizer)
+                                        .addOnSuccessListener(bVoid -> onPublishSuccess(eventName))
+                                        .addOnFailureListener(e -> onPublishFailure());
+                            } else {
+                                onPublishFailure();
+                            }
+                        } else {
+                            onPublishFailure();
+                        }
+                    }).addOnFailureListener(e -> onPublishFailure());
+                })
                 .addOnFailureListener(e -> onPublishFailure());
     }
 

@@ -1,14 +1,14 @@
 package com.example.dev.firebaseobjects;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FirebaseEntrant {
     private String email;
     private String name;
     private String phone;
-    private Set<String> joinedEvents = new HashSet<>();
-    private Set<String> waitlistedEvents = new HashSet<>();
+    private List<String> joinedEvents = new ArrayList<>();
+    private List<String> waitlistedEvents = new ArrayList<>();
 
     public FirebaseEntrant() {
     }
@@ -40,7 +40,7 @@ public class FirebaseEntrant {
         this.phone = phone;
     }
 
-    public Set<String> getJoinedEvents() {
+    public List<String> getJoinedEvents() {
         return joinedEvents;
     }
     public boolean existsInJoinedEvents(FirebaseEvent event) {
@@ -49,14 +49,16 @@ public class FirebaseEntrant {
     }
     public void addToJoinedEvents(FirebaseEvent event) {
         String eventID = event.getEventId();
-        joinedEvents.add(eventID);
+        if (!joinedEvents.contains(eventID)) {
+            joinedEvents.add(eventID);
+        }
     }
     public void removeFromJoinedEvents(FirebaseEvent event) {
         String eventID = event.getEventId();
         joinedEvents.remove(eventID);
     }
 
-    public Set<String> getWaitlistedEvents() {
+    public List<String> getWaitlistedEvents() {
         return waitlistedEvents;
     }
     public boolean existsInWaitlistedEvents(FirebaseEvent event) {
@@ -65,7 +67,9 @@ public class FirebaseEntrant {
     }
     public void addToWaitlistedEvents(FirebaseEvent event) {
         String eventID = event.getEventId();
-        waitlistedEvents.add(eventID);
+        if (!waitlistedEvents.contains(eventID)) {
+            waitlistedEvents.add(eventID);
+        }
     }
     public void removeFromWaitlistedEvents(FirebaseEvent event) {
         String eventID = event.getEventId();
