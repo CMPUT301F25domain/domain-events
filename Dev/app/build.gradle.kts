@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.annotationProcessor
+
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
@@ -66,4 +68,8 @@ dependencies {
 
     //RecyclerView
     implementation("androidx.recyclerview:recyclerview:1.4.0")
+
+
+
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 }
