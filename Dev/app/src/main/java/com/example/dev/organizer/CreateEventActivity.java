@@ -13,8 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.Nullable;
 
 import com.example.dev.R;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * Activity responsible for allowing Organizer to create a new event.
@@ -46,20 +44,20 @@ public class CreateEventActivity extends AppCompatActivity {
     private EditText editTextEventDate;
     private EditText editTextStartDate;
     private EditText editTextEndDate;
-    private FirebaseFirestore db;
 
     private Button createButton;
     private Switch locationSwitch;
     private ActivityResultLauncher<android.content.Intent> uploadPosterLauncher;
     @Nullable
     private String posterUri;
+    private String organizerId;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
-        db = FirebaseFirestore.getInstance();
+        organizerId = getIntent().getStringExtra("organizerID");
 
         initializeViews();
         setupUploadPosterLauncher();
@@ -74,7 +72,6 @@ public class CreateEventActivity extends AppCompatActivity {
         createButton.setOnClickListener(v -> {
             if (validateInput()) {
                 launchUploadPoster();
-                saveEventToFirebase();
             }
         });
     }
@@ -159,7 +156,8 @@ public class CreateEventActivity extends AppCompatActivity {
         String eventTime = editTextEventTime.getText().toString().trim();
         String eventStart = editTextStartDate.getText().toString().trim();
         String eventEnd = editTextEndDate.getText().toString().trim();
-        return new EventDraft(eventName, location, eventDate, eventTime, eventStart, eventEnd, posterUri);
+        boolean locationRequired = locationSwitch.isChecked();
+        return new EventDraft(organizerId, eventName, location, eventDate, eventTime, eventStart, eventEnd, posterUri, locationRequired);
 
     }
     private void populateForm(EventDraft draft) {
@@ -182,30 +180,5 @@ public class CreateEventActivity extends AppCompatActivity {
             editTextEndDate.setText(draft.getRegistrationEnd());
         }
         posterUri = draft.getPosterUri();
-    }
-    private void saveEventToFirebase(){
-        String eventName = editTextEventName.getText().toString().trim();
-        String location = editTextLocation.getText().toString().trim();
-        String eventDate = editTextEventDate.getText().toString().trim();
-        String eventTime = editTextEventTime.getText().toString().trim();
-        String eventStart = editTextStartDate.getText().toString().trim();
-        String eventEnd = editTextEndDate.getText().toString().trim();
-
-        boolean locationRequired = locationSwitch.isChecked();
-
-        DocumentReference newEventRef = db.collection("events").document();
-        String eventId = newEventRef.getId();
-
-        FirebaseEvent newEvent = new FirebaseEvent(eventId, eventName, location, eventDate, eventTime,
-                eventStart, eventEnd, 0, locationRequired);
-
-        newEventRef.set(newEvent).addOnSuccessListener(aVoid -> {
-            Toast.makeText(CreateEventActivity.this, "Event '" + eventName + "' created successfully!", Toast.LENGTH_LONG).show();
-            finish();
-        }).addOnFailureListener(e -> {
-            Toast.makeText(CreateEventActivity.this, "Error saving event!", Toast.LENGTH_LONG).show();
-
-        });
-
     }
 }

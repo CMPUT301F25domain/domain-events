@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dev.R;
+import com.example.dev.firebaseobjects.EventAdapter;
+import com.example.dev.firebaseobjects.FirebaseEvent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,12 +34,10 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
 
     private Button createEventbtn;
     private RecyclerView recyclerView;
-
     private EventAdapter adapter;
-
     private List<Event> eventList;
-
-    private FirebaseFirestore db;
+    private FirebaseFirestore database;
+    private String organizerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,8 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
 
         setContentView(R.layout.activity_organizer_dashboard);
 
-        db = FirebaseFirestore.getInstance();
+        database = FirebaseFirestore.getInstance();
+        organizerId = getIntent().getStringExtra("organizerID");
 
         createEventbtn = findViewById(R.id.btn_create_event);
         recyclerView = findViewById(R.id.recycler_view_events);
@@ -58,6 +59,7 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
 
         createEventbtn.setOnClickListener(v -> {
             Intent intent = new Intent(OrganizerDashboardActivity.this, CreateEventActivity.class);
+            intent.putExtra("organizerID", organizerId);
             startActivity(intent);
 
         });
@@ -74,7 +76,7 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
      */
 
     private void getEventsFromFirebase(){
-        db.collection("events").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        database.collection("events").whereEqualTo("organizerId", organizerId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){

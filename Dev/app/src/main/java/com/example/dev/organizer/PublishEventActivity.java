@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dev.R;
+import com.example.dev.firebaseobjects.FirebaseEvent;
+import com.example.dev.firebaseobjects.FirebaseOrganizer;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -54,9 +56,10 @@ public class PublishEventActivity extends AppCompatActivity {
     private static final String STATE_IS_PUBLISHING = "state_is_publishing";
 
     private FirebaseFirestore firestore;
+    private FirebaseStorage storage;
     private EventDraft eventDraft;
     @Nullable
-    private Uri posterUri;        // content:// URI passed from UploadPosterActivity
+    private Uri posterUri;
     private boolean isPublishing;
 
     @Override
@@ -243,7 +246,7 @@ public class PublishEventActivity extends AppCompatActivity {
     private void writeEventDocument(@NonNull DocumentReference newEventRef,
                                     @NonNull String eventId,
                                     @Nullable String posterUrl) {
-
+        String organizerId = eventDraft.getOrganizerId();
         String eventName = eventDraft.getEventName();
         String location = eventDraft.getLocation();
         String eventDate = eventDraft.getEventDate();

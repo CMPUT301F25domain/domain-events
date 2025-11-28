@@ -21,8 +21,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.dev.R;
+import com.example.dev.firebaseobjects.FirebaseEvent;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
@@ -57,6 +61,7 @@ public class EventDetailActivity extends AppCompatActivity {
     private TransferUtility transferUtility;
 
     private FirebaseFirestore db;
+    private FirebaseStorage storage;
 
     private TextView textViewName;
     private TextView textViewLocation;
@@ -70,6 +75,7 @@ public class EventDetailActivity extends AppCompatActivity {
     private Button viewQRCodeBtn;
     private Button updatePosterBtn;
     private Button viewWaitingListBtn;
+    private Button viewLotteryWinnerBtn;
 
     private String eventId = null;
 
@@ -100,41 +106,9 @@ public class EventDetailActivity extends AppCompatActivity {
                 .build();
 
         initializeViews();
-        db = FirebaseFirestore.getInstance();
-
-        getEventIdFromDashboardIntent(getIntent());
-
-        // Open QR screen
-        viewQRCodeBtn.setOnClickListener(v -> {
-            if (eventId == null) {
-                Toast.makeText(this, "Error: Event ID not found.", Toast.LENGTH_LONG).show();
-                return;
-            }
-            Intent intent = new Intent(EventDetailActivity.this, QRCodeDisplayActivity.class);
-            intent.putExtra("Event_ID", eventId);
-            startActivity(intent);
-        });
-
-        // Open Waiting List screen
-        viewWaitingListBtn.setOnClickListener(v -> {
-            if (eventId == null) {
-                Toast.makeText(this, "Missing event id", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Intent i = new Intent(this, OrganizerWaitingListActivity.class);
-            i.putExtra("extra_event_id", eventId);
-            startActivity(i);
-        });
-
-        if (eventId != null) {
-            getEventDetails(eventId);
-        } else {
-            Toast.makeText(this, "Error: Event ID not found.", Toast.LENGTH_LONG).show();
-            finish();
-        }
     }
 
-    private void initializeViews() {
+    private void initializeViews(){
         textViewName = findViewById(R.id.TV_detail_name);
         textViewLocation = findViewById(R.id.TV_detail_location);
         textViewDateTime = findViewById(R.id.TV_detail_date_time);
@@ -146,11 +120,56 @@ public class EventDetailActivity extends AppCompatActivity {
         viewQRCodeBtn = findViewById(R.id.btn_view_QR_code);
         updatePosterBtn = findViewById(R.id.button_update_poster);
         viewWaitingListBtn = findViewById(R.id.buttonViewWaitingList);
+        viewWaitingListBtn = findViewById(R.id.button_view_waiting_list);
+        viewLotteryWinnerBtn = findViewById(R.id.btn_view_lottery_winners);
+        db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+
+        getEventIdFromDashboardIntent(getIntent());
+        if (eventId != null){
+            getEventDetails(eventId);
+        } else {
+            Toast.makeText(this, "Error: Event ID not found.", Toast.LENGTH_LONG).show();
+            finish();
+        }
 
         setDetailsVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
 
         updatePosterBtn.setOnClickListener(v -> showUpdatePosterDialog());
+
+        // Open the waiting list host activity, passing eventId
+        viewWaitingListBtn.setOnClickListener(v -> {
+            if (eventId == null) {
+                Toast.makeText(this, "Missing event id", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Intent i = new Intent(this, OrganizerWaitingListActivity.class);
+            // Use a literal to avoid cross-class dependency issues
+            i.putExtra("extra_event_id", eventId);
+            startActivity(i);
+        });
+
+        viewQRCodeBtn.setOnClickListener(v -> {
+            if (eventId == null) {
+                Toast.makeText(this, "Error: Event ID not found.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Intent intent = new Intent(EventDetailActivity.this, QRCodeDisplayActivity.class);
+            intent.putExtra("Event_ID", eventId);
+            startActivity(intent);
+        });
+
+        viewLotteryWinnerBtn.setOnClickListener(v -> {
+            if (eventId == null) {
+                Toast.makeText(this, "Error: Event ID not found.", Toast.LENGTH_LONG).show();
+                return;
+            }
+            Intent intent = new Intent(EventDetailActivity.this, OrganizerLotteryDrawActivity.class);
+            intent.putExtra("Event_ID", eventId);
+            startActivity(intent);
+        });
     }
 
     private void getEventIdFromDashboardIntent(Intent intent) {

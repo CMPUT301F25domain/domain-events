@@ -23,17 +23,13 @@
         </activity>
 
         <activity
-            android:name=".AccountLogin"
+            android:name=".AccountSignup"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".AccountSignup"
-            android:exported="false"/>
 
         <activity
             android:name=".admin.AdminNavActivity"
@@ -54,12 +50,16 @@
             android:exported="false" />
         <activity
             android:name=".organizer.OrganizerDashboardActivity"
-            android:exported="false"/>
+            android:exported="false">
+        </activity>
         <activity
             android:name=".organizer.CreateEventActivity"
             android:exported="false" />
         <activity
             android:name=".organizer.UploadPosterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".organizer.OrganizerWaitingListActivity"
             android:exported="false" />
         <activity
             android:name=".organizer.PublishEventActivity"
@@ -70,11 +70,20 @@
         <activity
             android:name=".organizer.QRCodeDisplayActivity"
             android:exported="false" />
+        <activity
+            android:name=".organizer.OrganizerLotteryDrawActivity"
+            android:exported="false" />
+        <activity
+            android:name=".organizer.OrganizerDrawStatusActivity"
+            android:exported="false" />
+
+
 
         <!-- Added: Organizer waiting list screen -->
         <activity
             android:name=".organizer.OrganizerWaitingListActivity"
             android:exported="false" />
     </application>
+
 
 </manifest>
