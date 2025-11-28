@@ -43,11 +43,9 @@
             android:name=".entrant.EntrantNavActivity"
             android:exported="false"/>
         <activity
-            android:name=".entrant.EntrantMainActivity"
+            android:name=".entrant.EntrantBottomNavActivity"
             android:exported="false"/>
-        <activity
-            android:name=".entrant.EntrantMessagesActivity"
-            android:exported="false" />
+
         <activity
             android:name=".entrant.EventDetailsActivity"
             android:exported="false" />
