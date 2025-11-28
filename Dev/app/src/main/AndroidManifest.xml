@@ -77,6 +77,11 @@
             android:name=".organizer.OrganizerProfileActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".organizer.OrganizerImagesActivity"
+            android:exported="false" />
+
+
         <!-- Added: Organizer waiting list screen -->
         <activity
             android:name=".organizer.OrganizerWaitingListActivity"

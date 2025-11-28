@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
+//import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -70,7 +71,9 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
                 getEventsFromFirebase();
                 return true;
             } else if (id == R.id.navImages) {
-                Toast.makeText(this, "Images placeholder", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "Images placeholder", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, OrganizerImagesActivity.class));
+
                 return true;
             } else if (id == R.id.navProfile) {
                 startActivity(new Intent(this, OrganizerProfileActivity.class));
