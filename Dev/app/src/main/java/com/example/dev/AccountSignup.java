@@ -17,11 +17,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dev.admin.AdminNavActivity;
-import com.example.dev.entrant.EntrantMainActivity;
-import com.example.dev.firebaseobjects.FirebaseEntrant;
-import com.example.dev.firebaseobjects.FirebaseOrganizer;
 import com.example.dev.entrant.EntrantBottomNavActivity;
 import com.example.dev.organizer.OrganizerDashboardActivity;
+import com.example.dev.firebaseobjects.FirebaseEntrant;
+import com.example.dev.firebaseobjects.FirebaseOrganizer;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Source;
@@ -184,7 +183,7 @@ public class AccountSignup extends AppCompatActivity {
     private void checkIfExistingEntrantOrOrganizer() {
         database.collection("entrants").document(androidId).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Intent intent = new Intent(AccountSignup.this, EntrantMainActivity.class);
+                Intent intent = new Intent(AccountSignup.this, EntrantBottomNavActivity.class);
                 intent.putExtra("entrantID", androidId);
                 startActivity(intent);
                 finish();

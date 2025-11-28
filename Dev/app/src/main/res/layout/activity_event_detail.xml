@@ -137,9 +137,9 @@
         android:text="View Lottery Winners"
         android:textColor="@color/white" />
 
-    <!-- renamed the ID to buttonViewWaitingList -->
+    <!-- renamed the ID to btn_view_waiting_list -->
     <Button
-        android:id="@+id/buttonViewWaitingList"
+        android:id="@+id/btn_view_waiting_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="View Waiting List"

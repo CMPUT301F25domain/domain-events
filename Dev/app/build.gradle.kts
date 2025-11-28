@@ -52,6 +52,7 @@ dependencies {
 
     //Image loading
     implementation("com.github.bumptech.glide:glide:5.0.5")
+    implementation(libs.google.firebase.storage)
     annotationProcessor("com.github.bumptech.glide:compiler:5.0.5")
 
     //QR Code

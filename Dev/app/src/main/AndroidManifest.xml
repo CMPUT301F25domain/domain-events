@@ -76,13 +76,6 @@
         <activity
             android:name=".organizer.OrganizerDrawStatusActivity"
             android:exported="false" />
-
-
-
-        <!-- Added: Organizer waiting list screen -->
-        <activity
-            android:name=".organizer.OrganizerWaitingListActivity"
-            android:exported="false" />
     </application>
 
 

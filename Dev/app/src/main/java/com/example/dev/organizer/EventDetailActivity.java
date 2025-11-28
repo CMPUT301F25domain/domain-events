@@ -119,8 +119,7 @@ public class EventDetailActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
         viewQRCodeBtn = findViewById(R.id.btn_view_QR_code);
         updatePosterBtn = findViewById(R.id.button_update_poster);
-        viewWaitingListBtn = findViewById(R.id.buttonViewWaitingList);
-        viewWaitingListBtn = findViewById(R.id.button_view_waiting_list);
+        viewWaitingListBtn = findViewById(R.id.btn_view_waiting_list);
         viewLotteryWinnerBtn = findViewById(R.id.btn_view_lottery_winners);
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();

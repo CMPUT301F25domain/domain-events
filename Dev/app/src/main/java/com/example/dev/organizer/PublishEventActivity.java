@@ -1,5 +1,6 @@
 package com.example.dev.organizer;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -130,6 +132,7 @@ public class PublishEventActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("StringFormatInvalid")
     private void onPublishSuccess(@Nullable String eventName) {
         Toast.makeText(
                 this,
@@ -257,6 +260,7 @@ public class PublishEventActivity extends AppCompatActivity {
 
         FirebaseEvent newEvent = new FirebaseEvent(
                 eventId,
+                organizerId,
                 eventName,
                 location,
                 eventDate,
@@ -264,7 +268,8 @@ public class PublishEventActivity extends AppCompatActivity {
                 eventStart,
                 eventEnd,
                 finalPosterUrl,
-                0
+                0,
+                false
         );
 
         newEventRef.set(newEvent)
