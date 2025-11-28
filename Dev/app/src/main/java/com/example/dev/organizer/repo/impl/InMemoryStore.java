@@ -1,35 +1,57 @@
 package com.example.dev.organizer.repo.impl;
 
+import java.util.*;
+import com.example.dev.Keys;
 import com.example.dev.organizer.Entrant;
 import com.example.dev.organizer.Invitation;
+import com.example.dev.organizer.InvitationStatus;
+import com.example.dev.organizer.Enrollment;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+public final class InMemoryStore {
+    private static final InMemoryStore I = new InMemoryStore();
+    public static InMemoryStore i() { return I; }
 
-/**
- * Shared in-memory store so all *RepoMem classes see the same data.
- * This is only for demo/testing; replace with real persistence later.
- */
-final class InMemoryStore {
+    public final Map<String, List<Entrant>> waitingByEvent = new HashMap<>();
+    public final Map<String, List<Invitation>> invitesByEvent = new HashMap<>();
+    public final Map<String, List<Enrollment>> enrollmentsByEvent = new HashMap<>();
+    public final Map<String, List<String>> notifLogByEvent = new HashMap<>();
+    public final Map<String, Queue<String>> replacementQueueByEvent = new HashMap<>();
 
-    // Entrant buckets keyed by eventId
-    static final Map<String, List<Entrant>> waiting   = new ConcurrentHashMap<>();
-    static final Map<String, List<Entrant>> invited   = new ConcurrentHashMap<>();
-    static final Map<String, List<Entrant>> confirmed = new ConcurrentHashMap<>();
-    static final Map<String, List<Entrant>> cancelled = new ConcurrentHashMap<>();
+    private InMemoryStore() {
+        // seed demo data
+        List<Entrant> waiting = new ArrayList<>();
+        waiting.add(new Entrant("u1","Farzan Reza","farzan@ex.com", System.currentTimeMillis()-800000,"NW"));
+        waiting.add(new Entrant("u2","Jane Porter","jane@ex.com", System.currentTimeMillis()-700000,"NE"));
+        waiting.add(new Entrant("u3","John Claus","john@ex.com", System.currentTimeMillis()-600000,"SW"));
+        waiting.add(new Entrant("u4","Rafi","rafi@ex.com", System.currentTimeMillis()-500000,"SE"));
 
-    // Invitation records keyed by eventId (used by InvitationRepoMem)
-    static final Map<String, List<Invitation>> invitations = new ConcurrentHashMap<>();
+        waitingByEvent.put(Keys.DEMO_EVENT_ID, waiting);
 
-    // Very simple notification log per event (used by NotificationRepoMem)
-    static final Map<String, List<String>> eventNotifications = new ConcurrentHashMap<>();
+        List<Invitation> inv = new ArrayList<>();
+        inv.add(new Invitation("i1", Keys.DEMO_EVENT_ID, "u1", InvitationStatus.INVITED, System.currentTimeMillis()-400000));
+        inv.add(new Invitation("i2", Keys.DEMO_EVENT_ID, "u2", InvitationStatus.DECLINED, System.currentTimeMillis()-300000));
+        invitesByEvent.put(Keys.DEMO_EVENT_ID, inv);
 
-    private InMemoryStore() {}
 
-    /** Returns the mutable list bucket for the given eventId, creating it if needed. */
-    static <T> List<T> bucket(Map<String, List<T>> map, String eventId) {
-        return map.computeIfAbsent(eventId, k -> new ArrayList<>());
+        List<Enrollment> en = new ArrayList<>();
+        en.add(new Enrollment(Keys.DEMO_EVENT_ID, "u1", System.currentTimeMillis()-200000)); // pretend accepted
+        enrollmentsByEvent.put(Keys.DEMO_EVENT_ID, en);
+
+        recomputeQueue(Keys.DEMO_EVENT_ID);
+    }
+
+    public void recomputeQueue(String eventId) {
+        Set<String> inPipeline = new HashSet<>();
+        for (Invitation it : invitesByEvent.getOrDefault(eventId, Collections.emptyList())) {
+            inPipeline.add(it.entrantId);
+        }
+        for (Enrollment e : enrollmentsByEvent.getOrDefault(eventId, Collections.emptyList())) {
+            inPipeline.add(e.entrantId);
+        }
+        Queue<String> q = new ArrayDeque<>();
+        for (Entrant e : waitingByEvent.getOrDefault(eventId, Collections.emptyList())) {
+            if (!inPipeline.contains(e.id)) q.add(e.id);
+        }
+        replacementQueueByEvent.put(eventId, q);
     }
 }

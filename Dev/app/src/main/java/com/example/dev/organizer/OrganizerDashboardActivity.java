@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
-//import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dev.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -51,10 +49,6 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
 
         createEventbtn = findViewById(R.id.btn_create_event);
         recyclerView = findViewById(R.id.recycler_view_events);
-        final int currentMenuItemId = R.id.navHome;
-
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
-        bottomNavigation.setSelectedItemId(currentMenuItemId);
 
         eventList = new ArrayList<>();
         adapter = new EventAdapter(eventList, this);
@@ -66,25 +60,6 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
             Intent intent = new Intent(OrganizerDashboardActivity.this, CreateEventActivity.class);
             startActivity(intent);
 
-        });
-
-        bottomNavigation.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == currentMenuItemId) {
-                return true;
-            } else if (id == R.id.navHome) {
-                startActivity(new Intent(this, OrganizerDashboardActivity.class));
-                return true;
-            } else if (id == R.id.navImages) {
-//                Toast.makeText(this, "Images placeholder", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, OrganizerImagesActivity.class));
-
-                return true;
-            } else if (id == R.id.navProfile) {
-                startActivity(new Intent(this, OrganizerProfileActivity.class));
-                return true;
-            }
-            return false;
         });
     }
 
@@ -111,8 +86,7 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
                         Event displayTheNewEvent = new Event(
                                 fbEvent.getEventId(), fbEvent.getEventName(),
                                 "Default Category", fbEvent.getLocation(), fbEvent.getEventDate() + " at " +fbEvent.getEventTime(),
-                                (int) fbEvent.getAttendingCount(),
-                                fbEvent.getPosterUrl()
+                                (int) fbEvent.getAttendingCount()
                         );
 
                         eventList.add(displayTheNewEvent);

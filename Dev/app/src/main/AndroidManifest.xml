@@ -4,8 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -42,18 +40,21 @@
             android:exported="false"/>
 
         <activity
-            android:name=".entrant.EntrantBottomNavActivity"
+            android:name=".entrant.EntrantNavActivity"
             android:exported="false"/>
-
+        <activity
+            android:name=".entrant.EntrantMainActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".entrant.EntrantMessagesActivity"
+            android:exported="false" />
         <activity
             android:name=".entrant.EventDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".entrant.QRCodeScannerActivity"
             android:exported="false" />
-        <activity
-            android:name=".entrant.InvitationDetailsActivity"
-            android:exported="false" />
+
         <activity
             android:name=".organizer.OrganizerDashboardActivity"
             android:exported="false"/>
@@ -72,19 +73,9 @@
         <activity
             android:name=".organizer.QRCodeDisplayActivity"
             android:exported="false" />
-        <activity
-            android:name=".organizer.OrganizerProfileActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".organizer.OrganizerImagesActivity"
-            android:exported="false" />
 
 
-        <!-- Added: Organizer waiting list screen -->
-        <activity
-            android:name=".organizer.OrganizerWaitingListActivity"
-            android:exported="false" />
     </application>
+
 
 </manifest>

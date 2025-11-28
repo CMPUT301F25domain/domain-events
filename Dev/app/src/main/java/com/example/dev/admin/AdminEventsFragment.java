@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide;
 import com.example.dev.MainActivity;
 import com.example.dev.R;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -22,6 +21,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+
 /**
  * AdminEventsFragment
  *
@@ -94,8 +94,6 @@ public class AdminEventsFragment extends Fragment {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot querySnapshot,
                                         @Nullable FirebaseFirestoreException error) {
-                        if (!isAdded() || getContext() == null || getView() == null) return;
-
                         if (error != null) {
                             Toast.makeText(getContext(), "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
                             return;
@@ -117,11 +115,9 @@ public class AdminEventsFragment extends Fragment {
                             String eventEnd = doc.getString("eventEnd");
                             String eventTime = doc.getString("eventTime");
                             String location = doc.getString("location");
-                            String posterUrl = doc.getString("posterUrl");
-                            String posterUri = doc.getString("posterUri");
 
                             View eventView = getLayoutInflater().inflate(R.layout.item_admin_event, eventsContainer, false);
-                            ImageView posterImage = eventView.findViewById(R.id.eventImage);
+
                             /*
                                 Source: Stack Overflow
                                 Title: "How to display message from firebase to TextView Android Studio?"
@@ -164,11 +160,6 @@ public class AdminEventsFragment extends Fragment {
                                 closeText.setText("Registration closes on " + eventEnd);
                             } else {
                                 closeText.setText("Registration closing date unavailable");
-                            }
-                            if (posterUrl != null && !posterUrl.isEmpty()) {
-                                Glide.with(requireContext())
-                                        .load(posterUrl)
-                                        .into(posterImage);
                             }
 
                             /*

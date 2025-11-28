@@ -136,12 +136,12 @@
         android:padding="12dp"
         android:text="View Lottery Winners"
         android:textColor="@color/white" />
-
-    <!-- renamed the ID to buttonViewWaitingList -->
     <Button
-        android:id="@+id/buttonViewWaitingList"
+        android:id="@+id/button_view_waiting_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="View Waiting List"
         android:layout_marginTop="12dp"/>
+
+
 </LinearLayout>
