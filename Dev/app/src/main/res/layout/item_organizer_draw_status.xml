@@ -8,11 +8,12 @@
     android:background="@drawable/grey_card_bg">
 
     <ImageView
-        android:id="@+id/eventImage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="centerCrop"
-        android:contentDescription="Event image" />
+        android:id="@+id/entrantImage"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/profile"
+        android:layout_gravity="center_vertical"
+        android:scaleType="centerCrop" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -22,8 +23,8 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/eventName"
-            android:text="Event Name"
+            android:id="@+id/entrantName"
+            android:text="Entrant Name"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
             android:textSize="16sp"
@@ -31,8 +32,8 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/eventLocation"
-            android:text="Location"
+            android:id="@+id/entrantGmail"
+            android:text="Gmail"
             android:textColor="#CCCCCC"
             android:textSize="14sp"
             android:layout_marginTop="2dp"
@@ -40,22 +41,12 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/eventClose"
-            android:text="Registration closes on DATE at TIME"
+            android:id="@+id/entrantStatus"
+            android:text="Status: Invited"
             android:textColor="#BBBBBB"
-            android:textSize="13sp"
+            android:textSize="14sp"
             android:layout_marginTop="2dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/removeButton"
-            android:text="Remove"
-            android:textColor="#FFD700"
-            android:textSize="12sp"
-            android:gravity="end"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp" />
     </LinearLayout>
 </LinearLayout>

@@ -41,7 +41,7 @@ dependencies {
     implementation(libs.material)
 
     //Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.database)
@@ -52,6 +52,7 @@ dependencies {
 
     //Image loading
     implementation("com.github.bumptech.glide:glide:5.0.5")
+    implementation(libs.google.firebase.storage)
     annotationProcessor("com.github.bumptech.glide:compiler:5.0.5")
 
     //QR Code
@@ -64,4 +65,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    //RecyclerView
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
 }

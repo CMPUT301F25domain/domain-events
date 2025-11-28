@@ -36,6 +36,8 @@ public class QRCodeDisplayActivity extends AppCompatActivity {
         Button backButton = findViewById(R.id.btn_back);
         backButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
+        String eventId = getIntent().getStringExtra("Event_ID");
+
         downloadButton.setOnClickListener(v -> {
             if (qrCodeImageView.getDrawable() == null) {
                 Toast.makeText(this, "QR code not available to save", Toast.LENGTH_SHORT).show();
@@ -62,8 +64,6 @@ public class QRCodeDisplayActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         });
-
-        String eventId = getIntent().getStringExtra("Event_ID");
 
         if (eventId == null || eventId.isEmpty()) {
             Toast.makeText(this, "Event ID not found.", Toast.LENGTH_LONG).show();

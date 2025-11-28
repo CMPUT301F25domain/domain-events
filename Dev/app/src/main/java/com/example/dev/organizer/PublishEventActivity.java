@@ -1,5 +1,6 @@
 package com.example.dev.organizer;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dev.R;
+import com.example.dev.firebaseobjects.FirebaseEvent;
+import com.example.dev.firebaseobjects.FirebaseOrganizer;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -22,6 +25,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,9 +58,10 @@ public class PublishEventActivity extends AppCompatActivity {
     private static final String STATE_IS_PUBLISHING = "state_is_publishing";
 
     private FirebaseFirestore firestore;
+    private FirebaseStorage storage;
     private EventDraft eventDraft;
     @Nullable
-    private Uri posterUri;        // content:// URI passed from UploadPosterActivity
+    private Uri posterUri;
     private boolean isPublishing;
 
     @Override
@@ -127,6 +132,7 @@ public class PublishEventActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("StringFormatInvalid")
     private void onPublishSuccess(@Nullable String eventName) {
         Toast.makeText(
                 this,
@@ -243,7 +249,7 @@ public class PublishEventActivity extends AppCompatActivity {
     private void writeEventDocument(@NonNull DocumentReference newEventRef,
                                     @NonNull String eventId,
                                     @Nullable String posterUrl) {
-
+        String organizerId = eventDraft.getOrganizerId();
         String eventName = eventDraft.getEventName();
         String location = eventDraft.getLocation();
         String eventDate = eventDraft.getEventDate();
@@ -254,6 +260,7 @@ public class PublishEventActivity extends AppCompatActivity {
 
         FirebaseEvent newEvent = new FirebaseEvent(
                 eventId,
+                organizerId,
                 eventName,
                 location,
                 eventDate,
@@ -261,7 +268,8 @@ public class PublishEventActivity extends AppCompatActivity {
                 eventStart,
                 eventEnd,
                 finalPosterUrl,
-                0
+                0,
+                false
         );
 
         newEventRef.set(newEvent)
