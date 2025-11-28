@@ -205,6 +205,10 @@ public class OrganizerWaitingListFragment extends Fragment {
             Entrant e = items.get(pos);
             h.name.setText(e.name);
             h.email.setText(e.email);
+            String locationText = e.location == null || e.location.isEmpty()
+                    ? "Location: Unknown"
+                    : "Location: " + e.location;
+            h.location.setText(locationText);
             h.joined.setText(formatJoined(e.joinedAtMillis));
         }
 
@@ -222,12 +226,13 @@ public class OrganizerWaitingListFragment extends Fragment {
     }
 
     static class VH extends RecyclerView.ViewHolder {
-        TextView name, email, joined;
+        TextView name, email, location, joined;
 
         VH(View v) {
             super(v);
             name = v.findViewById(R.id.textName);
             email = v.findViewById(R.id.textEmail);
+            location = v.findViewById(R.id.textLocation);
             // Make sure your layout uses this ID; if your XML has textJoined instead,
             // change this findViewById to R.id.textJoined.
             joined = v.findViewById(R.id.textJoinedAt);
