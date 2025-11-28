@@ -1,18 +1,17 @@
 /**
  * EntrantEventAdapter
  *
- * RecyclerView adapter that binds event data to the entrant event list UI.
- * Each event item displays:
- *  - Event name
- *  - Location
- *  - Date
- *
- * When an item is clicked, the user is taken to EventDetailsActivity.
+ * RecyclerView adapter used to display a scrollable list of events
+ * in the Entrant Home screen.
  *
  * Responsibilities:
- *  - Inflate event list item layout
- *  - Bind model data to UI elements
- *  - Handle click navigation
+ *  - Inflate the event card layout (entrant_item_event.xml)
+ *  - Bind EntrantEvent model data to UI fields (name, date, location, image)
+ *  - Handle click events that open EventDetailsActivity
+ *
+ * Data Flow:
+ *  - Receives a list of EntrantEvent objects
+ *  - Populates each row in the RecyclerView
  */
 
 package com.example.dev.entrant.adapters;
@@ -22,6 +21,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -58,9 +58,14 @@ public class EntrantEventAdapter extends RecyclerView.Adapter<EntrantEventAdapte
         holder.location.setText("Location: " + event.getLocation());
         holder.date.setText("Date: " + event.getEventDate());
 
+        holder.image.setImageResource(R.drawable.images); // temp placeholder
+
         holder.itemView.setOnClickListener(v -> {
             Intent i = new Intent(context, EventDetailsActivity.class);
-            i.putExtra("eventId", event.getEventId()); // better to send ID
+            i.putExtra("eventId", event.getEventId());
+            i.putExtra("eventName", event.getEventName());
+            i.putExtra("location", event.getLocation());
+            i.putExtra("eventDate", event.getEventDate());
             context.startActivity(i);
         });
     }
@@ -68,14 +73,17 @@ public class EntrantEventAdapter extends RecyclerView.Adapter<EntrantEventAdapte
     @Override
     public int getItemCount() { return eventList.size(); }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name, location, date, joinedTextView;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        TextView name, location, date;
+        ImageView image;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.eventName);
             location = itemView.findViewById(R.id.eventLocation);
             date = itemView.findViewById(R.id.eventDate);
-            joinedTextView = itemView.findViewById(R.id.joined_text_view);
+            image = itemView.findViewById(R.id.eventImage);
         }
     }
 }

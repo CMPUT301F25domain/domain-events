@@ -88,7 +88,8 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
                         Event displayTheNewEvent = new Event(
                                 fbEvent.getEventId(), fbEvent.getEventName(),
                                 "Default Category", fbEvent.getLocation(), fbEvent.getEventDate() + " at " +fbEvent.getEventTime(),
-                                (int) fbEvent.getAttendingCount()
+                                (int) fbEvent.getAttendingCount(),
+                                fbEvent.getPosterUrl()
                         );
 
                         eventList.add(displayTheNewEvent);

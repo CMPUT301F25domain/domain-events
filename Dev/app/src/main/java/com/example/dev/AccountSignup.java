@@ -11,15 +11,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dev.admin.AdminNavActivity;
-import com.example.dev.entrant.EntrantMainActivity;
+import com.example.dev.entrant.EntrantBottomNavActivity;
+import com.example.dev.organizer.OrganizerDashboardActivity;
 import com.example.dev.firebaseobjects.FirebaseEntrant;
 import com.example.dev.firebaseobjects.FirebaseOrganizer;
-import com.example.dev.organizer.OrganizerDashboardActivity;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Source;
@@ -33,15 +34,17 @@ public class AccountSignup extends AppCompatActivity {
     private Spinner accountSpi;
     private EditText clearanceEditText, nameEditText, gmailEditText, phoneNumberEditText;
     private Button signupBtn;
+    private TextView loginRedirectText;
     private FirebaseFirestore database;
     private List<String> accountTypes = Arrays.asList("Entrant", "Organizer");     //account type 2, 1 respectively
     private String organizerClearance = "iamorganizer";     //account type 1
     private int selectedAccountType = 2;
     private static final int ROLE_ENTRANT = 2;
+    private static final int ROLE_ADMIN = 3;
     private static final int ROLE_ORGANIZER = 1;
     private String androidId;
     private static final Set<String> ADMIN_IDS = new HashSet<>(Arrays.asList(
-            "b517f206a0d0db64", "admin_id_2", "admin_id_3", "admin_id_4", "admin_id_5", "admin_id_6"        //ADD YOURSELVES TO THIS
+            "a70410e72b8758f5", "admin_id_2", "admin_id_3", "admin_id_4", "admin_id_5", "admin_id_6"        //ADD YOURSELVES TO THIS
     ));
 
     @Override
@@ -89,7 +92,6 @@ public class AccountSignup extends AppCompatActivity {
                 //do nithing
             }
         });
-
 
         signupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,7 +153,7 @@ public class AccountSignup extends AppCompatActivity {
                                     FirebaseEntrant newEntrant = new FirebaseEntrant(inputName, inputGmail, inputPhone);
                                     newEntrantRef.set(newEntrant).addOnSuccessListener(bVoid -> {
                                         Toast.makeText(AccountSignup.this, "Account created successfully!", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(AccountSignup.this, EntrantMainActivity.class);
+                                        Intent intent = new Intent(AccountSignup.this, EntrantBottomNavActivity.class);
                                         intent.putExtra("entrantID", androidId);
                                         startActivity(intent);
                                         finish();
@@ -181,7 +183,7 @@ public class AccountSignup extends AppCompatActivity {
     private void checkIfExistingEntrantOrOrganizer() {
         database.collection("entrants").document(androidId).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Intent intent = new Intent(AccountSignup.this, EntrantMainActivity.class);
+                Intent intent = new Intent(AccountSignup.this, EntrantBottomNavActivity.class);
                 intent.putExtra("entrantID", androidId);
                 startActivity(intent);
                 finish();
