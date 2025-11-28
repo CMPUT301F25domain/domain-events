@@ -18,11 +18,10 @@ public class EntrantEvent {
     private String eventTime;
     private String location;
     private boolean locationRequired;
+    private boolean isSignedUp;
 
-    // Required empty constructor for Firestore
     public EntrantEvent() { }
 
-    // Full constructor (use this when creating an event in code)
     public EntrantEvent(int attendingCount, String eventDate, String eventEnd, String eventId,
                         String eventName, String eventStart, String eventTime,
                         String location, boolean locationRequired) {
@@ -38,25 +37,74 @@ public class EntrantEvent {
         this.locationRequired = locationRequired;
     }
 
-    // Getters (supports Firestore reads + RecyclerView binding)
-    public int getAttendingCount() { return attendingCount; }
-    public String getEventDate() { return eventDate; }
-    public String getEventEnd() { return eventEnd; }
-    public String getEventId() { return eventId; }
-    public String getEventName() { return eventName; }
-    public String getEventStart() { return eventStart; }
-    public String getEventTime() { return eventTime; }
-    public String getLocation() { return location; }
-    public boolean isLocationRequired() { return locationRequired; }
+    public int getAttendingCount() {
+        return attendingCount;
+    }
+    public void setAttendingCount(int attendingCount) {
+        this.attendingCount = attendingCount;
+    }
 
-    // Setters (allows updating fields or writing back to Firestore)
-    public void setAttendingCount(int attendingCount) { this.attendingCount = attendingCount; }
-    public void setEventDate(String eventDate) { this.eventDate = eventDate; }
-    public void setEventEnd(String eventEnd) { this.eventEnd = eventEnd; }
-    public void setEventId(String eventId) { this.eventId = eventId; }
-    public void setEventName(String eventName) { this.eventName = eventName; }
-    public void setEventStart(String eventStart) { this.eventStart = eventStart; }
-    public void setEventTime(String eventTime) { this.eventTime = eventTime; }
-    public void setLocation(String location) { this.location = location; }
-    public void setLocationRequired(boolean locationRequired) { this.locationRequired = locationRequired; }
+    public String getEventDate() {
+        return eventDate;
+    }
+    public void setEventDate(String eventDate) {
+        this.eventDate = eventDate;
+    }
+
+    public String getEventEnd() {
+        return eventEnd;
+    }
+    public void setEventEnd(String eventEnd) {
+        this.eventEnd = eventEnd;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public String getEventStart() {
+        return eventStart;
+    }
+    public void setEventStart(String eventStart) {
+        this.eventStart = eventStart;
+    }
+
+    public String getEventTime() {
+        return eventTime;
+    }
+    public void setEventTime(String eventTime) {
+        this.eventTime = eventTime;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public boolean isLocationRequired() {
+        return locationRequired;
+    }
+    public void setLocationRequired(boolean locationRequired) {
+        this.locationRequired = locationRequired;
+    }
+
+    public boolean isSignedUp() {
+        return isSignedUp;
+    }
+    public void setSignedUp(boolean signedUp) {
+        isSignedUp = signedUp;
+    }
+
 }

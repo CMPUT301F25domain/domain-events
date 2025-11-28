@@ -36,12 +36,15 @@ public class EntrantMainActivity extends AppCompatActivity {
     EntrantEventAdapter adapter;
     ArrayList<EntrantEvent> eventList = new ArrayList<>();
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseFirestore database = FirebaseFirestore.getInstance();
+    private String entrantId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.entrant_activity_main);
+
+        entrantId = getIntent().getStringExtra("entrantID");
 
         MaterialToolbar toolbar = findViewById(R.id.event_list_toolbar);
         setSupportActionBar(toolbar);
@@ -55,10 +58,6 @@ public class EntrantMainActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             }
-            return false;
-        });
-
-        toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.qr_scanner) {
                 Intent intent = new Intent(EntrantMainActivity.this, QRCodeScannerActivity.class);
                 startActivity(intent);
@@ -90,7 +89,7 @@ public class EntrantMainActivity extends AppCompatActivity {
     }
 
     private void loadEvents() {
-        db.collection("events").addSnapshotListener((value, error) -> {
+        database.collection("events").addSnapshotListener((value, error) -> {
             if (error != null) {
                 Log.e("FIRESTORE_ERROR", error.getMessage());
                 return;
