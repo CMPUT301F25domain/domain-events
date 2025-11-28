@@ -3,12 +3,11 @@
 
 package com.example.dev.organizer;
 
-import static com.example.dev.Keys.DEMO_EVENT_ID;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dev.R;
 import com.example.dev.organizer.di.ServiceLocator;
+import com.example.dev.repo.WaitingListRepository;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ public class OrganizerWaitingListFragment extends Fragment {
 
     private RecyclerView rv;
     private TextView countTv;
+    private ProgressBar loadingPb;
     private final List<Entrant> data = new ArrayList<>();
     private boolean newestFirst = true; // simple filter: toggle sort order
     private String eventId;
@@ -55,6 +56,7 @@ public class OrganizerWaitingListFragment extends Fragment {
 
         countTv = v.findViewById(R.id.textCount);
         rv = v.findViewById(R.id.recyclerWaitingList);
+        loadingPb = v.findViewById(R.id.progressWaitingList);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(new WaitingAdapter(data));
 
@@ -86,8 +88,30 @@ public class OrganizerWaitingListFragment extends Fragment {
             Toast.makeText(getContext(), "Missing event id", Toast.LENGTH_SHORT).show();
             return;
         }
-        // Fetch latest list
-        List<Entrant> latest = ServiceLocator.waiting().list(eventId);
+        setLoading(true);
+        WaitingListRepository repo = ServiceLocator.waiting();
+
+        // Show cached data immediately if available
+        applyData(repo.cached(eventId));
+
+        repo.list(eventId, new WaitingListRepository.Callback() {
+            @Override
+            public void onSuccess(List<Entrant> entrants) {
+                if (!isAdded()) return;
+                setLoading(false);
+                applyData(entrants);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                if (!isAdded()) return;
+                setLoading(false);
+                Toast.makeText(getContext(), "Failed to load waiting list", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void applyData(List<Entrant> latest) {
         data.clear();
         if (latest != null) {
             data.addAll(latest);
@@ -100,8 +124,8 @@ public class OrganizerWaitingListFragment extends Fragment {
         }
         Collections.sort(data, cmp);
 
-        // Update count from repo (US 01.05.04)
-        int total = ServiceLocator.waiting().count(eventId);
+        // Update count from the latest snapshot (US 01.05.04)
+        int total = data.size();
         countTv.setText("Waiting: " + total);
 
         // Notify adapter
@@ -110,6 +134,11 @@ public class OrganizerWaitingListFragment extends Fragment {
             rv.setAdapter(new WaitingAdapter(data));
         } else {
             adapter.notifyDataSetChanged();
+        }
+    }
+    private void setLoading(boolean loading) {
+        if (loadingPb != null) {
+            loadingPb.setVisibility(loading ? View.VISIBLE : View.GONE);
         }
     }
 
