@@ -34,6 +34,17 @@ public class OrganizerWaitingListFragment extends Fragment {
     private TextView countTv;
     private final List<Entrant> data = new ArrayList<>();
     private boolean newestFirst = true; // simple filter: toggle sort order
+    private String eventId;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            eventId = args.getString("extra_event_id");
+        }
+    }
+
 
     @Nullable
     @Override
@@ -71,8 +82,12 @@ public class OrganizerWaitingListFragment extends Fragment {
     }
 
     private void refresh() {
+        if (eventId == null) {
+            Toast.makeText(getContext(), "Missing event id", Toast.LENGTH_SHORT).show();
+            return;
+        }
         // Fetch latest list
-        List<Entrant> latest = ServiceLocator.waiting().list(DEMO_EVENT_ID);
+        List<Entrant> latest = ServiceLocator.waiting().list(eventId);
         data.clear();
         if (latest != null) {
             data.addAll(latest);
@@ -86,7 +101,7 @@ public class OrganizerWaitingListFragment extends Fragment {
         Collections.sort(data, cmp);
 
         // Update count from repo (US 01.05.04)
-        int total = ServiceLocator.waiting().count(DEMO_EVENT_ID);
+        int total = ServiceLocator.waiting().count(eventId);
         countTv.setText("Waiting: " + total);
 
         // Notify adapter
