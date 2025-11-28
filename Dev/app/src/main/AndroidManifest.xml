@@ -73,6 +73,9 @@
         <activity
             android:name=".organizer.QRCodeDisplayActivity"
             android:exported="false" />
+        <activity
+            android:name=".organizer.OrganizerProfileActivity"
+            android:exported="false" />
 
         <!-- Added: Organizer waiting list screen -->
         <activity

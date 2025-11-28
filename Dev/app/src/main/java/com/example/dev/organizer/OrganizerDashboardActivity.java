@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dev.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -49,6 +50,7 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
 
         createEventbtn = findViewById(R.id.btn_create_event);
         recyclerView = findViewById(R.id.recycler_view_events);
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
 
         eventList = new ArrayList<>();
         adapter = new EventAdapter(eventList, this);
@@ -61,6 +63,25 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
             startActivity(intent);
 
         });
+
+        bottomNavigation.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.navHome) {
+                getEventsFromFirebase();
+                return true;
+            } else if (id == R.id.navImages) {
+                Toast.makeText(this, "Images placeholder", Toast.LENGTH_SHORT).show();
+                return true;
+            } else if (id == R.id.navProfile) {
+                startActivity(new Intent(this, OrganizerProfileActivity.class));
+                return true;
+            }
+            return false;
+        });
+
+        if (savedInstanceState == null) {
+            bottomNavigation.setSelectedItemId(R.id.navHome);
+        }
     }
 
     @Override
