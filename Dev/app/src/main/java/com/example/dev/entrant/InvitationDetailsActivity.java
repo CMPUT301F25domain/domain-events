@@ -7,6 +7,7 @@
 package com.example.dev.entrant;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,13 +19,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.dev.R;
 import com.example.dev.utils.DeviceIdUtil;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Transaction;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class InvitationDetailsActivity extends AppCompatActivity {
+
+    private static final String TAG = "InvitationDetails";
 
     private TextView title, date, location, messageText, waitingCount;
     private ImageView poster;
@@ -51,7 +60,9 @@ public class InvitationDetailsActivity extends AppCompatActivity {
     private void setupToolbar() {
         MaterialToolbar toolbar = findViewById(R.id.invitationToolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void initViews() {
@@ -65,137 +76,125 @@ public class InvitationDetailsActivity extends AppCompatActivity {
         acceptBtn = findViewById(R.id.invAcceptBtn);
         declineBtn = findViewById(R.id.invDeclineBtn);
 
-        acceptBtn.setOnClickListener(v -> acceptInvitation());
-        declineBtn.setOnClickListener(v -> declineInvitation());
+        acceptBtn.setOnClickListener(v -> handleInvitationResponse("accepted"));
+        declineBtn.setOnClickListener(v -> handleInvitationResponse("declined"));
     }
 
     private void loadEventDetails() {
         db.collection("events").document(eventId)
                 .get()
-                .addOnSuccessListener(doc -> {
-                    if (!doc.exists()) return;
-
-                    String eventName = doc.getString("eventName");
-                    String eventDate = doc.getString("eventDate");
-                    String eventLocation = doc.getString("location");
-                    String posterUrl = doc.getString("posterUrl");
-
-                    String msg = "You have been selected for this event.";
-
-                    List<String> waitingList = (List<String>) doc.get("waitingList");
-                    int count = waitingList != null ? waitingList.size() : 0;
-
-                    title.setText(eventName);
-                    date.setText("Date: " + eventDate);
-                    location.setText("Location: " + eventLocation);
-                    waitingCount.setText("Waiting List Count: " + count);
-                    messageText.setText(msg);
-
-                    if (posterUrl != null && !posterUrl.isEmpty()) {
-                        Glide.with(this)
-                                .load(posterUrl)
-                                .placeholder(R.drawable.images)
-                                .into(poster);
-                    }
-
-                    updateButtonState(doc);
-                });
+                .addOnSuccessListener(this::processEventDocument);
     }
 
-    private void updateButtonState(com.google.firebase.firestore.DocumentSnapshot doc) {
+    private void processEventDocument(DocumentSnapshot doc) {
+        if (!doc.exists()) return;
 
-        List<String> accepted = (List<String>) doc.get("acceptedList");
-        List<String> declined = (List<String>) doc.get("declinedList");
+        String eventName = doc.getString("eventName");
+        String eventDate = doc.getString("eventDate");
+        String eventLocation = doc.getString("location");
+        String posterUrl = doc.getString("posterUrl");
+        String msg = "You have been selected for this event.";
 
-        boolean alreadyAccepted = accepted != null && accepted.contains(deviceId);
-        boolean alreadyDeclined = declined != null && declined.contains(deviceId);
+        List<Map<String, Object>> waitingList = (List<Map<String, Object>>) doc.get("waitingList");
+        int count = waitingList != null ? waitingList.size() : 0;
 
-        if (alreadyAccepted) {
+        // Find entrant's current status
+        String currentStatus = "unknown";
+        if (waitingList != null) {
+            for (Map<String, Object> entrant : waitingList) {
+                if (deviceId.equals(entrant.get("entrantId"))) {
+                    currentStatus = (String) entrant.get("status");
+                    break;
+                }
+            }
+        }
+
+        title.setText(eventName);
+        date.setText("Date: " + eventDate);
+        location.setText("Location: " + eventLocation);
+        waitingCount.setText("Waiting List Count: " + count);
+        messageText.setText(msg);
+
+        if (posterUrl != null && !posterUrl.isEmpty()) {
+            Glide.with(this)
+                    .load(posterUrl)
+                    .placeholder(R.drawable.images)
+                    .into(poster);
+        }
+
+        updateButtonState(currentStatus);
+    }
+
+    private void updateButtonState(String currentStatus) {
+        // Disable buttons if a decision has already been made
+        if ("accepted".equals(currentStatus)) {
             acceptBtn.setEnabled(false);
             declineBtn.setEnabled(false);
             acceptBtn.setText("Already Accepted");
-        } else if (alreadyDeclined) {
+        } else if ("declined".equals(currentStatus)) {
             acceptBtn.setEnabled(false);
             declineBtn.setEnabled(false);
             declineBtn.setText("Already Declined");
         }
+        // If status is "waitListed" or "invited", buttons remain enabled.
     }
 
-    private void acceptInvitation() {
-        String deviceId = DeviceIdUtil.getDeviceId(this);
+    private void handleInvitationResponse(String newStatus) {
 
-        db.collection("entrants").document(deviceId).get()
-                .addOnSuccessListener(entrantDoc -> {
+        DocumentReference eventRef = db.collection("events").document(eventId);
 
-                    if (!entrantDoc.exists()) return;
+        db.runTransaction((Transaction.Function<Void>) t -> {
+            DocumentSnapshot snapshot = t.get(eventRef);
 
-                    String name = entrantDoc.getString("name");
-                    String email = entrantDoc.getString("email");
+            List<Map<String, Object>> waitingList = (List<Map<String, Object>>) snapshot.get("waitingList");
+            Map<String, Object> oldEntrantData = null;
+            int entrantIndex = -1;
 
-                    java.util.Map<String, Object> entrantData = new java.util.HashMap<>();
-                    entrantData.put("entrantId", deviceId);
-                    entrantData.put("name", name);
-                    entrantData.put("email", email);
+            if (waitingList != null) {
+                for (int i = 0; i < waitingList.size(); i++) {
+                    Map<String, Object> entrant = waitingList.get(i);
+                    // Find the entrant using the deviceId (entrantId)
+                    if (deviceId.equals(entrant.get("entrantId"))) {
+                        oldEntrantData = entrant;
+                        entrantIndex = i;
+                        break;
+                    }
+                }
+            }
 
-                    db.runTransaction(t -> {
 
-                        var ref = db.collection("events").document(eventId);
+            Map<String, Object> newEntrantData = new java.util.HashMap<>(oldEntrantData);
+            newEntrantData.put("status", newStatus);
 
-                        t.update(ref, "waitingList", FieldValue.arrayRemove(entrantData));
-                        t.update(ref, "acceptedList", FieldValue.arrayUnion(entrantData));
-                        t.update(ref, "declinedList", FieldValue.arrayRemove(entrantData));
+            t.update(eventRef, "waitingList", FieldValue.arrayRemove(oldEntrantData));
 
-                        return null;
+            t.update(eventRef, "waitingList", FieldValue.arrayUnion(newEntrantData));
 
-                    }).addOnSuccessListener(a -> {
+            if ("accepted".equals(newStatus)) {
+                long currentCount = snapshot.getLong("attendingCount") != null ? snapshot.getLong("attendingCount") : 0;
+                t.update(eventRef, "attendingCount", currentCount + 1);
+            }
 
-                        Toast.makeText(this, "Invitation Accepted!", Toast.LENGTH_SHORT).show();
-                        acceptBtn.setEnabled(false);
-                        declineBtn.setEnabled(false);
-                        acceptBtn.setText("Accepted");
+            return null;
+        }).addOnSuccessListener(a -> {
+            Toast.makeText(this, "Invitation " + newStatus + "!", Toast.LENGTH_SHORT).show();
+            acceptBtn.setEnabled(false);
+            declineBtn.setEnabled(false);
 
-                    }).addOnFailureListener(e ->
-                            Toast.makeText(this, "Failed to accept invitation.", Toast.LENGTH_SHORT).show()
-                    );
-                });
+            if ("accepted".equals(newStatus)) {
+                acceptBtn.setText("Accepted");
+            } else {
+                declineBtn.setText("Declined");
+            }
+        }).addOnFailureListener(e -> {
+            Log.e(TAG, "Transaction failed: " + e.getMessage());
+            Toast.makeText(this, "Failed to update invitation status.", Toast.LENGTH_SHORT).show();
+        });
     }
 
-    private void declineInvitation() {
-        String deviceId = DeviceIdUtil.getDeviceId(this);
-
-        db.collection("entrants").document(deviceId).get()
-                .addOnSuccessListener(entrantDoc -> {
-
-                    if (!entrantDoc.exists()) return;
-
-                    String name = entrantDoc.getString("name");
-                    String email = entrantDoc.getString("email");
-
-                    java.util.Map<String, Object> entrantData = new java.util.HashMap<>();
-                    entrantData.put("entrantId", deviceId);
-                    entrantData.put("name", name);
-                    entrantData.put("email", email);
-
-                    db.runTransaction(t -> {
-
-                        var ref = db.collection("events").document(eventId);
-
-                        t.update(ref, "waitingList", FieldValue.arrayRemove(entrantData));
-                        t.update(ref, "declinedList", FieldValue.arrayUnion(entrantData));
-                        t.update(ref, "acceptedList", FieldValue.arrayRemove(entrantData));
-
-                        return null;
-
-                    }).addOnSuccessListener(a -> {
-
-                        Toast.makeText(this, "Invitation Declined.", Toast.LENGTH_SHORT).show();
-                        acceptBtn.setEnabled(false);
-                        declineBtn.setEnabled(false);
-                        declineBtn.setText("Declined");
-
-                    }).addOnFailureListener(e ->
-                            Toast.makeText(this, "Failed to decline invitation.", Toast.LENGTH_SHORT).show()
-                    );
-                });
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 }
