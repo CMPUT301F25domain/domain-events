@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dev.R;
 import com.example.dev.organizer.di.ServiceLocator;
 import com.example.dev.repo.WaitingListRepository;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.button.MaterialButtonToggleGroup;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -33,6 +35,10 @@ public class OrganizerWaitingListFragment extends Fragment {
     private RecyclerView rv;
     private TextView countTv;
     private ProgressBar loadingPb;
+    private View filterPanel;
+    private MaterialButtonToggleGroup sortToggleGroup;
+    private MaterialButton newestBtn;
+    private MaterialButton oldestBtn;
     private final List<Entrant> data = new ArrayList<>();
     private boolean newestFirst = true; // simple filter: toggle sort order
     private String eventId;
@@ -57,19 +63,36 @@ public class OrganizerWaitingListFragment extends Fragment {
         countTv = v.findViewById(R.id.textCount);
         rv = v.findViewById(R.id.recyclerWaitingList);
         loadingPb = v.findViewById(R.id.progressWaitingList);
+        filterPanel = v.findViewById(R.id.filterPanel);
+        sortToggleGroup = v.findViewById(R.id.toggleSortOrder);
+        newestBtn = v.findViewById(R.id.buttonNewestFirst);
+        oldestBtn = v.findViewById(R.id.buttonOldestFirst);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(new WaitingAdapter(data));
 
-        // Simple toggle sort to make the filter button useful (no extra UI needed)
         View filterBtn = v.findViewById(R.id.buttonFilter);
         if (filterBtn != null) {
             filterBtn.setOnClickListener(btn -> {
-                newestFirst = !newestFirst;
-                Toast.makeText(getContext(),
-                        newestFirst ? "Sorting by newest first" : "Sorting by oldest first",
-                        Toast.LENGTH_SHORT).show();
+                if (filterPanel != null) {
+                    int visibility = filterPanel.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE;
+                    filterPanel.setVisibility(visibility);
+                }
+            });
+        }
+
+        if (sortToggleGroup != null) {
+            sortToggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+                if (!isChecked) return;
+                if (checkedId == R.id.buttonOldestFirst) {
+                    newestFirst = false;
+                    Toast.makeText(getContext(), "Sorting by oldest first", Toast.LENGTH_SHORT).show();
+                } else {
+                    newestFirst = true;
+                    Toast.makeText(getContext(), "Sorting by newest first", Toast.LENGTH_SHORT).show();
+                }
                 refresh();
             });
+            updateSortToggles();
         }
 
         refresh();
@@ -128,12 +151,29 @@ public class OrganizerWaitingListFragment extends Fragment {
         int total = data.size();
         countTv.setText("Waiting: " + total);
 
+        updateSortToggles();
+
         // Notify adapter
         RecyclerView.Adapter<?> adapter = rv.getAdapter();
         if (adapter == null) {
             rv.setAdapter(new WaitingAdapter(data));
         } else {
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void updateSortToggles() {
+        if (sortToggleGroup != null) {
+            int targetId = newestFirst ? R.id.buttonNewestFirst : R.id.buttonOldestFirst;
+            if (sortToggleGroup.getCheckedButtonId() != targetId) {
+                sortToggleGroup.check(targetId);
+            }
+        }
+        if (newestBtn != null) {
+            newestBtn.setChecked(newestFirst);
+        }
+        if (oldestBtn != null) {
+            oldestBtn.setChecked(!newestFirst);
         }
     }
     private void setLoading(boolean loading) {
