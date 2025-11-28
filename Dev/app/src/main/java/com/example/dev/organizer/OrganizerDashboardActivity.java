@@ -61,7 +61,6 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
             Intent intent = new Intent(OrganizerDashboardActivity.this, CreateEventActivity.class);
             intent.putExtra("organizerID", organizerId);
             startActivity(intent);
-
         });
     }
 
