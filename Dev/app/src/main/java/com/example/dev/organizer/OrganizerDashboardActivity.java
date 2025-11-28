@@ -51,7 +51,10 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
 
         createEventbtn = findViewById(R.id.btn_create_event);
         recyclerView = findViewById(R.id.recycler_view_events);
+        final int currentMenuItemId = R.id.navHome;
+
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        bottomNavigation.setSelectedItemId(currentMenuItemId);
 
         eventList = new ArrayList<>();
         adapter = new EventAdapter(eventList, this);
@@ -67,8 +70,10 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
 
         bottomNavigation.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.navHome) {
-                getEventsFromFirebase();
+            if (id == currentMenuItemId) {
+                return true;
+            } else if (id == R.id.navHome) {
+                startActivity(new Intent(this, OrganizerDashboardActivity.class));
                 return true;
             } else if (id == R.id.navImages) {
 //                Toast.makeText(this, "Images placeholder", Toast.LENGTH_SHORT).show();
@@ -81,10 +86,6 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
             }
             return false;
         });
-
-        if (savedInstanceState == null) {
-            bottomNavigation.setSelectedItemId(R.id.navHome);
-        }
     }
 
     @Override
