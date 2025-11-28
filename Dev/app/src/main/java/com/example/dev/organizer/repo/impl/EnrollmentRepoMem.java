@@ -1,23 +1,36 @@
 package com.example.dev.organizer.repo.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.example.dev.repo.EnrollmentRepository;
 import com.example.dev.organizer.Enrollment;
 
-public class EnrollmentRepoMem implements EnrollmentRepository {
-    @Override public List<Enrollment> list(String eventId) {
-        return new ArrayList<>(InMemoryStore.i().enrollmentsByEvent.getOrDefault(eventId, new ArrayList<>()));
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+/** In-memory enrollment store grouped by eventId. */
+public class EnrollmentRepoMem {
+
+    // eventId -> enrollments
+    private final Map<String, List<Enrollment>> byEvent = new ConcurrentHashMap<>();
+
+    private List<Enrollment> bucket(String eventId) {
+        return byEvent.computeIfAbsent(eventId, k -> new ArrayList<>());
     }
-    @Override public void enroll(String eventId, String entrantId) {
-        InMemoryStore.i().enrollmentsByEvent.computeIfAbsent(eventId,k->new ArrayList<>())
-                .add(new Enrollment(eventId, entrantId, System.currentTimeMillis()));
-        InMemoryStore.i().recomputeQueue(eventId);
+
+    /** Add an enrollment record for an entrant. */
+    public synchronized void enroll(String eventId, String entrantId) {
+        // adjust constructor args to match your Enrollment class exactly
+        Enrollment e = new Enrollment(eventId, entrantId, System.currentTimeMillis());
+        bucket(eventId).add(e);
     }
-    @Override public void remove(String eventId, String entrantId) {
-        List<Enrollment> list = InMemoryStore.i().enrollmentsByEvent.getOrDefault(eventId, new ArrayList<>());
-        list.removeIf(e -> e.entrantId.equals(entrantId));
-        InMemoryStore.i().recomputeQueue(eventId);
+
+    /** Return a snapshot of all enrollments for an event. */
+    public synchronized List<Enrollment> list(String eventId) {
+        return new ArrayList<>(bucket(eventId));
+    }
+
+    /** Optional helper: remove an enrollment for an entrant. */
+    public synchronized void cancel(String eventId, String entrantId) {
+        bucket(eventId).removeIf(en -> entrantId.equals(en.entrantId));
     }
 }
