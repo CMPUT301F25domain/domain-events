@@ -125,8 +125,8 @@
             android:hint="@string/maximum_wait_list_entrants"
             android:inputType="number"
             android:padding="15dp"
-            android:textColorHint="#999999"
-            android:visibility="gone" />
+            android:textColor="@color/white"
+            android:textColorHint="#999999" />
 
 
         <Button

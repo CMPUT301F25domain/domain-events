@@ -2,6 +2,7 @@ package com.example.dev.organizer;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -50,6 +51,9 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private Button createButton;
     private Switch locationSwitch;
+
+    private CheckBox limitWaitListCB;
+    private EditText waitListLimitET;
     private ActivityResultLauncher<android.content.Intent> uploadPosterLauncher;
     @Nullable
     private String posterUri;
@@ -98,6 +102,8 @@ public class CreateEventActivity extends AppCompatActivity {
         editTextEndDate = findViewById(R.id.ET_registration_end);
         locationSwitch = findViewById(R.id.switch_geolocation);
         createButton = findViewById(R.id.btn_upload_poster_and_event);
+        limitWaitListCB = findViewById(R.id.checkbox_limit_waitlist);
+        waitListLimitET = findViewById(R.id.ET_waitlist_limit);
 
     }
 
@@ -138,6 +144,20 @@ public class CreateEventActivity extends AppCompatActivity {
             Toast.makeText(this, error, Toast.LENGTH_LONG).show();
             return false;
 
+        }
+
+        if (limitWaitListCB.isChecked()){
+            String myStr = waitListLimitET.getText().toString().trim();
+            try{
+                int limit = Integer.parseInt(myStr);
+                if (limit <= 0){
+                    Toast.makeText(this, "WaitList limit must be grater than 0", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+            } catch (NumberFormatException e){
+                Toast.makeText(this, "Waitlist # error", Toast.LENGTH_LONG).show();
+                return false;
+            }
         }
         return true;
     }
@@ -193,11 +213,23 @@ public class CreateEventActivity extends AppCompatActivity {
 
         boolean locationRequired = locationSwitch.isChecked();
 
+        boolean isWaitListLimitEnabled = limitWaitListCB.isChecked();
+        int waitLimit = 0;
+
+        if(isWaitListLimitEnabled){
+            try{
+                waitLimit = Integer.parseInt(waitListLimitET.getText().toString().trim());
+
+            }catch (NumberFormatException leave){
+
+            }
+        }
+
         DocumentReference newEventRef = db.collection("events").document();
         String eventId = newEventRef.getId();
 
         FirebaseEvent newEvent = new FirebaseEvent(eventId, eventName, location, eventDate, eventTime,
-                eventStart, eventEnd, 0, locationRequired);
+                eventStart, eventEnd, 0, locationRequired,isWaitListLimitEnabled,waitLimit);
 
         newEventRef.set(newEvent).addOnSuccessListener(aVoid -> {
             Toast.makeText(CreateEventActivity.this, "Event '" + eventName + "' created successfully!", Toast.LENGTH_LONG).show();

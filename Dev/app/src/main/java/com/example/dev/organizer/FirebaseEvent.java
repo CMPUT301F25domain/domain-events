@@ -80,7 +80,6 @@ public class FirebaseEvent {
                          String eventTime,
                          String eventStart,
                          String eventEnd,
-                         @Nullable String posterUrl,
                          int attendingCount,
                          boolean locationRequired,
                          boolean isWaitListLimited,
