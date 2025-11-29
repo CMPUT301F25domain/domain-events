@@ -95,27 +95,20 @@ public class AdminImageFragment extends Fragment {
                                 imageUrl = doc.getString("posterUri");
                             }
 
-                            String imageTitle = doc.getString("title");
-                            String location = doc.getString("location");
+                            String eventImage = doc.getString("eventName");
 
                             View imageView = getLayoutInflater().inflate(R.layout.item_admin_images, imagesContainer, false);
 
                             ImageView uploadedImage = imageView.findViewById(R.id.imageThumbnail);
                             TextView titleText = imageView.findViewById(R.id.imageTitleText);
-                            TextView descText = imageView.findViewById(R.id.imageDescriptionText);
                             TextView removeButton = imageView.findViewById(R.id.removeButton);
 
-                            if (imageTitle != null) {
-                                titleText.setText(imageTitle);
+                            if (eventImage != null) {
+                                titleText.setText(eventImage);
                             } else {
-                                titleText.setText("Untitled Image");
+                                titleText.setText("Unknown Event");
                             }
 
-                            if (location != null) {
-                                descText.setText(location);
-                            } else {
-                                descText.setText("Unknown Location");
-                            }
 
                                 /*
                                     Source: github.io
