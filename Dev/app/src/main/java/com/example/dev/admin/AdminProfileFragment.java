@@ -68,6 +68,8 @@ public class AdminProfileFragment extends Fragment {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot querySnapshot,
                                         @Nullable FirebaseFirestoreException error) {
+                        if (!isAdded() || getContext() == null || getView() == null) return;
+
                         if (error != null) {
                             Toast.makeText(getContext(), "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
                             return;
