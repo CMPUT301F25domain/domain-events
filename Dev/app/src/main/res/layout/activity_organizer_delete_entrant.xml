@@ -18,12 +18,20 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
 
-    <Spinner
-        android:id="@+id/entrant_spinner"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/spinner_background"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp">
+
+        <Spinner
+            android:id="@+id/entrant_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:background="@android:color/transparent" />
+
+    </FrameLayout>
 
     <TextView
         android:layout_width="wrap_content"

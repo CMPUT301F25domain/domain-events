@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +32,6 @@ public class DeleteEntrantActivity extends AppCompatActivity {
     private String eventId;
     private String statusFilter;
     private List<Map<String, Object>> waitingList;
-    private List<String> entrantDisplayList;
-    private Map<String, String> entrantDisplayToIdMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +47,6 @@ public class DeleteEntrantActivity extends AppCompatActivity {
         sendMessageButton = findViewById(R.id.send_message_button);
 
         waitingList = new ArrayList<>();
-        entrantDisplayList = new ArrayList<>();
-        entrantDisplayToIdMap = new HashMap<>();
 
         fetchEntrants();
 
@@ -85,28 +82,18 @@ public class DeleteEntrantActivity extends AppCompatActivity {
     }
 
     private void populateSpinner() {
-        for (Map<String, Object> entrant : waitingList) {
-            String name = (String) entrant.get("name");
-            String email = (String) entrant.get("email");
-            String entrantId = (String) entrant.get("entrantId");
-            String displayString = name + " (" + email + ")";
-            entrantDisplayList.add(displayString);
-            entrantDisplayToIdMap.put(displayString, entrantId);
-        }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, entrantDisplayList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        EntrantSpinnerAdapter adapter = new EntrantSpinnerAdapter(this, waitingList);
         entrantSpinner.setAdapter(adapter);
     }
 
     private void sendMessage() {
-        String selectedEntrantDisplay = (String) entrantSpinner.getSelectedItem();
-        if (selectedEntrantDisplay == null) {
+        Map<String, Object> selectedEntrant = (Map<String, Object>) entrantSpinner.getSelectedItem();
+        if (selectedEntrant == null) {
             Toast.makeText(this, "Please select an entrant.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String entrantId = entrantDisplayToIdMap.get(selectedEntrantDisplay);
+        String entrantId = (String) selectedEntrant.get("entrantId");
         String messageText = messageEditText.getText().toString().trim();
 
         if (entrantId == null || messageText.isEmpty()) {
