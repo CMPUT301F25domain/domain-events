@@ -2,6 +2,7 @@ package com.example.dev.organizer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -48,7 +49,6 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
 
         database = FirebaseFirestore.getInstance();
         organizerId = getIntent().getStringExtra("organizerID");
-
         createEventbtn = findViewById(R.id.btn_create_event);
         recyclerView = findViewById(R.id.recycler_view_events);
         final int currentMenuItemId = R.id.navHome;
@@ -66,7 +66,6 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
             Intent intent = new Intent(OrganizerDashboardActivity.this, CreateEventActivity.class);
             intent.putExtra("organizerID", organizerId);
             startActivity(intent);
-
         });
 
         bottomNavigation.setOnItemSelectedListener(item -> {
@@ -108,23 +107,19 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
 
                     for (QueryDocumentSnapshot document : task.getResult()){
                         FirebaseEvent fbEvent = document.toObject(FirebaseEvent.class);
-
                         Event displayTheNewEvent = new Event(
                                 fbEvent.getEventId(), fbEvent.getEventName(),
                                 "Default Category", fbEvent.getLocation(), fbEvent.getEventDate() + " at " +fbEvent.getEventTime(),
                                 (int) fbEvent.getAttendingCount(),
                                 fbEvent.getPosterUrl()
                         );
-
                         eventList.add(displayTheNewEvent);
-
                     }
 
                     adapter.notifyDataSetChanged();
 
                     if (eventList.isEmpty()){
                         Toast.makeText(OrganizerDashboardActivity.this, "No Events found, Click Create Event to start.", Toast.LENGTH_LONG).show();
-
                     }
                 }
             }
@@ -136,7 +131,5 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
        Intent detailIntent = new Intent(OrganizerDashboardActivity.this, EventDetailActivity.class);
        detailIntent.putExtra("Event_ID", eventId);
        startActivity(detailIntent);
-
     }
-
 }

@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Data Model representing the Event document stored in Firebase database.
@@ -23,8 +24,7 @@ public class FirebaseEvent {
     private String posterUri;
     private int attendingCount;
     private boolean locationRequired;
-    private List<String> wishlistedEntrants = new ArrayList<>();
-    private List<String> signedUpEntrants = new ArrayList<>();
+    private List<Map<String, Object>> waitingList = new ArrayList<>();
 
     public FirebaseEvent() {
     }
@@ -130,33 +130,42 @@ public class FirebaseEvent {
         this.locationRequired = locationRequired;
     }
 
-    public List<String> getWishlistedEntrants() {
-        return wishlistedEntrants;
-    }
-    public boolean existsInWishlistedEntrants(String entrantId) {
-        return wishlistedEntrants.contains(entrantId);
-    }
-    public void addToWishlistedEntrants(String entrantId) {
-        if (!wishlistedEntrants.contains(entrantId)) {
-            wishlistedEntrants.add(entrantId);
-        }
-    }
-    public void removeFromWishlistedEntrants(String entrantId) {
-        wishlistedEntrants.remove(entrantId);
+    public List<Map<String, Object>> getWaitingList() {
+        return waitingList;
     }
 
-    public List<String> getSignedUpEntrants() {
-        return signedUpEntrants;
+    public void setWaitingList(List<Map<String, Object>> waitingList) {
+        this.waitingList = waitingList;
     }
-    public boolean existsInSignedUpEntrants(String entrantId) {
-        return signedUpEntrants.contains(entrantId);
-    }
-    public void addToSignedUpEntrants(String entrantId) {
-        if (!signedUpEntrants.contains(entrantId)) {
-            signedUpEntrants.add(entrantId);
+    public void addEntrantToWaitingList(Map<String, Object> entrantData) {
+        String entrantId = (String) entrantData.get("entrantId");
+        if (entrantId == null) {
+            return;
         }
+
+        for (Map<String, Object> existingEntrant : waitingList) {
+            if (entrantId.equals(existingEntrant.get("entrantId"))) {
+                return; // already exists
+            }
+        }
+        waitingList.add(entrantData);
     }
-    public void removeFromSignedUpEntrants(String entrantId) {
-        signedUpEntrants.remove(entrantId);
+    public void removeEntrantFromWaitingList(String entrantId) {
+        if (entrantId == null) {
+            return;
+        }
+        waitingList.removeIf(entrant -> entrantId.equals(entrant.get("entrantId")));
+    }
+    public void updateEntrantStatus(String entrantId, String newStatus) {
+        if (entrantId == null || newStatus == null) {
+            return;
+        }
+
+        for (Map<String, Object> entrant : waitingList) {
+            if (entrantId.equals(entrant.get("entrantid"))) {
+                entrant.put("status", newStatus);
+                break;
+            }
+        }
     }
 }

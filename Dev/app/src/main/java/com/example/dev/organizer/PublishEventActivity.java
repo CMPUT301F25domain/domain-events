@@ -256,6 +256,7 @@ public class PublishEventActivity extends AppCompatActivity {
         String eventTime = eventDraft.getEventTime();
         String eventStart = eventDraft.getRegistrationStart();
         String eventEnd = eventDraft.getRegistrationEnd();
+        boolean locationRequired = eventDraft.isLocationRequired();
         String finalPosterUrl = !TextUtils.isEmpty(posterUrl) ? posterUrl : "";
 
         FirebaseEvent newEvent = new FirebaseEvent(
@@ -269,11 +270,40 @@ public class PublishEventActivity extends AppCompatActivity {
                 eventEnd,
                 finalPosterUrl,
                 0,
-                false
+                locationRequired
         );
 
         newEventRef.set(newEvent)
-                .addOnSuccessListener(aVoid -> onPublishSuccess(eventName))
+                .addOnSuccessListener(aVoid -> {
+                    if (organizerId != null && !organizerId.isEmpty()) {
+                        DocumentReference organizerRef = firestore.collection("organizers").document(organizerId);
+                        organizerRef.get().addOnSuccessListener(documentSnapshot -> {
+                            if (documentSnapshot.exists()) {
+                                FirebaseOrganizer organizer = documentSnapshot.toObject(FirebaseOrganizer.class);
+                                if (organizer != null) {
+                                    organizer.addToCreatedEvents(newEvent);
+                                    organizerRef.set(organizer)
+                                            .addOnSuccessListener(bVoid -> onPublishSuccess(eventName))
+                                            .addOnFailureListener(e -> {
+                                                Log.e(TAG, "Failed to update organizer, but event was created.", e);
+                                                onPublishSuccess(eventName);
+                                            });
+                                } else {
+                                    Log.e(TAG, "Organizer object is null, but event was created.");
+                                    onPublishSuccess(eventName);
+                                }
+                            } else {
+                                Log.e(TAG, "Organizer document not found, but event was created.");
+                                onPublishSuccess(eventName);
+                            }
+                        }).addOnFailureListener(e -> {
+                            Log.e(TAG, "Failed to get organizer, but event was created.", e);
+                            onPublishSuccess(eventName);
+                        });
+                    } else {
+                        onPublishSuccess(eventName);
+                    }
+                })
                 .addOnFailureListener(e -> onPublishFailure());
     }
 
