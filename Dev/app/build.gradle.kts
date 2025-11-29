@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.annotationProcessor
+
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
@@ -69,4 +71,7 @@ dependencies {
 
     //Geolocation
     implementation("com.google.android.gms:play-services-location:21.0.1")
+
+
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 }

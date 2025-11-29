@@ -1,10 +1,9 @@
 package com.example.dev.firebaseobjects;
 
-
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,15 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dev.R;
 
 import java.util.List;
+import java.util.Map;
 
 public class EntrantAdapter extends RecyclerView.Adapter<EntrantAdapter.ViewHolder> {
 
-    private List<FirebaseEntrant> entrantList;
-    private List<String> statusList; // <--- NEW
+    private List<Map<String, Object>> waitingList;
 
-    public EntrantAdapter(List<FirebaseEntrant> entrantList, List<String> statusList) {
-        this.entrantList = entrantList;
-        this.statusList = statusList;
+    public EntrantAdapter(List<Map<String, Object>> waitingList) {
+        this.waitingList = waitingList;
     }
 
     @Override
@@ -32,16 +30,35 @@ public class EntrantAdapter extends RecyclerView.Adapter<EntrantAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        FirebaseEntrant entrant = entrantList.get(position);
+        Map<String, Object> entrantMap = waitingList.get(position);
 
-        holder.name.setText(entrant.getName());
-        holder.gmail.setText(entrant.getEmail());
-        holder.status.setText("Status: " + statusList.get(position)); // <--- Use your own status array
+        holder.name.setText((String) entrantMap.get("name"));
+        holder.gmail.setText((String) entrantMap.get("email"));
+
+        String status = (String) entrantMap.get("status");
+        holder.status.setText("Status: " + status);
+
+        switch (status) {
+            case "invited":
+                holder.status.setTextColor(Color.YELLOW);
+                break;
+            case "accepted":
+                holder.status.setTextColor(Color.GREEN);
+                break;
+            case "declined":
+            case "deleted":
+                holder.status.setTextColor(Color.RED);
+                break;
+            case "waitListed":
+            default:
+                holder.status.setTextColor(Color.GRAY);
+                break;
+        }
     }
 
     @Override
     public int getItemCount() {
-        return entrantList.size();
+        return waitingList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

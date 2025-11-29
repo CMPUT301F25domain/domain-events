@@ -41,17 +41,22 @@ public class OrganizerLotteryDrawActivity extends AppCompatActivity {
         });
 
         startCustomLotteryBtn.setOnClickListener(v -> {
-            String size = participantNumberEditText.getText().toString().trim();
+            String sizeStr = participantNumberEditText.getText().toString().trim();
 
-            if (TextUtils.isEmpty(size)) {
-                participantNumberEditText.setError("Username is required");
+            if (TextUtils.isEmpty(sizeStr)) {
+                participantNumberEditText.setError("Number of participants is required");
                 return;
             }
 
-            Intent intent = new Intent(OrganizerLotteryDrawActivity.this, OrganizerDrawStatusActivity.class);
-            intent.putExtra("Event_ID", eventId);
-            intent.putExtra("CUSTOM_SIZE", size);
-            startActivity(intent);
+            try {
+                int size = Integer.parseInt(sizeStr);
+                Intent intent = new Intent(OrganizerLotteryDrawActivity.this, OrganizerDrawStatusActivity.class);
+                intent.putExtra("Event_ID", eventId);
+                intent.putExtra("CUSTOM_SIZE", size);
+                startActivity(intent);
+            } catch (NumberFormatException e) {
+                participantNumberEditText.setError("Please enter a valid number");
+            }
         });
     }
 }

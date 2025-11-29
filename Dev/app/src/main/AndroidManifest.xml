@@ -80,6 +80,15 @@
         <activity
             android:name=".organizer.OrganizerDrawStatusActivity"
             android:exported="false" />
+        <activity
+            android:name=".organizer.CurrentDrawActivity"
+            android:exported="false" />
+        <activity
+            android:name=".organizer.ConfirmAttendeesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".organizer.DeleteEntrantActivity"
+            android:exported="false" />
     </application>
 
 
