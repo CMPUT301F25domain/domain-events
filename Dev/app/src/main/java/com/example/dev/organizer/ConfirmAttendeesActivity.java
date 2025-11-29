@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dev.R;
+import com.example.dev.firebaseobjects.ConfirmAttendeesAdapter;
 import com.example.dev.firebaseobjects.FirebaseEvent;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;

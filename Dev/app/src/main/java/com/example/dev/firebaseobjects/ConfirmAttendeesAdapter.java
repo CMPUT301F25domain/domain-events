@@ -1,4 +1,4 @@
-package com.example.dev.organizer;
+package com.example.dev.firebaseobjects;
 
 import android.view.LayoutInflater;
 import android.view.View;

@@ -36,6 +36,7 @@ public class EntrantAdapter extends RecyclerView.Adapter<EntrantAdapter.ViewHold
         holder.gmail.setText((String) entrantMap.get("email"));
 
         String status = (String) entrantMap.get("status");
+        if (status == null) status = "unknown";
         holder.status.setText("Status: " + status);
 
         switch (status) {

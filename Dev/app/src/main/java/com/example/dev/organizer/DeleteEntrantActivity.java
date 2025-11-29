@@ -1,7 +1,6 @@
 package com.example.dev.organizer;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -10,13 +9,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dev.R;
+import com.example.dev.firebaseobjects.EntrantSpinnerAdapter;
 import com.example.dev.firebaseobjects.FirebaseEvent;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,21 +113,28 @@ public class DeleteEntrantActivity extends AppCompatActivity {
                         }
                     }
                     eventRef.update("waitingList", updatedWaitingList);
+
+                    DocumentReference entrantRef = database.collection("entrants").document(entrantId);
+                    Map<String, Object> message = new HashMap<>();
+                    message.put("eventName", event.getEventName());
+                    message.put("eventDate", event.getEventDate());
+                    message.put("eventLocation", event.getLocation());
+                    message.put("eventId", event.getEventId());
+                    message.put("lotteryMessage", messageText);
+                    message.put("lotteryStatus", false);
+
+                    entrantRef.update("Message", FieldValue.arrayUnion(message))
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(DeleteEntrantActivity.this, "Message sent and entrant status updated.", Toast.LENGTH_SHORT).show();
+                                finish();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(DeleteEntrantActivity.this, "Failed to send message.", Toast.LENGTH_SHORT).show();
+                            });
                 }
             }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this, "Failed to fetch event details.", Toast.LENGTH_SHORT).show();
         });
-
-
-        DocumentReference entrantRef = database.collection("entrants").document(entrantId);
-        Map<String, Object> message = new HashMap<>();
-        message.put("Message", messageText);
-        entrantRef.update("lotteryMessage", FieldValue.arrayUnion(message))
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(DeleteEntrantActivity.this, "Message sent and entrant status updated.", Toast.LENGTH_SHORT).show();
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(DeleteEntrantActivity.this, "Failed to send message.", Toast.LENGTH_SHORT).show();
-                });
     }
 }
