@@ -11,13 +11,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.dev.R;
 import com.example.dev.utils.DeviceIdUtil;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +44,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     String eventId;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FusedLocationProviderClient fusedLocationClient;
+    LocationCallback locationCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +77,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         loadEventDetailsAndState();
 
         joinLeaveButton.setOnClickListener(v -> {
-            // Disable button to prevent double-clicks
             joinLeaveButton.setEnabled(false);
 
             if (isJoined) {
@@ -84,6 +89,9 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private void loadEventDetailsAndState() {
         String deviceId = DeviceIdUtil.getDeviceId(this);
+
+        joinLeaveButton.setEnabled(false);
+        joinLeaveButton.setText("Loading...");
 
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(doc -> {
@@ -101,11 +109,16 @@ public class EventDetailsActivity extends AppCompatActivity {
                             }
                         }
                         updateButtonUI();
+                    } else {
+                        Toast.makeText(this, "Event not found", Toast.LENGTH_SHORT).show();
+                        joinLeaveButton.setEnabled(true);
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error loading event details", e);
                     Toast.makeText(this, "Error loading event details", Toast.LENGTH_SHORT).show();
+                    joinLeaveButton.setEnabled(true);
+                    joinLeaveButton.setText("Join Waiting List");
                 });
     }
 
@@ -131,26 +144,95 @@ public class EventDetailsActivity extends AppCompatActivity {
             return;
         }
 
+        Toast.makeText(this, "Getting your location...", Toast.LENGTH_SHORT).show();
+
+        // Try cached location first
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, location -> {
                     if (location != null) {
+                        Log.d(TAG, "Using cached location: " + location.getLatitude() + ", " + location.getLongitude());
                         joinWaitlist(location.getLatitude(), location.getLongitude());
                     } else {
-                        // Location is null - join without coordinates
-                        // You could also choose to block the user here
-                        Log.w(TAG, "Location is null, joining without coordinates");
-                        joinWaitlist(null, null);
+                        Log.d(TAG, "No cached location, requesting fresh location");
+                        requestFreshLocation();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error getting location", e);
-                    Toast.makeText(this, "Error getting location", Toast.LENGTH_SHORT).show();
-                    joinLeaveButton.setEnabled(true);
+                    Log.e(TAG, "Error getting last location", e);
+                    requestFreshLocation();
                 });
+    }
+
+    private void requestFreshLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            joinLeaveButton.setEnabled(true);
+            return;
+        }
+
+        LocationRequest locationRequest = new LocationRequest.Builder(
+                Priority.PRIORITY_HIGH_ACCURACY, 10000)
+                .setMinUpdateIntervalMillis(5000)
+                .setMaxUpdates(1)
+                .build();
+
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+
+                Location location = locationResult.getLastLocation();
+                if (location != null) {
+                    Log.d(TAG, "Got fresh location: " + location.getLatitude() + ", " + location.getLongitude());
+                    joinWaitlist(location.getLatitude(), location.getLongitude());
+                } else {
+                    Log.w(TAG, "Fresh location is still null");
+                    showLocationFailureDialog();
+                }
+
+                fusedLocationClient.removeLocationUpdates(locationCallback);
+            }
+        };
+
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to request location updates", e);
+                    showLocationFailureDialog();
+                });
+    }
+
+    private void showLocationFailureDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Location Required")
+                .setMessage("Unable to get your location. Please ensure:\n\n" +
+                        "• Location/GPS is turned ON\n" +
+                        "• Location mode is set to 'High Accuracy'\n" +
+                        "• You're not in airplane mode\n\n" +
+                        "This event requires location data to join.")
+                .setPositiveButton("Retry", (dialog, which) -> {
+                    joinWithLocation();
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    joinLeaveButton.setEnabled(true);
+                })
+                .setNeutralButton("Open Settings", (dialog, which) -> {
+                    startActivity(new android.content.Intent(
+                            android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    joinLeaveButton.setEnabled(true);
+                })
+                .setCancelable(false)
+                .show();
     }
 
     private void joinWaitlist(Double lat, Double lng) {
         String deviceId = DeviceIdUtil.getDeviceId(this);
+
+        // If location is required but not provided, block the join
+        if (isLocationRequired && (lat == null || lng == null)) {
+            Toast.makeText(this, "Location is required for this event", Toast.LENGTH_LONG).show();
+            joinLeaveButton.setEnabled(true);
+            return;
+        }
 
         db.collection("entrants").document(deviceId).get()
                 .addOnSuccessListener(entrantDoc -> {
@@ -169,11 +251,12 @@ public class EventDetailsActivity extends AppCompatActivity {
                     entrantData.put("name", name);
                     entrantData.put("email", email);
                     entrantData.put("timestamp", System.currentTimeMillis());
+                    entrantData.put("status", "waitListed");
 
-                    // Only add location if both coordinates are provided
                     if (lat != null && lng != null) {
                         entrantData.put("latitude", lat);
                         entrantData.put("longitude", lng);
+                        Log.d(TAG, "Adding location to waitlist entry: " + lat + ", " + lng);
                     }
 
                     db.runTransaction(t -> {
@@ -285,6 +368,14 @@ public class EventDetailsActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG).show();
                 joinLeaveButton.setEnabled(true);
             }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (locationCallback != null) {
+            fusedLocationClient.removeLocationUpdates(locationCallback);
         }
     }
 
