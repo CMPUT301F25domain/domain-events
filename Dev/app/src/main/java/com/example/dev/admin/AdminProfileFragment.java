@@ -27,15 +27,13 @@ import com.google.firebase.firestore.QuerySnapshot;
  * modular and easy to manage across different screens.
  *
  * Purpose:
- * - Displays a list of sample user profiles that admins can view or remove.
- * - Each user layout has a “Remove” button that hides that user’s profile from the list.
+ * - Displays all entrant and organizer profiles stored in Firestore.
+ * - Shows each profile’s name, email, and phone number.
+ * - Allows administrators to remove a profile directly from Firebase.
  *
  * Design Pattern:
  * - Uses the Fragment pattern for reusable, switchable UI sections inside the main admin activity.
- *
- * Outstanding Issues:
- * - Replace mock data users with data loaded from Firebase.
- * - Make remove actually delete the profile from Firebase instead of just hiding it.
+ * - Updates the profile list using Firestore listeners.
  */
 public class AdminProfileFragment extends Fragment {
     private LinearLayout profilesContainer;

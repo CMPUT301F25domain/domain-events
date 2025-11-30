@@ -30,14 +30,12 @@ import java.util.Map;
  * modular and easy to manage across different screens.
  *
  * Purpose:
- * - Displays an empty placeholder screen for admin notifications.
- * - Serves as the destination screen when the bell icon is clicked from the Admin Events page.
+ * - Displays all notifications sent to entrants.
+ * - Shows each notification’s event details and message content.
  *
  * Design Pattern:
  * - Uses the Fragment pattern for reusable, switchable UI sections inside the main admin activity.
- *
- * Outstanding Issues:
- * - Implement a Firebase connection to display the real notifications.
+ * - Updates the notification list using Firestore listeners.
  */
 
 public class AdminNotifFragment extends Fragment {

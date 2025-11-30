@@ -31,14 +31,12 @@ import com.google.firebase.firestore.QuerySnapshot;
  *
  * Purpose:
  * - Displays a list of uploaded images that admins can view or remove.
- * - Each event has a “Remove” button that hides it from the list.
+ * - Shows the associated event name and image preview.
+ * - Allows administrators to remove an image directly from Firebase.
  *
  * Design Pattern:
  * - Uses the Fragment pattern for reusable, switchable UI sections inside the main admin activity.
- *
- * Outstanding Issues:
- * - Not have the images be mock data but instead the result of organizers uploading images
- * - Make remove actually delete the image from Firebase instead of just hiding it.
+ * - Updates the image list using Firestore listeners.
  */
 
 
