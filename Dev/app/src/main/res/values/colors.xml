@@ -10,5 +10,6 @@
     <color name="dark_surface">#1E1E1E</color>
     <color name="light_text_primary">#FFFFFFFF</color>
     <color name="light_text_secondary">#E0E0E0</color>
+    <color name="event_detail_accent">#9C27B0</color>
 
 </resources>

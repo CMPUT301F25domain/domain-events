@@ -64,6 +64,7 @@
             android:exported="false" />
         <activity
             android:name=".organizer.OrganizerWaitingListActivity"
+            android:theme="@style/Theme.Dev.WaitingList"
             android:exported="false" />
         <activity
             android:name=".organizer.PublishEventActivity"
