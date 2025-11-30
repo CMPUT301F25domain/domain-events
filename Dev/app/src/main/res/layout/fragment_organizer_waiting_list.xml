@@ -83,12 +83,6 @@
                     android:textAllCaps="false" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Toggle to view the most recent entrants or the earliest sign-ups."
-                android:textColor="@color/light_text_secondary" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
