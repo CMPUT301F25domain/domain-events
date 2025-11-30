@@ -109,5 +109,6 @@
     <string name="organizer_images_subtitle">Upload and manage event posters or gallery shots</string>
     <string name="organizer_images_placeholder">Image management tools are coming soon. In the meantime, keep drafting events from the dashboard.</string>
     <string name="organizer_images_icon_content_description">Images placeholder icon</string>
+    <string name="waiting_list_title">Waiting List</string>
 
 </resources>

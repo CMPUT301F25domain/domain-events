@@ -14,7 +14,9 @@ public class OrganizerWaitingListActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbarWaitingList);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            toolbar.setTitle("Waiting List");
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(R.string.waiting_list_title);
+            }
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_24);
             toolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
