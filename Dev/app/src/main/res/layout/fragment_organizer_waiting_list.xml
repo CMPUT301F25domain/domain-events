@@ -70,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Newest first"
-                    android:textColor="@color/light_text_primary"
+                    android:textColor="@color/black"
                     android:textAllCaps="false" />
 
                 <com.google.android.material.button.MaterialButton
@@ -79,7 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Oldest first"
-                    android:textColor="@color/light_text_primary"
+                    android:textColor="@color/black"
                     android:textAllCaps="false" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
