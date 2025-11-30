@@ -4,6 +4,7 @@
 package com.example.dev.organizer;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -206,6 +207,7 @@ public class OrganizerWaitingListFragment extends Fragment {
             h.name.setText(e.name);
             h.email.setText(e.email);
             h.joined.setText(formatJoined(e.joinedAtMillis));
+            h.location.setText(formatLocation(e.location));
         }
 
         @Override
@@ -219,18 +221,28 @@ public class OrganizerWaitingListFragment extends Fragment {
             }
             return "Joined: " + DateFormat.getDateTimeInstance().format(new Date(millis));
         }
+        private static String formatLocation(String location) {
+            String cleanLocation = location == null ? "" : location.trim();
+            if (TextUtils.isEmpty(cleanLocation)) {
+                return "Location: Unknown";
+            }
+            return "Location: " + cleanLocation;
+        }
     }
 
     static class VH extends RecyclerView.ViewHolder {
-        TextView name, email, joined;
+        TextView name, email, location, joined;
 
         VH(View v) {
             super(v);
             name = v.findViewById(R.id.textName);
             email = v.findViewById(R.id.textEmail);
-            // Make sure your layout uses this ID; if your XML has textJoined instead,
-            // change this findViewById to R.id.textJoined.
+            location = v.findViewById(R.id.textLocation);
+            // Make sure your layout uses this ID,
+            // if the XML has textJoined instead, we have to
+            // change this findViewById to R.id.textJoined
             joined = v.findViewById(R.id.textJoinedAt);
+
         }
     }
 }
