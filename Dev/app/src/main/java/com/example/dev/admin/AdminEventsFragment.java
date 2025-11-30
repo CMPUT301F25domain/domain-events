@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.example.dev.MainActivity;
 import com.example.dev.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -69,13 +68,6 @@ public class AdminEventsFragment extends Fragment {
                     .replace(R.id.fragment_container, new AdminNotifFragment())
                     .addToBackStack(null)
                     .commit();
-        });
-
-        ImageView backIcon = view.findViewById(R.id.backIcon);
-        backIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            startActivity(intent);
-            requireActivity().finish();
         });
 
 
