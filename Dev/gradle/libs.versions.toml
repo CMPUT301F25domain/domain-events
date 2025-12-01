@@ -11,6 +11,9 @@ recyclerview = "1.4.0"
 cardview = "1.0.0"
 firebase-bom = "33.6.0"
 glide = "4.16.0"
+firebaseStorage = "22.0.1"
+espressoIntents = "3.7.0"
+fragmentTesting = "1.8.9"
 
 [libraries]
 
@@ -29,6 +32,9 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
 firebase-database = { module = "com.google.firebase:firebase-database" }
+google-firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "espressoIntents" }
+fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "fragmentTesting" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

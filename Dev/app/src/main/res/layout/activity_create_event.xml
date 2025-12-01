@@ -19,7 +19,8 @@
             android:text="@string/create_new_event"
             android:textColor="@color/white"
             android:textSize="26sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:paddingTop="40dp" />
 
         <EditText
             android:id="@+id/ET_event_name"
@@ -51,6 +52,9 @@
             android:backgroundTint="#444444"
             android:hint="@string/event_date"
             android:inputType="date"
+            android:focusable="false"
+            android:clickable="true"
+            android:cursorVisible="false"
             android:padding="15dp"
             android:textColor="@color/white"
             android:textColorHint="#999999" />
@@ -63,6 +67,9 @@
             android:backgroundTint="#444444"
             android:hint="@string/event_time"
             android:inputType="time"
+            android:focusable="false"
+            android:clickable="true"
+            android:cursorVisible="false"
             android:padding="15dp"
             android:textColor="@color/white"
             android:textColorHint="#999999" />
@@ -75,6 +82,9 @@
             android:backgroundTint="#444444"
             android:hint="@string/registration_start"
             android:inputType="date"
+            android:focusable="false"
+            android:clickable="true"
+            android:cursorVisible="false"
             android:padding="15dp"
             android:textColor="@color/white"
             android:textColorHint="#999999" />
@@ -87,6 +97,9 @@
             android:backgroundTint="#444444"
             android:hint="@string/registration_end"
             android:inputType="date"
+            android:focusable="false"
+            android:clickable="true"
+            android:cursorVisible="false"
             android:padding="15dp"
             android:textColor="@color/white"
             android:textColorHint="#999999" />
@@ -125,8 +138,8 @@
             android:hint="@string/maximum_wait_list_entrants"
             android:inputType="number"
             android:padding="15dp"
-            android:textColorHint="#999999"
-            android:visibility="gone" />
+            android:textColor="@color/white"
+            android:textColorHint="#999999" />
 
 
         <Button

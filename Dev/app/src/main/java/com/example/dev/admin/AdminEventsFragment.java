@@ -14,14 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.dev.MainActivity;
+import com.bumptech.glide.Glide;
 import com.example.dev.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
-
 /**
  * AdminEventsFragment
  *
@@ -30,14 +29,13 @@ import com.google.firebase.firestore.QuerySnapshot;
  * modular and easy to manage across different screens.
  *
  * Purpose:
- * - Shows a list of sample events that admins can view or remove.
- * - Each event has a “Remove” button that hides it from the list.
+ * - Displays all events stored in Firestore.
+ * - Shows each event’s name and details.
+ * - Allows administrators to remove an event directly from Firebase.
  *
  * Design Pattern:
- * - Uses the Fragment pattern for reusable, switchable UI sections inside the main activity.
- *
- * Outstanding Issues:
- * - Display image beside each event that is not a sample swimming image, but uploaded to firebase by organizer.
+ * - Uses the Fragment pattern for reusable, switchable UI sections inside the main admin activity.
+ * - Updates the event list using Firestore listeners.
  */
 
 public class AdminEventsFragment extends Fragment {
@@ -71,13 +69,6 @@ public class AdminEventsFragment extends Fragment {
                     .commit();
         });
 
-        ImageView backIcon = view.findViewById(R.id.backIcon);
-        backIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            startActivity(intent);
-            requireActivity().finish();
-        });
-
 
         loadFirestoreEvents();
     }
@@ -94,6 +85,8 @@ public class AdminEventsFragment extends Fragment {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot querySnapshot,
                                         @Nullable FirebaseFirestoreException error) {
+                        if (!isAdded() || getContext() == null || getView() == null) return;
+
                         if (error != null) {
                             Toast.makeText(getContext(), "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
                             return;
@@ -111,13 +104,14 @@ public class AdminEventsFragment extends Fragment {
 
                         for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                             String eventName = doc.getString("eventName");
-                            String eventStart = doc.getString("eventStart");
                             String eventEnd = doc.getString("eventEnd");
                             String eventTime = doc.getString("eventTime");
                             String location = doc.getString("location");
+                            String posterUrl = doc.getString("posterUrl");
+                            String posterUri = doc.getString("posterUri");
 
                             View eventView = getLayoutInflater().inflate(R.layout.item_admin_event, eventsContainer, false);
-
+                            ImageView posterImage = eventView.findViewById(R.id.eventImage);
                             /*
                                 Source: Stack Overflow
                                 Title: "How to display message from firebase to TextView Android Studio?"
@@ -140,12 +134,13 @@ public class AdminEventsFragment extends Fragment {
                                 License: CC BY-SA 4.0 (International)
                                 URL: https://stackoverflow.com/a/35861055
                             */
+                            // If event name is missing -> go to generic title
                             if (eventName != null) {
                                 nameText.setText(eventName);
                             } else {
                                 nameText.setText("Unnamed Event");
                             }
-
+                            // If event's location is missing -> go to generic title
                             if (location != null) {
                                 locationText.setText(location);
                             } else {
@@ -160,6 +155,12 @@ public class AdminEventsFragment extends Fragment {
                                 closeText.setText("Registration closes on " + eventEnd);
                             } else {
                                 closeText.setText("Registration closing date unavailable");
+                            }
+                            // Load the uploaded poster image
+                            if (posterUrl != null && !posterUrl.isEmpty()) {
+                                Glide.with(requireContext())
+                                        .load(posterUrl)
+                                        .into(posterImage);
                             }
 
                             /*

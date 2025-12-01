@@ -1,8 +1,7 @@
 /**
- * EntrantEvent
+ * EntrantEvent (Model)
  *
- * Model class representing an event as seen by entrant users.
- * This class maps directly to Firestore documents stored in the "events" collection.
+ * Represents a single event from Firestore.
  */
 
 package com.example.dev.entrant.models;
@@ -18,14 +17,16 @@ public class EntrantEvent {
     private String eventTime;
     private String location;
     private boolean locationRequired;
+    private String posterUrl;
+    private String posterUri;
+    private String organizerId;
 
-    // Required empty constructor for Firestore
-    public EntrantEvent() { }
+    public EntrantEvent() {}
 
-    // Full constructor (use this when creating an event in code)
     public EntrantEvent(int attendingCount, String eventDate, String eventEnd, String eventId,
                         String eventName, String eventStart, String eventTime,
-                        String location, boolean locationRequired) {
+                        String location, boolean locationRequired, String posterUrl,
+                        String posterUri, String organizerId) {
 
         this.attendingCount = attendingCount;
         this.eventDate = eventDate;
@@ -36,9 +37,11 @@ public class EntrantEvent {
         this.eventTime = eventTime;
         this.location = location;
         this.locationRequired = locationRequired;
+        this.posterUrl = posterUrl;
+        this.posterUri = posterUri;
+        this.organizerId = organizerId;
     }
 
-    // Getters (supports Firestore reads + RecyclerView binding)
     public int getAttendingCount() { return attendingCount; }
     public String getEventDate() { return eventDate; }
     public String getEventEnd() { return eventEnd; }
@@ -48,8 +51,19 @@ public class EntrantEvent {
     public String getEventTime() { return eventTime; }
     public String getLocation() { return location; }
     public boolean isLocationRequired() { return locationRequired; }
+    public String getPosterUrl() { return posterUrl; }
+    public String getPosterUri() { return posterUri; }
+    public String getResolvedPosterUrl() {
+        if (posterUrl != null && !posterUrl.isEmpty() && !posterUrl.equals("null")) {
+            return posterUrl;
+        }
+        if (posterUri != null && !posterUri.isEmpty() && !posterUri.equals("null")) {
+            return posterUri;
+        }
+        return null;
+    }
+    public String getOrganizerId() { return organizerId; }
 
-    // Setters (allows updating fields or writing back to Firestore)
     public void setAttendingCount(int attendingCount) { this.attendingCount = attendingCount; }
     public void setEventDate(String eventDate) { this.eventDate = eventDate; }
     public void setEventEnd(String eventEnd) { this.eventEnd = eventEnd; }
@@ -59,4 +73,7 @@ public class EntrantEvent {
     public void setEventTime(String eventTime) { this.eventTime = eventTime; }
     public void setLocation(String location) { this.location = location; }
     public void setLocationRequired(boolean locationRequired) { this.locationRequired = locationRequired; }
+    public void setPosterUrl(String posterUrl) { this.posterUrl = posterUrl; }
+    public void setPosterUri(String posterUri) { this.posterUri = posterUri; }
+    public void setOrganizerId(String organizerId) { this.organizerId = organizerId; }
 }

@@ -1,7 +1,11 @@
 package com.example.dev.organizer;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.text.InputType;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -13,8 +17,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.Nullable;
 
 import com.example.dev.R;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Activity responsible for allowing Organizer to create a new event.
@@ -46,20 +53,24 @@ public class CreateEventActivity extends AppCompatActivity {
     private EditText editTextEventDate;
     private EditText editTextStartDate;
     private EditText editTextEndDate;
-    private FirebaseFirestore db;
 
     private Button createButton;
     private Switch locationSwitch;
+
+    private CheckBox limitWaitlistCheckBox;
+    private EditText waitlistLimitEditText;
     private ActivityResultLauncher<android.content.Intent> uploadPosterLauncher;
     @Nullable
     private String posterUri;
+    private String organizerId;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
-        db = FirebaseFirestore.getInstance();
+        organizerId = getIntent().getStringExtra("organizerID");
 
         initializeViews();
         setupUploadPosterLauncher();
@@ -74,7 +85,6 @@ public class CreateEventActivity extends AppCompatActivity {
         createButton.setOnClickListener(v -> {
             if (validateInput()) {
                 launchUploadPoster();
-                saveEventToFirebase();
             }
         });
     }
@@ -98,8 +108,17 @@ public class CreateEventActivity extends AppCompatActivity {
         editTextEndDate = findViewById(R.id.ET_registration_end);
         locationSwitch = findViewById(R.id.switch_geolocation);
         createButton = findViewById(R.id.btn_upload_poster_and_event);
+        limitWaitlistCheckBox = findViewById(R.id.checkbox_limit_waitlist);
+        waitlistLimitEditText = findViewById(R.id.ET_waitlist_limit);
+
+        setupDateTimeField(editTextEventDate, true);
+        setupDateTimeField(editTextEventTime, false);
+        setupDateTimeField(editTextStartDate, true);
+        setupDateTimeField(editTextEndDate, true);
 
     }
+
+
 
     /**
      * Validates required input fields to check that they are not empty
@@ -129,6 +148,72 @@ public class CreateEventActivity extends AppCompatActivity {
                 }
         );
     }
+
+    private void setupDateTimeField(EditText target, boolean isDateField) {
+        target.setInputType(InputType.TYPE_NULL);
+        target.setFocusable(false);
+        target.setOnClickListener(v -> {
+            if (isDateField) {
+                showDatePicker(target);
+            } else {
+                showTimePicker(target);
+            }
+        });
+    }
+
+    private void showDatePicker(EditText target) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentText = target.getText().toString().trim();
+        try {
+            if (!currentText.isEmpty()) {
+                java.util.Date parsedDate = dateFormat.parse(currentText);
+                if (parsedDate != null) {
+                    calendar.setTime(parsedDate);
+                }
+            }
+        } catch (ParseException ignored) {
+        }
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                (view, year, month, dayOfMonth) -> {
+                    calendar.set(Calendar.YEAR, year);
+                    calendar.set(Calendar.MONTH, month);
+                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    target.setText(dateFormat.format(calendar.getTime()));
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
+
+    private void showTimePicker(EditText target) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        String currentText = target.getText().toString().trim();
+        try {
+            if (!currentText.isEmpty()) {
+                java.util.Date parsedTime = timeFormat.parse(currentText);
+                if (parsedTime != null) {
+                    calendar.setTime(parsedTime);
+                }
+            }
+        } catch (ParseException ignored) {
+        }
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                (view, hourOfDay, minute) -> {
+                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    calendar.set(Calendar.MINUTE, minute);
+                    target.setText(timeFormat.format(calendar.getTime()));
+                },
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                true);
+        timePickerDialog.show();
+    }
+
     private boolean validateInput(){
         if (editTextEventName.getText().toString().trim().isEmpty() ||
                 editTextLocation.getText().toString().trim().isEmpty() ||
@@ -139,6 +224,39 @@ public class CreateEventActivity extends AppCompatActivity {
             return false;
 
         }
+        if (!editTextStartDate.getText().toString().trim().isEmpty() &&
+                !editTextEndDate.getText().toString().trim().isEmpty()){
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            try {
+                java.util.Date endDate = dateFormat.parse(editTextEndDate.getText().toString().trim());
+                java.util.Date startDate = dateFormat.parse(editTextStartDate.getText().toString().trim());
+                if (endDate == null || startDate == null) {
+                    Toast.makeText(this, "Please select valid registration dates.", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+                if (endDate.before(startDate)) {
+                    Toast.makeText(this, "Registration end date should be after the start date.", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+            } catch (ParseException e) {
+                Toast.makeText(this, "Please select valid registration dates.", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
+        if (limitWaitlistCheckBox.isChecked()){
+            String limitStr = waitlistLimitEditText.getText().toString().trim();
+            try{
+                int limit = Integer.parseInt((limitStr));
+                if (limit <= 0){
+                    Toast.makeText(this , "Wait List Limit should be a positive number.", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+            }catch (NumberFormatException e){
+                Toast.makeText(this, "Invalid Number entered for waitlist Limit", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -159,7 +277,18 @@ public class CreateEventActivity extends AppCompatActivity {
         String eventTime = editTextEventTime.getText().toString().trim();
         String eventStart = editTextStartDate.getText().toString().trim();
         String eventEnd = editTextEndDate.getText().toString().trim();
-        return new EventDraft(eventName, location, eventDate, eventTime, eventStart, eventEnd, posterUri);
+        boolean locationRequired = locationSwitch.isChecked();
+        boolean isWaitlistLimited = limitWaitlistCheckBox.isChecked();
+        int waitlistLimit = 0;
+
+        if (isWaitlistLimited){
+            try {
+                waitlistLimit = Integer.parseInt(waitlistLimitEditText.getText().toString().trim());
+            } catch (NumberFormatException ignored){
+
+            }
+        }
+        return new EventDraft(organizerId, eventName, location, eventDate, eventTime, eventStart, eventEnd, posterUri, locationRequired,isWaitlistLimited,waitlistLimit);
 
     }
     private void populateForm(EventDraft draft) {
@@ -182,30 +311,5 @@ public class CreateEventActivity extends AppCompatActivity {
             editTextEndDate.setText(draft.getRegistrationEnd());
         }
         posterUri = draft.getPosterUri();
-    }
-    private void saveEventToFirebase(){
-        String eventName = editTextEventName.getText().toString().trim();
-        String location = editTextLocation.getText().toString().trim();
-        String eventDate = editTextEventDate.getText().toString().trim();
-        String eventTime = editTextEventTime.getText().toString().trim();
-        String eventStart = editTextStartDate.getText().toString().trim();
-        String eventEnd = editTextEndDate.getText().toString().trim();
-
-        boolean locationRequired = locationSwitch.isChecked();
-
-        DocumentReference newEventRef = db.collection("events").document();
-        String eventId = newEventRef.getId();
-
-        FirebaseEvent newEvent = new FirebaseEvent(eventId, eventName, location, eventDate, eventTime,
-                eventStart, eventEnd, 0, locationRequired);
-
-        newEventRef.set(newEvent).addOnSuccessListener(aVoid -> {
-            Toast.makeText(CreateEventActivity.this, "Event '" + eventName + "' created successfully!", Toast.LENGTH_LONG).show();
-            finish();
-        }).addOnFailureListener(e -> {
-            Toast.makeText(CreateEventActivity.this, "Error saving event!", Toast.LENGTH_LONG).show();
-
-        });
-
     }
 }

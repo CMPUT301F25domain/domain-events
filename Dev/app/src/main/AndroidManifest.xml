@@ -5,6 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,13 +21,9 @@
         <!--        <activity-->
         <!--            android:name=".organizer.OrganizerNavActivity"-->
         <!--            android:exported="false" />-->
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
-        </activity>
 
         <activity
-            android:name=".AccountLogin"
+            android:name=".AccountSignup"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -32,37 +32,35 @@
         </activity>
 
         <activity
-            android:name=".AccountSignup"
-            android:exported="false"/>
-
-        <activity
             android:name=".admin.AdminNavActivity"
             android:exported="false"/>
 
         <activity
-            android:name=".entrant.EntrantNavActivity"
+            android:name=".entrant.EntrantBottomNavActivity"
             android:exported="false"/>
-        <activity
-            android:name=".entrant.EntrantMainActivity"
-            android:exported="false"/>
-        <activity
-            android:name=".entrant.EntrantMessagesActivity"
-            android:exported="false" />
+
         <activity
             android:name=".entrant.EventDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".entrant.QRCodeScannerActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".entrant.InvitationDetailsActivity"
+            android:exported="false" />
         <activity
             android:name=".organizer.OrganizerDashboardActivity"
-            android:exported="false"/>
+            android:exported="false">
+        </activity>
         <activity
             android:name=".organizer.CreateEventActivity"
             android:exported="false" />
         <activity
             android:name=".organizer.UploadPosterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".organizer.OrganizerWaitingListActivity"
+            android:theme="@style/Theme.Dev.WaitingList"
             android:exported="false" />
         <activity
             android:name=".organizer.PublishEventActivity"
@@ -71,10 +69,26 @@
             android:name=".organizer.EventDetailActivity"
             android:exported="true" />
         <activity
+            android:name=".organizer.OrganizerProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".organizer.QRCodeDisplayActivity"
             android:exported="false" />
-
-
+        <activity
+            android:name=".organizer.OrganizerLotteryDrawActivity"
+            android:exported="false" />
+        <activity
+            android:name=".organizer.OrganizerDrawStatusActivity"
+            android:exported="false" />
+        <activity
+            android:name=".organizer.CurrentDrawActivity"
+            android:exported="false" />
+        <activity
+            android:name=".organizer.ConfirmAttendeesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".organizer.DeleteEntrantActivity"
+            android:exported="false" />
     </application>
 
 
