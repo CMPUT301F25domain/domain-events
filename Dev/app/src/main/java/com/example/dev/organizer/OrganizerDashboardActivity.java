@@ -73,10 +73,14 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
             if (id == currentMenuItemId) {
                 return true;
             } else if (id == R.id.navHome) {
-                startActivity(new Intent(this, OrganizerDashboardActivity.class));
+                Intent intent = new Intent(this, OrganizerDashboardActivity.class);
+                intent.putExtra("organizerID", organizerId);
+                startActivity(intent);
                 return true;
             } else if (id == R.id.navProfile) {
-                startActivity(new Intent(this, OrganizerProfileActivity.class));
+                Intent intent = new Intent(this, OrganizerProfileActivity.class);
+                intent.putExtra("organizerID", organizerId);
+                startActivity(intent);
                 return true;
             }
             return false;
