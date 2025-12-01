@@ -25,3 +25,10 @@ It supports three roles:
 | README.md | Project summary and navigation guide. |
 
 ---
+
+## How to Use the App - Admin side 
+- Open the project in Android Studio.
+- In AccountSignup.java, under the Admin section, add your device ID to the dedicated array.
+- You can find your device ID in Logcat after running the app once.
+- When you run the app, it will automatically open the Admin dashboard.
+- To access the Organizer or Entrant sections, remove your device ID from the array and rerun the app.
