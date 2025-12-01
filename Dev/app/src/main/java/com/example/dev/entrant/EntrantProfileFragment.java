@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
 
 import com.example.dev.R;
 import com.example.dev.utils.DeviceIdUtil;
@@ -125,7 +126,7 @@ public class EntrantProfileFragment extends Fragment {
         TextView tv = new TextView(getContext());
         tv.setText(text);
         tv.setTextSize(16);
-        tv.setTextColor(0xFF000000);
+        tv.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
         tv.setPadding(0, 10, 0, 10);
 
         historyContainer.addView(tv);
