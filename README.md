@@ -14,7 +14,7 @@ It supports three roles:
 
 | Path | Description |
 |------|--------------|
-| Dev/ | Contains the Android app source code (MainActivity, fragments, and activities). |
+| Dev/ | Contains the Android app source code. |
 | doc/ | Documentation files (UML, citations, license, and team info). |
 | doc/Citations.pdf | References for online sources used. |
 | doc/LICENSE.md | License file defining usage and distribution terms for this project. |
