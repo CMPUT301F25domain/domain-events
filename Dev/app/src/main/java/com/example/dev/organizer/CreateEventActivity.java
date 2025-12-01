@@ -2,6 +2,7 @@ package com.example.dev.organizer;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -47,10 +48,14 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private Button createButton;
     private Switch locationSwitch;
+
+    private CheckBox limitWaitlistCheckBox;
+    private EditText waitlistLimitEditText;
     private ActivityResultLauncher<android.content.Intent> uploadPosterLauncher;
     @Nullable
     private String posterUri;
     private String organizerId;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -95,8 +100,12 @@ public class CreateEventActivity extends AppCompatActivity {
         editTextEndDate = findViewById(R.id.ET_registration_end);
         locationSwitch = findViewById(R.id.switch_geolocation);
         createButton = findViewById(R.id.btn_upload_poster_and_event);
+        limitWaitlistCheckBox = findViewById(R.id.checkbox_limit_waitlist);
+        waitlistLimitEditText = findViewById(R.id.ET_waitlist_limit);
 
     }
+
+
 
     /**
      * Validates required input fields to check that they are not empty
@@ -136,6 +145,20 @@ public class CreateEventActivity extends AppCompatActivity {
             return false;
 
         }
+        if (limitWaitlistCheckBox.isChecked()){
+            String limitStr = waitlistLimitEditText.getText().toString().trim();
+            try{
+                int limit = Integer.parseInt((limitStr));
+                if (limit <= 0){
+                    Toast.makeText(this , "Wait List Limit should be a positive number.", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+            }catch (NumberFormatException e){
+                Toast.makeText(this, "Invalid Number entered for waitlist Limit", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -157,7 +180,17 @@ public class CreateEventActivity extends AppCompatActivity {
         String eventStart = editTextStartDate.getText().toString().trim();
         String eventEnd = editTextEndDate.getText().toString().trim();
         boolean locationRequired = locationSwitch.isChecked();
-        return new EventDraft(organizerId, eventName, location, eventDate, eventTime, eventStart, eventEnd, posterUri, locationRequired);
+        boolean isWaitlistLimited = limitWaitlistCheckBox.isChecked();
+        int waitlistLimit = 0;
+
+        if (isWaitlistLimited){
+            try {
+                waitlistLimit = Integer.parseInt(waitlistLimitEditText.getText().toString().trim());
+            } catch (NumberFormatException ignored){
+
+            }
+        }
+        return new EventDraft(organizerId, eventName, location, eventDate, eventTime, eventStart, eventEnd, posterUri, locationRequired,isWaitlistLimited,waitlistLimit);
 
     }
     private void populateForm(EventDraft draft) {

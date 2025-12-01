@@ -26,6 +26,9 @@ public class FirebaseEvent {
     private boolean locationRequired;
     private List<Map<String, Object>> waitingList = new ArrayList<>();
 
+    private boolean isWaitlistLimited;
+    private int waitlistLimit;
+
     public FirebaseEvent() {
     }
 
@@ -41,6 +44,23 @@ public class FirebaseEvent {
         this.posterUrl = posterUrl;
         this.attendingCount = attendingCount;
         this.locationRequired = locationRequired;
+    }
+
+    // New Constructor primarily for Waitlist func
+    public FirebaseEvent(String eventId, String organizerId, String eventName, String location, String eventDate, String eventTime, String eventStart, String eventEnd, @Nullable String posterUrl, int attendingCount, boolean locationRequired, boolean isWaitlistLimited, int waitlistLimit) {
+        this.eventId = eventId;
+        this.organizerId = organizerId;
+        this.eventName = eventName;
+        this.location = location;
+        this.eventDate = eventDate;
+        this.eventTime = eventTime;
+        this.eventStart = eventStart;
+        this.eventEnd = eventEnd;
+        this.posterUrl = posterUrl;
+        this.attendingCount = attendingCount;
+        this.locationRequired = locationRequired;
+        this.isWaitlistLimited = isWaitlistLimited;
+        this.waitlistLimit =waitlistLimit;
     }
     
 
@@ -129,6 +149,20 @@ public class FirebaseEvent {
     }
     public void setLocationRequired(boolean locationRequired) {
         this.locationRequired = locationRequired;
+    }
+    public boolean isWaitlistLimited(){
+        return isWaitlistLimited;
+    }
+    public void setWaitlistLimited(boolean waitlistLimited){
+        isWaitlistLimited = waitlistLimited;
+    }
+
+    public int getWaitlistLimit(){
+        return waitlistLimit;
+    }
+
+    public void setWaitlistLimit(int waitlistLimit){
+        this.waitlistLimit = waitlistLimit;
     }
 
     public List<Map<String, Object>> getWaitingList() {

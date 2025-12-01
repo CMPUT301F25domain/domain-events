@@ -125,6 +125,7 @@
             android:hint="@string/maximum_wait_list_entrants"
             android:inputType="number"
             android:padding="15dp"
+            android:textColor="@color/white"
             android:textColorHint="#999999" />
 
 
