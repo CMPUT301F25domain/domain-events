@@ -53,7 +53,6 @@ public class EntrantHomeFragment extends Fragment {
                               @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ImageView backIcon = view.findViewById(R.id.backIcon);
         ImageView qrIcon = view.findViewById(R.id.qrScanIcon);
 
 
