@@ -144,6 +144,9 @@ public class EventDetailsActivity extends AppCompatActivity {
                         Long maxLimit = doc.getLong("waitlistLimit");
                         maxWaitListCapacity = maxLimit != null ? maxLimit.intValue() : 0;
 
+                        Long attendingCount = doc.getLong("attendingCount");
+                        currentWaitList = attendingCount != null ? attendingCount.intValue() : 0;
+
                         List<Map<String, Object>> list = (List<Map<String, Object>>) doc.get("waitingList");
                         if (list != null) {
                             for (Map<String, Object> item : list) {
@@ -322,6 +325,8 @@ public class EventDetailsActivity extends AppCompatActivity {
                                 t.update(db.collection("entrants").document(deviceId),
                                         "joinedEvents", FieldValue.arrayUnion(eventId));
 
+                                t.update(db.collection("events").document(eventId), "attendingCount", FieldValue.increment((1)));
+
                                 return null;
                             })
                             .addOnSuccessListener(a -> {
@@ -386,6 +391,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 
                                 t.update(db.collection("entrants").document(deviceId),
                                         "joinedEvents", FieldValue.arrayRemove(eventId));
+
+                                t.update(db.collection("events").document(eventId), "attendingCount", FieldValue.increment(-1));
 
                                 return null;
                             })
