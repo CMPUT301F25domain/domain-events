@@ -12,7 +12,6 @@ import com.example.dev.R;
 import com.example.dev.firebaseobjects.EntrantSpinnerAdapter;
 import com.example.dev.firebaseobjects.FirebaseEvent;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -115,22 +114,43 @@ public class DeleteEntrantActivity extends AppCompatActivity {
                     eventRef.update("waitingList", updatedWaitingList);
 
                     DocumentReference entrantRef = database.collection("entrants").document(entrantId);
-                    Map<String, Object> message = new HashMap<>();
-                    message.put("eventName", event.getEventName());
-                    message.put("eventDate", event.getEventDate());
-                    message.put("eventLocation", event.getLocation());
-                    message.put("eventId", event.getEventId());
-                    message.put("lotteryMessage", messageText);
-                    message.put("lotteryStatus", false);
 
-                    entrantRef.update("Message", FieldValue.arrayUnion(message))
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(DeleteEntrantActivity.this, "Message sent and entrant status updated.", Toast.LENGTH_SHORT).show();
-                                finish();
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(DeleteEntrantActivity.this, "Failed to send message.", Toast.LENGTH_SHORT).show();
-                            });
+                    entrantRef.get().addOnSuccessListener(entrantDoc -> {
+                        List<Map<String, Object>> messages = (List<Map<String, Object>>) entrantDoc.get("Message");
+                        if (messages == null) {
+                            messages = new ArrayList<>();
+                        }
+
+                        boolean messageUpdated = false;
+                        for (Map<String, Object> msg : messages) {
+                            if (eventId.equals(msg.get("eventId"))) {
+                                msg.put("lotteryMessage", messageText);
+                                msg.put("lotteryStatus", false);
+                                messageUpdated = true;
+                                break;
+                            }
+                        }
+
+                        if (!messageUpdated) {
+                            Map<String, Object> newMessage = new HashMap<>();
+                            newMessage.put("eventName", event.getEventName());
+                            newMessage.put("eventDate", event.getEventDate());
+                            newMessage.put("eventLocation", event.getLocation());
+                            newMessage.put("eventId", event.getEventId());
+                            newMessage.put("lotteryMessage", messageText);
+                            newMessage.put("lotteryStatus", false);
+                            messages.add(newMessage);
+                        }
+
+                        entrantRef.update("Message", messages)
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(DeleteEntrantActivity.this, "Message sent and entrant status updated.", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(DeleteEntrantActivity.this, "Failed to send message.", Toast.LENGTH_SHORT).show();
+                                });
+                    });
                 }
             }
         }).addOnFailureListener(e -> {
