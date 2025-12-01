@@ -12,11 +12,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
  * Placeholder screen for organizer profiles.
  */
 public class OrganizerProfileActivity extends AppCompatActivity {
+    private String organizerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer_profile);
+
+        organizerId = getIntent().getStringExtra("organizerID");
 
         final int currentMenuItemId = R.id.navProfile;
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
