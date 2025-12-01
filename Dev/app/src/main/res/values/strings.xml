@@ -104,11 +104,6 @@
     <string name="organizer_profile_phone">(555) 987-1234</string>
     <string name="organizer_profile_location">Based in Edmonton, AB</string>
     <string name="organizer_profile_note">Update your profile later to share official contact details and social links.</string>
-
-    <string name="organizer_images_title">Organizer images</string>
-    <string name="organizer_images_subtitle">Upload and manage event posters or gallery shots</string>
-    <string name="organizer_images_placeholder">Image management tools are coming soon. In the meantime, keep drafting events from the dashboard.</string>
-    <string name="organizer_images_icon_content_description">Images placeholder icon</string>
     <string name="waiting_list_title">Waiting List</string>
 
 </resources>
