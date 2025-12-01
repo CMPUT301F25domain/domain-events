@@ -14,6 +14,17 @@
         android:titleTextColor="#FFFFFF"
         android:navigationIcon="@drawable/arrow" />
 
+    <TextView
+        android:id="@+id/drawingInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="All entrants will be randomly selected to join the event.You will receive a message with the result. If you are not selected and someone declines their offer, you will have another chance to be drawn."
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:background="#2A2A2A" />
+
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
