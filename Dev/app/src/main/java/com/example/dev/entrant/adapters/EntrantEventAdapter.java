@@ -68,7 +68,8 @@ public class EntrantEventAdapter extends RecyclerView.Adapter<EntrantEventAdapte
                     .load(posterUrl)
                     .placeholder(R.drawable.images)
                     .error(R.drawable.images)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(holder.image);
         } else {
             holder.image.setImageResource(R.drawable.images);
