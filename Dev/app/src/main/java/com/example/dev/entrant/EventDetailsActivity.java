@@ -49,10 +49,16 @@ public class EventDetailsActivity extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
 
     TextView title, locationView, date;
+    TextView waitlistStatus;
     Button joinLeaveButton;
     ImageView poster;
     boolean isJoined = false;
     boolean isLocationRequired = false;
+
+    private boolean isWaitListLimited = false;
+    private int maxWaitListCapacity = 0;
+    private int currentWaitList = 0;
+
 
     String eventId;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -81,6 +87,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         title = findViewById(R.id.title);
         locationView = findViewById(R.id.location);
         date = findViewById(R.id.date);
+        waitlistStatus = findViewById(R.id.waitlistStatus);
 
         title.setText(getIntent().getStringExtra("eventName"));
         locationView.setText("Location: " + getIntent().getStringExtra("location"));
@@ -131,6 +138,12 @@ public class EventDetailsActivity extends AppCompatActivity {
                         Boolean locReq = doc.getBoolean("locationRequired");
                         isLocationRequired = locReq != null && locReq;
 
+                        Boolean limited = doc.getBoolean("waitlistLimited");
+                        isWaitListLimited = limited != null && limited;
+
+                        Long maxLimit = doc.getLong("waitlistLimit");
+                        maxWaitListCapacity = maxLimit != null ? maxLimit.intValue() : 0;
+
                         List<Map<String, Object>> list = (List<Map<String, Object>>) doc.get("waitingList");
                         if (list != null) {
                             for (Map<String, Object> item : list) {
@@ -139,7 +152,10 @@ public class EventDetailsActivity extends AppCompatActivity {
                                     break;
                                 }
                             }
+                        } else{
+                            currentWaitList = 0;
                         }
+                        updateWaitListStatusUI();
                         updateButtonUI();
                     } else {
                         Toast.makeText(this, "Event not found", Toast.LENGTH_SHORT).show();
@@ -259,6 +275,14 @@ public class EventDetailsActivity extends AppCompatActivity {
     private void joinWaitlist(Double lat, Double lng) {
         String deviceId = DeviceIdUtil.getDeviceId(this);
 
+        //Waitlist Capacity Check
+        if(isWaitListLimited && currentWaitList >= maxWaitListCapacity){
+            Toast.makeText(this, "The Wait List is Full. Cannot Join!", Toast.LENGTH_LONG).show();
+            joinLeaveButton.setEnabled(true);
+            updateButtonUI();
+            return;
+        }
+
         // If location is required but not provided, block the join
         if (isLocationRequired && (lat == null || lng == null)) {
             Toast.makeText(this, "Location is required for this event", Toast.LENGTH_LONG).show();
@@ -301,7 +325,9 @@ public class EventDetailsActivity extends AppCompatActivity {
                                 return null;
                             })
                             .addOnSuccessListener(a -> {
+                                currentWaitList++;
                                 isJoined = true;
+                                updateWaitListStatusUI();
                                 updateButtonUI();
                                 Toast.makeText(this, "Joined waiting list!", Toast.LENGTH_SHORT).show();
                                 joinLeaveButton.setEnabled(true);
@@ -364,7 +390,9 @@ public class EventDetailsActivity extends AppCompatActivity {
                                 return null;
                             })
                             .addOnSuccessListener(a -> {
+                                currentWaitList--;
                                 isJoined = false;
+                                updateWaitListStatusUI();
                                 updateButtonUI();
                                 Toast.makeText(this, "Left waiting list", Toast.LENGTH_SHORT).show();
                                 joinLeaveButton.setEnabled(true);
@@ -384,8 +412,31 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     private void updateButtonUI() {
+        if(!isJoined && isWaitListLimited && currentWaitList >= maxWaitListCapacity){
+            joinLeaveButton.setText("Wait List is Full");
+            joinLeaveButton.setEnabled(false);
+            return;
+        }
         joinLeaveButton.setText(isJoined ? "Leave Waiting List" : "Join Waiting List");
         joinLeaveButton.setEnabled(true);
+    }
+
+    private void updateWaitListStatusUI(){
+        if (isWaitListLimited){
+            int remaining = maxWaitListCapacity - currentWaitList;
+            if (remaining <= 0){
+                waitlistStatus.setText("Wait List Status: Full (MAX " + maxWaitListCapacity + ")");
+                waitlistStatus.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_light));
+            }else{
+                waitlistStatus.setText("Wait List Status: " + remaining + " spots remaining.");
+                waitlistStatus.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_light));
+
+            }
+        }else{
+            waitlistStatus.setText("Wait List Status: Unlimited Capacity.");
+            waitlistStatus.setTextColor(ContextCompat.getColor(this, android.R.color.holo_orange_light));
+
+        }
     }
 
     @Override
