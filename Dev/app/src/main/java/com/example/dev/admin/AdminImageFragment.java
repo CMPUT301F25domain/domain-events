@@ -82,15 +82,12 @@ public class AdminImageFragment extends Fragment {
                             imagesContainer.removeAllViews();
                             return;
                         }
+
                         // Clear existing views before reloading
                         imagesContainer.removeAllViews();
 
                         for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                             String imageUrl = doc.getString("posterUrl");
-                            if (imageUrl == null || imageUrl.isEmpty()) {
-                                imageUrl = doc.getString("posterUri");
-                            }
-
                             String eventImage = doc.getString("eventName");
 
                             View imageView = getLayoutInflater().inflate(R.layout.item_admin_images, imagesContainer, false);
@@ -99,19 +96,19 @@ public class AdminImageFragment extends Fragment {
                             TextView titleText = imageView.findViewById(R.id.imageTitleText);
                             TextView removeButton = imageView.findViewById(R.id.removeButton);
 
+                            // If image's event name is missing -> go to generic title
                             if (eventImage != null) {
                                 titleText.setText(eventImage);
                             } else {
                                 titleText.setText("Unknown Event");
                             }
-
-
                                 /*
                                     Source: github.io
                                     Title: "Glide v4: Getting Started - GitHub pages"
                                     License: BSD 2-Clause License
                                     URL: https://bumptech.github.io/glide/doc/getting-started.html
                                  */
+                            // Load the uploaded poster image
                             if (imageUrl != null && !imageUrl.isEmpty()) {
                                 Glide.with(requireContext())
                                         .load(imageUrl)
@@ -127,15 +124,28 @@ public class AdminImageFragment extends Fragment {
                     }
                 });
     }
+    /*
+        Source: Medium
+        Title: "Introducing Android Studio : Working with images"
+        Author: Uttam Rabha
+        Date: July 12, 2020
+        URL: https://medium.com/@uttam.cooch/introducing-android-studio-working-with-images-d556f53e6a95
+     */
+    // Removes poster image from Firestore
     private void removePosterFromEvent(DocumentSnapshot doc, ImageView uploadedImage) {
-        doc.getReference().update("posterUrl", "", "posterUri", "")
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getContext(), "Poster removed", Toast.LENGTH_SHORT).show();
+        doc.getReference()
+                .update("posterUrl", "")
+                // Show successful message and reset the ImageView
+                .addOnSuccessListener(v-> {
+                    Toast.makeText(getContext(), "Success poster removed", Toast.LENGTH_SHORT).show();
                     uploadedImage.setImageResource(R.drawable.images);
                 })
+                // Show error message
                 .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "Failed to remove: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        Toast.makeText(getContext(), "Error removing poster", Toast.LENGTH_SHORT).show()
+                );
     }
+
 
 
 }

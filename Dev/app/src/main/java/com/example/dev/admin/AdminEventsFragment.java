@@ -104,7 +104,6 @@ public class AdminEventsFragment extends Fragment {
 
                         for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                             String eventName = doc.getString("eventName");
-                            String eventStart = doc.getString("eventStart");
                             String eventEnd = doc.getString("eventEnd");
                             String eventTime = doc.getString("eventTime");
                             String location = doc.getString("location");
@@ -135,12 +134,13 @@ public class AdminEventsFragment extends Fragment {
                                 License: CC BY-SA 4.0 (International)
                                 URL: https://stackoverflow.com/a/35861055
                             */
+                            // If event name is missing -> go to generic title
                             if (eventName != null) {
                                 nameText.setText(eventName);
                             } else {
                                 nameText.setText("Unnamed Event");
                             }
-
+                            // If event's location is missing -> go to generic title
                             if (location != null) {
                                 locationText.setText(location);
                             } else {
@@ -156,6 +156,7 @@ public class AdminEventsFragment extends Fragment {
                             } else {
                                 closeText.setText("Registration closing date unavailable");
                             }
+                            // Load the uploaded poster image
                             if (posterUrl != null && !posterUrl.isEmpty()) {
                                 Glide.with(requireContext())
                                         .load(posterUrl)

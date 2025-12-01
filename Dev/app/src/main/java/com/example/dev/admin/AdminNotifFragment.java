@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -84,46 +85,39 @@ public class AdminNotifFragment extends Fragment {
                         // Clear existing views before reloading
                         notifContainer.removeAllViews();
 
-                        // Loop through all user documents
                         for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                            List<Map<String, Object>> messageList =
+                                    (List<Map<String, Object>>) doc.get("Message");
+                            // If there is not message array, skip
+                            if (messageList == null || messageList.isEmpty()) continue;
 
-                            // "Messages" array as in your screenshot
-                            List<Map<String, Object>> messages =
-                                    (List<Map<String, Object>>) doc.get("Messages");
-
-                            if (messages == null || messages.isEmpty()) {
-                                continue;
-                            }
-
-                            // Loop through each notification for this entrant
-                            for (Map<String, Object> msg : messages) {
+                            // Go through each message in array and display
+                            for (Map<String, Object> msg : messageList) {
                                 if (msg == null) continue;
-
                                 String eventName = (String) msg.get("eventName");
                                 String eventDate = (String) msg.get("eventDate");
                                 String eventLocation = (String) msg.get("eventLocation");
                                 String lotteryMessage = (String) msg.get("lotteryMessage");
-                                Boolean lotteryStatus = (Boolean) msg.get("lotteryStatus");
+                                String entrantEmail = doc.getString("email");
 
-                                if (eventName == null) {
-                                    eventName = "Event Notification";
-                                }
-
-                                // Inflate item view exactly like profiles/events
-                                View notifView = getLayoutInflater()
-                                        .inflate(R.layout.item_admin_notification, notifContainer, false);
+                                View notifView = getLayoutInflater().inflate(R.layout.item_admin_notification, notifContainer, false);
 
                                 TextView titleText = notifView.findViewById(R.id.notifTitle);
                                 TextView bodyText = notifView.findViewById(R.id.notifBody);
 
-                                titleText.setText(eventName);
+                                // If event name is missing -> go to generic title
+                                if (eventName != null) {
+                                    titleText.setText(eventName);
+                                } else {
+                                    titleText.setText("Event Notification");
+                                }
 
-                                String body = lotteryMessage + "\n" +
+                                // Build message body for notification box
+                                String body = "Entrant: " + entrantEmail + "\n"  +lotteryMessage + "\n" +
                                         "Date: " + eventDate + "\n" +
                                         "Location: " + eventLocation;
 
                                 bodyText.setText(body);
-
                                 notifContainer.addView(notifView);
                             }
                         }

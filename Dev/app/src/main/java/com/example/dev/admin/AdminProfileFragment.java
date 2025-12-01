@@ -82,7 +82,6 @@ public class AdminProfileFragment extends Fragment {
                         // Clear existing views before reloading
                         profilesContainer.removeAllViews();
 
-                        // Loop through all user documents
                         for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                             String profileName = doc.getString("name");
                             String profileEmail = doc.getString("email");
@@ -95,18 +94,19 @@ public class AdminProfileFragment extends Fragment {
                             TextView phoneText = profileView.findViewById(R.id.profilePhone);
                             TextView removeButton = profileView.findViewById(R.id.removeButton);
 
+                            // If profile name is missing -> go to generic title
                             if (profileName != null) {
                                 nameText.setText(profileName);
                             } else {
                                 nameText.setText("Unknown User");
                             }
-
+                            // If profile email is missing -> go to generic title
                             if (profileEmail != null) {
                                 emailText.setText(profileEmail);
                             } else {
                                 emailText.setText("No Email Provided");
                             }
-
+                            // If profile phone is missing -> go to generic title
                             if (profilePhone != null) {
                                 phoneText.setText(profilePhone);
                             } else {
