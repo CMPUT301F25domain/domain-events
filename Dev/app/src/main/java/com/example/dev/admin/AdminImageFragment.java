@@ -87,7 +87,11 @@ public class AdminImageFragment extends Fragment {
                         imagesContainer.removeAllViews();
 
                         for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                            // Only show events that actually contain images
                             String imageUrl = doc.getString("posterUrl");
+                            if (imageUrl == null || imageUrl.isEmpty()) {
+                                continue;
+                            }
                             String eventImage = doc.getString("eventName");
 
                             View imageView = getLayoutInflater().inflate(R.layout.item_admin_images, imagesContainer, false);
