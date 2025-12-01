@@ -106,10 +106,18 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
 
                     for (QueryDocumentSnapshot document : task.getResult()){
                         FirebaseEvent fbEvent = document.toObject(FirebaseEvent.class);
+                        Long maxLimitLong = document.getLong("waitlistLimit");
+                        int eventCapacityInt = maxLimitLong != null ? maxLimitLong.intValue() : 0;
+
+                        Long attendingCountLong = document.getLong("attendingCount");
+                        int currentWaitListSize = attendingCountLong != null ? attendingCountLong.intValue() : 0;
+                        String eventCapacityString = String.valueOf(eventCapacityInt);
+
                         Event displayTheNewEvent = new Event(
                                 fbEvent.getEventId(), fbEvent.getEventName(),
                                 "Default Category", fbEvent.getLocation(), fbEvent.getEventDate() + " at " +fbEvent.getEventTime(),
-                                (int) fbEvent.getAttendingCount(),
+                                //(int) fbEvent.getAttendingCount(),
+                                eventCapacityInt,
                                 fbEvent.getPosterUrl()
                         );
                         eventList.add(displayTheNewEvent);
