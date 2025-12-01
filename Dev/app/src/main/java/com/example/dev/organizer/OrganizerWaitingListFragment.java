@@ -232,10 +232,10 @@ public class OrganizerWaitingListFragment extends Fragment {
         private static void reverseGeocodeIfNeeded(TextView locationView, String rawLocation) {
             final String cleanLocation = rawLocation == null ? "" : rawLocation.trim();
             if (TextUtils.isEmpty(cleanLocation)) {
-                return; // already showing "Location: Unknown"
+                return; // shows "Location: Unknown"
             }
 
-            // it doesn't look like "lat, lng", assume it's already an address
+            // it doesn't look like lat, lng assume it's already an address
             String[] parts = cleanLocation.split(",");
             if (parts.length != 2) {
                 return;
@@ -251,11 +251,11 @@ public class OrganizerWaitingListFragment extends Fragment {
             }
 
             if (!Geocoder.isPresent()) {
-                // No geocoder backend on this device – keep the coordinates
+                // keep the coordinates
                 return;
             }
 
-            // Do network work off the main thread
+            // network work off the main thread
             new Thread(() -> {
                 try {
                     Geocoder geocoder = new Geocoder(locationView.getContext(), Locale.getDefault());
@@ -269,7 +269,7 @@ public class OrganizerWaitingListFragment extends Fragment {
                         }
                     }
                 } catch (IOException ignored) {
-                    // If it fails, we just keep showing the coordinates
+                    // If it fails then we just keep showing the coordinates
                 }
             }).start();
         }
