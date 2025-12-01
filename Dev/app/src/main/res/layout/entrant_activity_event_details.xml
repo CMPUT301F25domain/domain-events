@@ -1,0 +1,88 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="#1E1E1E"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/eventDetailsToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        android:title="Event Details"
+        android:titleTextColor="#FFFFFF"
+        android:navigationIcon="@drawable/arrow" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Event Poster -->
+            <ImageView
+                android:id="@+id/eventImage"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/images"
+                android:background="#333333"
+                android:layout_marginBottom="20dp" />
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/title"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!-- Location -->
+            <TextView
+                android:id="@+id/location"
+                android:textSize="18sp"
+                android:textColor="#CCCCCC"
+                android:layout_marginBottom="6dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!-- Date -->
+            <TextView
+                android:id="@+id/date"
+                android:textSize="18sp"
+                android:textColor="#CCCCCC"
+                android:layout_marginBottom="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!-- Waitlist Limit -->
+            <TextView
+                android:id="@+id/waitlistStatus"
+                android:textSize="18sp"
+                android:textColor="#CCCCCC"
+                android:layout_marginBottom="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!-- Join / Leave Button -->
+            <Button
+                android:id="@+id/joinLeaveButton"
+                android:text="Join Waiting List"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#3A7BFF"
+                android:textColor="#FFFFFF"
+                android:padding="12dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
