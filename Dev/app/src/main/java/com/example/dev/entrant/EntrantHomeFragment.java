@@ -76,6 +76,7 @@ public class EntrantHomeFragment extends Fragment {
                 Log.e("FIRESTORE_ERROR", error.getMessage());
                 return;
             }
+
             eventList.clear();
 
             for (DocumentSnapshot doc : value.getDocuments()) {

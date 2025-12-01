@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,15 +37,15 @@ public class AccountSignup extends AppCompatActivity {
     private Button signupBtn;
     private ProgressBar progressBar;
     private FirebaseFirestore database;
-    private List<String> accountTypes = Arrays.asList("Entrant", "Organizer");
-    private String organizerClearance = "iamorganizer";
+    private List<String> accountTypes = Arrays.asList("Entrant", "Organizer");     //account type 2, 1 respectively
+    private String organizerClearance = "iamorganizer";     //account type 1
     private int selectedAccountType = 2;
     private static final int ROLE_ENTRANT = 2;
     private static final int ROLE_ADMIN = 3;
     private static final int ROLE_ORGANIZER = 1;
     private String androidId;
     private static final Set<String> ADMIN_IDS = new HashSet<>(Arrays.asList(
-            "accc5edff8dc9f84", "1f95d6621798ab84", "e4e4c1080d905e49", "admin_id_4", "admin_id_5", "admin_id_6"
+            "accc5edff8dc9f84", "admin_id_2", "admin_id_3", "admin_id_4", "admin_id_5", "admin_id_6"        //ADD YOURSELVES TO THIS. OPEN LOGCAT AND SERACH FOR DEVICE ID
     ));
 
     @Override
@@ -95,6 +96,7 @@ public class AccountSignup extends AppCompatActivity {
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                //do nothing
             }
         });
 
@@ -131,45 +133,45 @@ public class AccountSignup extends AppCompatActivity {
                         .whereEqualTo("email", inputGmail)
                         .get(Source.SERVER)
                         .addOnCompleteListener(task -> {
-                            if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        Toast.makeText(AccountSignup.this, "An account with this email already exists.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        database.collection("entrants")
+                                .whereEqualTo("email", inputGmail)
+                                .get(Source.SERVER)
+                                .addOnCompleteListener(task2 -> {
+                            if (task2.isSuccessful() && !task2.getResult().isEmpty()) {
                                 Toast.makeText(AccountSignup.this, "An account with this email already exists.", Toast.LENGTH_SHORT).show();
                             } else {
-                                database.collection("entrants")
-                                        .whereEqualTo("email", inputGmail)
-                                        .get(Source.SERVER)
-                                        .addOnCompleteListener(task2 -> {
-                                            if (task2.isSuccessful() && !task2.getResult().isEmpty()) {
-                                                Toast.makeText(AccountSignup.this, "An account with this email already exists.", Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                if (selectedAccountType == ROLE_ORGANIZER) {
-                                                    DocumentReference newOrganizerRef = database.collection("organizers").document(androidId);
-                                                    FirebaseOrganizer newOrganizer = new FirebaseOrganizer(inputGmail, inputName, inputPhone);
-                                                    newOrganizerRef.set(newOrganizer).addOnSuccessListener(bVoid -> {
-                                                        Toast.makeText(AccountSignup.this, "Account created successfully!", Toast.LENGTH_SHORT).show();
-                                                        Intent intent = new Intent(AccountSignup.this, OrganizerDashboardActivity.class);
-                                                        intent.putExtra("organizerID", androidId);
-                                                        startActivity(intent);
-                                                        finish();
-                                                    }).addOnFailureListener(e -> {
-                                                        Toast.makeText(AccountSignup.this, "Error creating organizer profile.", Toast.LENGTH_SHORT).show();
-                                                    });
-                                                } else if (selectedAccountType == ROLE_ENTRANT) {
-                                                    DocumentReference newEntrantRef = database.collection("entrants").document(androidId);
-                                                    FirebaseEntrant newEntrant = new FirebaseEntrant(inputName, inputGmail, inputPhone);
-                                                    newEntrantRef.set(newEntrant).addOnSuccessListener(bVoid -> {
-                                                        Toast.makeText(AccountSignup.this, "Account created successfully!", Toast.LENGTH_SHORT).show();
-                                                        Intent intent = new Intent(AccountSignup.this, EntrantBottomNavActivity.class);
-                                                        intent.putExtra("entrantID", androidId);
-                                                        startActivity(intent);
-                                                        finish();
-                                                    }).addOnFailureListener(e -> {
-                                                        Toast.makeText(AccountSignup.this, "Error creating entrant profile.", Toast.LENGTH_SHORT).show();
-                                                    });
-                                                }
-                                            }
-                                        });
+                                if (selectedAccountType == ROLE_ORGANIZER) {
+                                    DocumentReference newOrganizerRef = database.collection("organizers").document(androidId);
+                                    FirebaseOrganizer newOrganizer = new FirebaseOrganizer(inputGmail, inputName, inputPhone);
+                                    newOrganizerRef.set(newOrganizer).addOnSuccessListener(bVoid -> {
+                                        Toast.makeText(AccountSignup.this, "Account created successfully!", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(AccountSignup.this, OrganizerDashboardActivity.class);
+                                        intent.putExtra("organizerID", androidId);
+                                        startActivity(intent);
+                                        finish();
+                                    }).addOnFailureListener(e -> {
+                                        Toast.makeText(AccountSignup.this, "Error creating organizer profile.", Toast.LENGTH_SHORT).show();
+                                    });
+                                } else if (selectedAccountType == ROLE_ENTRANT) {
+                                    DocumentReference newEntrantRef = database.collection("entrants").document(androidId);
+                                    FirebaseEntrant newEntrant = new FirebaseEntrant(inputName, inputGmail, inputPhone);
+                                    newEntrantRef.set(newEntrant).addOnSuccessListener(bVoid -> {
+                                        Toast.makeText(AccountSignup.this, "Account created successfully!", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(AccountSignup.this, EntrantBottomNavActivity.class);
+                                        intent.putExtra("entrantID", androidId);
+                                        startActivity(intent);
+                                        finish();
+                                    }).addOnFailureListener(e -> {
+                                        Toast.makeText(AccountSignup.this, "Error creating entrant profile.", Toast.LENGTH_SHORT).show();
+                                    });
+                                }
                             }
                         });
+                    }
+                });
             }
         });
     }

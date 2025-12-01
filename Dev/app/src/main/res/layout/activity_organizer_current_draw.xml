@@ -9,10 +9,9 @@
     tools:context=".organizer.CurrentDrawActivity">
 
     <TextView
-        android:id="@+id/tv_draw_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Current Draw Size: 0"
+        android:text="Current Draw"
         android:textColor="#FFFFFF"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -20,85 +19,80 @@
         android:layout_marginBottom="24dp"
         android:layout_marginTop="24dp"/>
 
+    <!-- Declined Box -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/grey_card_bg"
-        android:padding="24dp"
+        android:padding="16dp"
         android:layout_marginBottom="16dp">
 
         <TextView
             android:id="@+id/tv_declined_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 entrant(s) declined invitation. 0 more should be invited."
+            android:text="0 entrants Declined Invitation"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="16dp"/>
+            android:textSize="18sp"/>
 
         <Button
             android:id="@+id/btn_replace"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:backgroundTint="#9C27B0"
             android:text="Replace"
             android:textColor="#FFFFFF" />
     </LinearLayout>
 
+    <!-- Accepted Box -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/grey_card_bg"
-        android:padding="24dp"
+        android:padding="16dp"
         android:layout_marginBottom="16dp">
 
         <TextView
             android:id="@+id/tv_accepted_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 entrant(s) accepted! 0 invite(s) pending."
+            android:text="0 Entrants Accepted!"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="16dp"/>
+            android:textSize="18sp"/>
 
         <Button
             android:id="@+id/btn_confirm_attendees"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:backgroundTint="#9C27B0"
             android:text="Confirm Attendees"
             android:textColor="#FFFFFF" />
     </LinearLayout>
 
+    <!-- Track Status Box -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/grey_card_bg"
-        android:padding="24dp">
+        android:padding="16dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Track Invite Status"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"/>
+            android:textSize="18sp"/>
 
         <Button
             android:id="@+id/btn_view_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:backgroundTint="#9C27B0"
             android:text="View List"
             android:textColor="#FFFFFF" />
