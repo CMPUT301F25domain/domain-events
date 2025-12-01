@@ -48,7 +48,6 @@ public class OrganizerDrawStatusFragment extends Fragment {
     }
 
     private void bind() {
-        // Pull all invitations for this event and refresh UI
         data.clear();
         data.addAll(ServiceLocator.invites().listByEvent(DEMO_EVENT_ID));
         rv.setAdapter(new InvitedAdapter(data, this::onReplaceClick, this::onCancelClick));
@@ -66,7 +65,6 @@ public class OrganizerDrawStatusFragment extends Fragment {
             return;
         }
 
-        // Get next eligible entrant from waiting queue
         String nextEntrant = ServiceLocator.lottery().nextEligible(DEMO_EVENT_ID);
         if (nextEntrant == null) {
             Toast.makeText(getContext(), "No one left in queue", Toast.LENGTH_SHORT).show();

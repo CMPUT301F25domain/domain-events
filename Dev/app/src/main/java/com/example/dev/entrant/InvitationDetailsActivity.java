@@ -26,6 +26,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Transaction;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.List;
 import java.util.Map;
@@ -126,17 +127,28 @@ public class InvitationDetailsActivity extends AppCompatActivity {
     }
 
     private void updateButtonState(String currentStatus) {
-        // Disable buttons if a decision has already been made
-        if ("accepted".equals(currentStatus)) {
-            acceptBtn.setEnabled(false);
-            declineBtn.setEnabled(false);
-            acceptBtn.setText("Already Accepted");
-        } else if ("declined".equals(currentStatus)) {
-            acceptBtn.setEnabled(false);
-            declineBtn.setEnabled(false);
-            declineBtn.setText("Already Declined");
+        String status = currentStatus != null ? currentStatus : "unknown";
+
+        // Default to disabled for non-actionable or unknown states.
+        acceptBtn.setEnabled(false);
+        declineBtn.setEnabled(false);
+
+        switch (status) {
+            case "accepted":
+                acceptBtn.setText("Already Accepted");
+                break;
+            case "declined":
+                declineBtn.setText("Already Declined");
+                break;
+            case "invited":
+            case "waitListed":
+                acceptBtn.setEnabled(true);
+                declineBtn.setEnabled(true);
+                break;
+            default:
+                messageText.setText("Invitation revoked");
+                break;
         }
-        // If status is "waitListed" or "invited", buttons remain enabled.
     }
 
     private void handleInvitationResponse(String newStatus) {
@@ -148,7 +160,6 @@ public class InvitationDetailsActivity extends AppCompatActivity {
 
             List<Map<String, Object>> waitingList = (List<Map<String, Object>>) snapshot.get("waitingList");
             Map<String, Object> oldEntrantData = null;
-            int entrantIndex = -1;
 
             if (waitingList != null) {
                 for (int i = 0; i < waitingList.size(); i++) {
@@ -156,13 +167,25 @@ public class InvitationDetailsActivity extends AppCompatActivity {
                     // Find the entrant using the deviceId (entrantId)
                     if (deviceId.equals(entrant.get("entrantId"))) {
                         oldEntrantData = entrant;
-                        entrantIndex = i;
                         break;
                     }
                 }
             }
 
+            if (oldEntrantData == null) {
+                throw new FirebaseFirestoreException(
+                        "Entrant not found; invitation may be revoked.",
+                        FirebaseFirestoreException.Code.ABORTED
+                );
+            }
 
+            String currentStatus = Objects.toString(oldEntrantData.get("status"), "unknown");
+            if ("deleted".equals(currentStatus)) {
+                throw new FirebaseFirestoreException(
+                        "Invitation is no longer valid.",
+                        FirebaseFirestoreException.Code.ABORTED
+                );
+            }
             Map<String, Object> newEntrantData = new java.util.HashMap<>(oldEntrantData);
             newEntrantData.put("status", newStatus);
 
@@ -188,7 +211,12 @@ public class InvitationDetailsActivity extends AppCompatActivity {
             }
         }).addOnFailureListener(e -> {
             Log.e(TAG, "Transaction failed: " + e.getMessage());
-            Toast.makeText(this, "Failed to update invitation status.", Toast.LENGTH_SHORT).show();
+            if (e instanceof FirebaseFirestoreException
+                    && ((FirebaseFirestoreException) e).getCode() == FirebaseFirestoreException.Code.ABORTED) {
+                Toast.makeText(this, "This invitation is no longer valid.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Failed to update invitation status.", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

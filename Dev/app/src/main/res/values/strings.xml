@@ -64,8 +64,8 @@
     <string name="registration_attendees_x">Registration: | Attendees: [X]</string>
     <string name="view_qr_code">View QR Code</string>
     <string name="turn_geolocation_on">Turn Geolocation on?</string>
-    <string name="maximum_wait_list_entrants">Maximum Wait List Entrants</string>
-    <string name="limit_the_wait_list_capacity">Limit the Wait List Capacity</string>
+    <string name="maximum_wait_list_entrants">Maximum Entrants</string>
+    <string name="limit_the_wait_list_capacity">Limit the Capacity</string>
     <string name="event_poster_content_description">Poster preview</string>
     <string name="event_poster_placeholder">No poster uploaded yet.</string>
     <string name="update_poster">Update poster</string>
