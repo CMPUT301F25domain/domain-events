@@ -5,7 +5,7 @@ import com.example.dev.repo.InvitationRepository;
 import com.example.dev.organizer.repo.impl.*;
 
 public final class ServiceLocator {
-    private static final WaitingListRepository WAITING = new WaitingListRepoMem();
+    private static final WaitingListRepository WAITING = new FirebaseWaitingListRepository();
     private static final LotteryRepoMem LOTTERY = new LotteryRepoMem();
     private static final InvitationRepository INVITES = new InvitationRepoMem();
     private static final EnrollmentRepoMem ENROLL = new EnrollmentRepoMem();

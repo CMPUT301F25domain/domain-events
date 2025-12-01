@@ -61,7 +61,7 @@ public class OrganizerDrawStatusActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        fetchAndDisplayEntrants(); // Refresh when returning from delete/replace
+        fetchAndDisplayEntrants();
     }
 
     private void fetchAndDisplayEntrants() {

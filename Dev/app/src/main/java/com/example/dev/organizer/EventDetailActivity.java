@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -165,9 +166,38 @@ public class EventDetailActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error: Event ID not found.", Toast.LENGTH_LONG).show();
                 return;
             }
-            Intent intent = new Intent(EventDetailActivity.this, OrganizerLotteryDrawActivity.class);
-            intent.putExtra("Event_ID", eventId);
-            startActivity(intent);
+
+            db.collection("events").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    FirebaseEvent event = documentSnapshot.toObject(FirebaseEvent.class);
+                    if (event != null) {
+                        boolean lotteryRun = false;
+                        if (event.getWaitingList() != null) {
+                            for (Map<String, Object> entrant : event.getWaitingList()) {
+                                String status = (String) entrant.get("status");
+                                if (status != null && !status.equals("waitListed")) {
+                                    lotteryRun = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (lotteryRun) {
+                            Intent intent = new Intent(EventDetailActivity.this, OrganizerDrawStatusActivity.class);
+                            intent.putExtra("Event_ID", eventId);
+                            startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(EventDetailActivity.this, OrganizerLotteryDrawActivity.class);
+                            intent.putExtra("Event_ID", eventId);
+                            startActivity(intent);
+                        }
+                    }
+                } else {
+                    Toast.makeText(this, "Event not found.", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(e -> {
+                Toast.makeText(this, "Failed to get event details", Toast.LENGTH_SHORT).show();
+            });
         });
     }
 
@@ -238,6 +268,7 @@ public class EventDetailActivity extends AppCompatActivity {
         viewQRCodeBtn.setVisibility(visibility);
         updatePosterBtn.setVisibility(visibility);
         viewWaitingListBtn.setVisibility(visibility);
+        viewLotteryWinnerBtn.setVisibility(visibility);
 
         if (visibility == View.VISIBLE) {
             updatePosterDisplay(currentPosterUrl);

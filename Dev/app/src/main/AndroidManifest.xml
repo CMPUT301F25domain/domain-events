@@ -2,8 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -17,10 +21,11 @@
         <!--        <activity-->
         <!--            android:name=".organizer.OrganizerNavActivity"-->
         <!--            android:exported="false" />-->
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
-        </activity>
+
+        <service
+            android:name=".services.MessageListenerService"
+            android:enabled="true"
+            android:exported="false" />
 
         <activity
             android:name=".AccountSignup"
@@ -60,6 +65,7 @@
             android:exported="false" />
         <activity
             android:name=".organizer.OrganizerWaitingListActivity"
+            android:theme="@style/Theme.Dev.WaitingList"
             android:exported="false" />
         <activity
             android:name=".organizer.PublishEventActivity"
@@ -67,6 +73,9 @@
         <activity
             android:name=".organizer.EventDetailActivity"
             android:exported="true" />
+        <activity
+            android:name=".organizer.OrganizerProfileActivity"
+            android:exported="false" />
         <activity
             android:name=".organizer.QRCodeDisplayActivity"
             android:exported="false" />
@@ -76,7 +85,15 @@
         <activity
             android:name=".organizer.OrganizerDrawStatusActivity"
             android:exported="false" />
+        <activity
+            android:name=".organizer.CurrentDrawActivity"
+            android:exported="false" />
+        <activity
+            android:name=".organizer.ConfirmAttendeesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".organizer.DeleteEntrantActivity"
+            android:exported="false" />
     </application>
-
 
 </manifest>

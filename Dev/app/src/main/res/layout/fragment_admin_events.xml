@@ -22,14 +22,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp">
 
-                <ImageView
-                    android:id="@+id/backIcon"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/arrow"
-                    android:contentDescription="Back to Home"/>
                 <!-- Title -->
                 <TextView
                     android:id="@+id/eventTitle"
@@ -37,7 +29,7 @@
                     android:textColor="#FFFFFF"
                     android:textSize="28sp"
                     android:textStyle="bold"
-                    android:layout_marginStart="72dp"
+                    android:layout_marginStart="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"

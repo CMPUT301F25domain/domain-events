@@ -1,14 +1,12 @@
 package com.example.dev.admin;
 
 import android.os.Bundle;
-import android.widget.Toast;
-
+import android.view.View;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.example.dev.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -26,9 +24,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
  * Design Pattern:
  * - Uses the Activity–Fragment pattern, where this activity serves as the host
  *   and each screen is a Fragment loaded dynamically.
- *
- * Outstanding Issues:
- * - Connect each fragment to Firebase to display and manage the actual image, and profile data.
  */
 
 public class AdminNavActivity extends AppCompatActivity {
@@ -38,6 +33,18 @@ public class AdminNavActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_admin_nav);
+        View root = findViewById(R.id.main);
+        final int paddingLeft = root.getPaddingLeft();
+        final int paddingTop = root.getPaddingTop();
+        final int paddingRight = root.getPaddingRight();
+        final int paddingBottom = root.getPaddingBottom();
+
+        ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(paddingLeft, paddingTop + systemBars.top, paddingRight, paddingBottom + systemBars.bottom);
+            return insets;
+        });
+        ViewCompat.requestApplyInsets(root);
 
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
 

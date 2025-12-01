@@ -257,6 +257,8 @@ public class PublishEventActivity extends AppCompatActivity {
         String eventStart = eventDraft.getRegistrationStart();
         String eventEnd = eventDraft.getRegistrationEnd();
         boolean locationRequired = eventDraft.isLocationRequired();
+        boolean isWaitlistLimited = eventDraft.isWaitlistLimited();
+        int waitlistLimit = eventDraft.getWaitlistLimit();
         String finalPosterUrl = !TextUtils.isEmpty(posterUrl) ? posterUrl : "";
 
         FirebaseEvent newEvent = new FirebaseEvent(
@@ -270,7 +272,9 @@ public class PublishEventActivity extends AppCompatActivity {
                 eventEnd,
                 finalPosterUrl,
                 0,
-                locationRequired
+                locationRequired,
+                isWaitlistLimited,
+                waitlistLimit
         );
 
         newEventRef.set(newEvent)

@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.annotationProcessor
+
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
@@ -53,11 +55,14 @@ dependencies {
     //Image loading
     implementation("com.github.bumptech.glide:glide:5.0.5")
     implementation(libs.google.firebase.storage)
+    implementation(libs.espresso.intents)
+    implementation(libs.fragment.testing)
     annotationProcessor("com.github.bumptech.glide:compiler:5.0.5")
 
     //QR Code
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.zxing:core:3.5.3")
+
 
     //Testing/Requirements
     testImplementation(libs.junit)
@@ -66,4 +71,12 @@ dependencies {
 
     //RecyclerView
     implementation("androidx.recyclerview:recyclerview:1.4.0")
+
+    //Geolocation
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    //image
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 }

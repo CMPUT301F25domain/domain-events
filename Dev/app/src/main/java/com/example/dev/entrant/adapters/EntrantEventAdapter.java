@@ -8,6 +8,7 @@
  *  - Inflate the event card layout (entrant_item_event.xml)
  *  - Bind EntrantEvent model data to UI fields (name, date, location, image)
  *  - Handle click events that open EventDetailsActivity
+ *  - Load event poster images from URL using Glide
  *
  * Data Flow:
  *  - Receives a list of EntrantEvent objects
@@ -27,6 +28,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.dev.R;
 import com.example.dev.entrant.models.EntrantEvent;
 import com.example.dev.entrant.EventDetailsActivity;
@@ -58,7 +61,19 @@ public class EntrantEventAdapter extends RecyclerView.Adapter<EntrantEventAdapte
         holder.location.setText("Location: " + event.getLocation());
         holder.date.setText("Date: " + event.getEventDate());
 
-        holder.image.setImageResource(R.drawable.images); // temp placeholder
+        // Load image with Glide
+        String posterUrl = event.getResolvedPosterUrl();
+        if (posterUrl != null && !posterUrl.isEmpty() && !posterUrl.equals("null")) {
+            Glide.with(context)
+                    .load(posterUrl)
+                    .placeholder(R.drawable.images)
+                    .error(R.drawable.images)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(holder.image);
+        } else {
+            holder.image.setImageResource(R.drawable.images);
+        }
 
         holder.itemView.setOnClickListener(v -> {
             Intent i = new Intent(context, EventDetailsActivity.class);
@@ -66,6 +81,7 @@ public class EntrantEventAdapter extends RecyclerView.Adapter<EntrantEventAdapte
             i.putExtra("eventName", event.getEventName());
             i.putExtra("location", event.getLocation());
             i.putExtra("eventDate", event.getEventDate());
+            i.putExtra("posterUrl", posterUrl);
             context.startActivity(i);
         });
     }

@@ -1,28 +1,24 @@
-/**
- * EntrantBottomNavActivity
- *
- * Main activity for entrant users.
- * Hosts 3 fragments inside a bottom navigation layout:
- *  - EntrantHomeFragment
- *  - EntrantMessagesFragment
- *  - EntrantProfileFragment
- *
- * Responsibilities:
- *  - Initialize bottom navigation
- *  - Load default fragment (Home)
- *  - Auto-create entrant Firestore profile using device ID
- *  - Switch fragments based on selected navigation item
- *
- * Acts as the core container for all Entrant screens.
- */
-
 package com.example.dev.entrant;
+
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.example.dev.R;
+import com.example.dev.services.MessageListenerService;
 import com.example.dev.utils.DeviceIdUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,14 +29,39 @@ import java.util.Map;
 
 public class EntrantBottomNavActivity extends AppCompatActivity {
 
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    Toast.makeText(this, "Notifications enabled", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Notifications disabled. You can enable them in settings.", Toast.LENGTH_LONG).show();
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entrant_bottom_nav);
+        View root = findViewById(R.id.main);
+        final int paddingLeft = root.getPaddingLeft();
+        final int paddingTop = root.getPaddingTop();
+        final int paddingRight = root.getPaddingRight();
+        final int paddingBottom = root.getPaddingBottom();
+
+        ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(paddingLeft, paddingTop + systemBars.top, paddingRight, paddingBottom + systemBars.bottom);
+            return insets;
+        });
+        ViewCompat.requestApplyInsets(root);
 
         BottomNavigationView nav = findViewById(R.id.bottomNavigation);
 
-        // Load Home fragment by default
+        askNotificationPermission();
+
+        Intent serviceIntent = new Intent(this, MessageListenerService.class);
+        startService(serviceIntent);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -95,5 +116,16 @@ public class EntrantBottomNavActivity extends AppCompatActivity {
 
             return false;
         });
+    }
+
+    private void askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                Log.d("Notifications", "Permission already granted");
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Data Model representing the Event document stored in Firebase database.
@@ -23,8 +24,10 @@ public class FirebaseEvent {
     private String posterUri;
     private int attendingCount;
     private boolean locationRequired;
-    private List<String> wishlistedEntrants = new ArrayList<>();
-    private List<String> signedUpEntrants = new ArrayList<>();
+    private List<Map<String, Object>> waitingList = new ArrayList<>();
+
+    private boolean isWaitlistLimited;
+    private int waitlistLimit;
 
     public FirebaseEvent() {
     }
@@ -42,6 +45,24 @@ public class FirebaseEvent {
         this.attendingCount = attendingCount;
         this.locationRequired = locationRequired;
     }
+
+    // New Constructor primarily for Waitlist func
+    public FirebaseEvent(String eventId, String organizerId, String eventName, String location, String eventDate, String eventTime, String eventStart, String eventEnd, @Nullable String posterUrl, int attendingCount, boolean locationRequired, boolean isWaitlistLimited, int waitlistLimit) {
+        this.eventId = eventId;
+        this.organizerId = organizerId;
+        this.eventName = eventName;
+        this.location = location;
+        this.eventDate = eventDate;
+        this.eventTime = eventTime;
+        this.eventStart = eventStart;
+        this.eventEnd = eventEnd;
+        this.posterUrl = posterUrl;
+        this.attendingCount = attendingCount;
+        this.locationRequired = locationRequired;
+        this.isWaitlistLimited = isWaitlistLimited;
+        this.waitlistLimit =waitlistLimit;
+    }
+    
 
 
     public String getEventId() {
@@ -129,34 +150,57 @@ public class FirebaseEvent {
     public void setLocationRequired(boolean locationRequired) {
         this.locationRequired = locationRequired;
     }
-
-    public List<String> getWishlistedEntrants() {
-        return wishlistedEntrants;
+    public boolean isWaitlistLimited(){
+        return isWaitlistLimited;
     }
-    public boolean existsInWishlistedEntrants(String entrantId) {
-        return wishlistedEntrants.contains(entrantId);
-    }
-    public void addToWishlistedEntrants(String entrantId) {
-        if (!wishlistedEntrants.contains(entrantId)) {
-            wishlistedEntrants.add(entrantId);
-        }
-    }
-    public void removeFromWishlistedEntrants(String entrantId) {
-        wishlistedEntrants.remove(entrantId);
+    public void setWaitlistLimited(boolean waitlistLimited){
+        isWaitlistLimited = waitlistLimited;
     }
 
-    public List<String> getSignedUpEntrants() {
-        return signedUpEntrants;
+    public int getWaitlistLimit(){
+        return waitlistLimit;
     }
-    public boolean existsInSignedUpEntrants(String entrantId) {
-        return signedUpEntrants.contains(entrantId);
+
+    public void setWaitlistLimit(int waitlistLimit){
+        this.waitlistLimit = waitlistLimit;
     }
-    public void addToSignedUpEntrants(String entrantId) {
-        if (!signedUpEntrants.contains(entrantId)) {
-            signedUpEntrants.add(entrantId);
+
+    public List<Map<String, Object>> getWaitingList() {
+        return waitingList;
+    }
+
+    public void setWaitingList(List<Map<String, Object>> waitingList) {
+        this.waitingList = waitingList;
+    }
+    public void addEntrantToWaitingList(Map<String, Object> entrantData) {
+        String entrantId = (String) entrantData.get("entrantId");
+        if (entrantId == null) {
+            return;
         }
+
+        for (Map<String, Object> existingEntrant : waitingList) {
+            if (entrantId.equals(existingEntrant.get("entrantId"))) {
+                return; // already exists
+            }
+        }
+        waitingList.add(entrantData);
     }
-    public void removeFromSignedUpEntrants(String entrantId) {
-        signedUpEntrants.remove(entrantId);
+    public void removeEntrantFromWaitingList(String entrantId) {
+        if (entrantId == null) {
+            return;
+        }
+        waitingList.removeIf(entrant -> entrantId.equals(entrant.get("entrantId")));
+    }
+    public void updateEntrantStatus(String entrantId, String newStatus) {
+        if (entrantId == null || newStatus == null) {
+            return;
+        }
+
+        for (Map<String, Object> entrant : waitingList) {
+            if (entrantId.equals(entrant.get("entrantid"))) {
+                entrant.put("status", newStatus);
+                break;
+            }
+        }
     }
 }

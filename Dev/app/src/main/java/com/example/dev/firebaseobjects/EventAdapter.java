@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.dev.R;
 import com.example.dev.organizer.Event;
 
@@ -55,6 +56,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 .load(event.getPosterUrl())
                 .placeholder(R.drawable.bg_event_poster_placeholder)
                 .error(R.drawable.bg_event_poster_placeholder)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(holder.poster);
 
         holder.cardLayout.setOnClickListener(v -> {

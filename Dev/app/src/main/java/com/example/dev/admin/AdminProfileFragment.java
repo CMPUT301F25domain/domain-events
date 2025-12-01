@@ -6,12 +6,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.dev.R;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * AdminProfileFragment
@@ -21,17 +27,17 @@ import com.example.dev.R;
  * modular and easy to manage across different screens.
  *
  * Purpose:
- * - Displays a list of sample user profiles that admins can view or remove.
- * - Each user layout has a “Remove” button that hides that user’s profile from the list.
+ * - Displays all entrant and organizer profiles stored in Firestore.
+ * - Shows each profile’s name, email, and phone number.
+ * - Allows administrators to remove a profile directly from Firebase.
  *
  * Design Pattern:
  * - Uses the Fragment pattern for reusable, switchable UI sections inside the main admin activity.
- *
- * Outstanding Issues:
- * - Replace mock data users with data loaded from Firebase.
- * - Make remove actually delete the profile from Firebase instead of just hiding it.
+ * - Updates the profile list using Firestore listeners.
  */
 public class AdminProfileFragment extends Fragment {
+    private LinearLayout profilesContainer;
+    private FirebaseFirestore db;
 
     public AdminProfileFragment() {
     }
@@ -48,18 +54,76 @@ public class AdminProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Array of layout and remove TextView pairs
-        int[][] userPairs = {
-                {R.id.user1, R.id.removeUser1},
-                {R.id.user2, R.id.removeUser2},
-                {R.id.user3, R.id.removeUser3}
-        };
+        profilesContainer = view.findViewById(R.id.profilesContainer);
+        db = FirebaseFirestore.getInstance();
 
-        // Loop through all user-remove pairs and attach listeners
-        for (int[] pair : userPairs) {
-            LinearLayout userLayout = view.findViewById(pair[0]);
-            TextView removeButton = view.findViewById(pair[1]);
-            removeButton.setOnClickListener(v -> userLayout.setVisibility(View.GONE));
-        }
+        loadFirestoreProfiles();
     }
+
+    private void loadFirestoreProfiles() {
+        db.collection("entrants")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot querySnapshot,
+                                        @Nullable FirebaseFirestoreException error) {
+                        if (!isAdded() || getContext() == null || getView() == null) return;
+
+                        if (error != null) {
+                            Toast.makeText(getContext(), "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        if (querySnapshot == null || querySnapshot.isEmpty()) {
+                            Toast.makeText(getContext(), "No profiles found", Toast.LENGTH_SHORT).show();
+                            profilesContainer.removeAllViews();
+                            return;
+                        }
+
+                        // Clear existing views before reloading
+                        profilesContainer.removeAllViews();
+
+                        for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                            String profileName = doc.getString("name");
+                            String profileEmail = doc.getString("email");
+                            String profilePhone = doc.getString("phone");
+
+                            View profileView = getLayoutInflater().inflate(R.layout.item_admin_profile, profilesContainer, false);
+
+                            TextView nameText = profileView.findViewById(R.id.profileName);
+                            TextView emailText = profileView.findViewById(R.id.profileEmail);
+                            TextView phoneText = profileView.findViewById(R.id.profilePhone);
+                            TextView removeButton = profileView.findViewById(R.id.removeButton);
+
+                            // If profile name is missing -> go to generic title
+                            if (profileName != null) {
+                                nameText.setText(profileName);
+                            } else {
+                                nameText.setText("Unknown User");
+                            }
+                            // If profile email is missing -> go to generic title
+                            if (profileEmail != null) {
+                                emailText.setText(profileEmail);
+                            } else {
+                                emailText.setText("No Email Provided");
+                            }
+                            // If profile phone is missing -> go to generic title
+                            if (profilePhone != null) {
+                                phoneText.setText(profilePhone);
+                            } else {
+                                phoneText.setText("No Phone Provided");
+                            }
+
+
+                            // Remove user from Firestore
+                            removeButton.setOnClickListener(v -> {
+                                doc.getReference().delete();
+                            });
+
+                            profilesContainer.addView(profileView);
+                        }
+                    }
+                });
+
+    }
+
 }

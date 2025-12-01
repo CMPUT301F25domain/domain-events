@@ -19,6 +19,9 @@ public class EventDraft implements Parcelable {
     private final String registrationEnd;
     private final String posterUri;
     private final boolean locationRequired;
+    private final boolean isWaitlistLimited;
+    private final int waitlistLimit;
+
 
     public EventDraft(
             @Nullable String organizerId,
@@ -29,7 +32,9 @@ public class EventDraft implements Parcelable {
             @Nullable String registrationStart,
             @Nullable String registrationEnd,
             @Nullable String posterUri,
-            boolean locationRequired) {
+            boolean locationRequired,
+            boolean isWaitlistLimited,
+            int waitlistLimit) {
 
         this.organizerId = organizerId;
         this.eventName = eventName;
@@ -40,6 +45,9 @@ public class EventDraft implements Parcelable {
         this.registrationEnd = registrationEnd;
         this.posterUri = posterUri;
         this.locationRequired = locationRequired;
+        this.isWaitlistLimited = isWaitlistLimited;
+        this.waitlistLimit = waitlistLimit;
+
     }
 
     protected EventDraft(Parcel in) {
@@ -52,6 +60,9 @@ public class EventDraft implements Parcelable {
         registrationEnd = in.readString();
         posterUri = in.readString();
         locationRequired = in.readByte() != 0;
+        isWaitlistLimited = in.readByte() != 0;
+        waitlistLimit = in.readInt();
+
     }
 
     public static final Creator<EventDraft> CREATOR = new Creator<EventDraft>() {
@@ -110,8 +121,16 @@ public class EventDraft implements Parcelable {
         return locationRequired;
     }
 
+    public boolean isWaitlistLimited(){
+        return isWaitlistLimited;
+    }
+
+    public int getWaitlistLimit(){
+        return waitlistLimit;
+    }
+
     public EventDraft withPosterUri(@Nullable String newPosterUri) {
-        return new EventDraft(organizerId, eventName, location, eventDate, eventTime, registrationStart, registrationEnd, newPosterUri, locationRequired);
+        return new EventDraft(organizerId, eventName, location, eventDate, eventTime, registrationStart, registrationEnd, newPosterUri, locationRequired,isWaitlistLimited,waitlistLimit);
     }
 
     @Override
@@ -130,5 +149,7 @@ public class EventDraft implements Parcelable {
         dest.writeString(registrationEnd);
         dest.writeString(posterUri);
         dest.writeByte((byte) (locationRequired ? 1 : 0));
+        dest.writeByte((byte) (isWaitlistLimited ? 1 : 0));
+        dest.writeInt(waitlistLimit);
     }
 }
