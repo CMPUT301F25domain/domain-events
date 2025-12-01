@@ -137,6 +137,11 @@ public class InvitationDetailsActivity extends AppCompatActivity {
             case "accepted":
                 acceptBtn.setText("Already Accepted");
                 break;
+            case "deleted":
+                acceptBtn.setText("You have been deleted");
+                acceptBtn.setEnabled(false);
+                declineBtn.setEnabled(false);
+                break;
             case "declined":
                 declineBtn.setText("Already Declined");
                 break;
