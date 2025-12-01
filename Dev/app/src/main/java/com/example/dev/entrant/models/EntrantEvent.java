@@ -53,6 +53,15 @@ public class EntrantEvent {
     public boolean isLocationRequired() { return locationRequired; }
     public String getPosterUrl() { return posterUrl; }
     public String getPosterUri() { return posterUri; }
+    public String getResolvedPosterUrl() {
+        if (posterUrl != null && !posterUrl.isEmpty() && !posterUrl.equals("null")) {
+            return posterUrl;
+        }
+        if (posterUri != null && !posterUri.isEmpty() && !posterUri.equals("null")) {
+            return posterUri;
+        }
+        return null;
+    }
     public String getOrganizerId() { return organizerId; }
 
     public void setAttendingCount(int attendingCount) { this.attendingCount = attendingCount; }
