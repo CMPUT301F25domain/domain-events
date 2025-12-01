@@ -235,7 +235,7 @@ public class OrganizerWaitingListFragment extends Fragment {
                 return; // already showing "Location: Unknown"
             }
 
-            // If it doesn't look like "lat, lng", assume it's already an address
+            // it doesn't look like "lat, lng", assume it's already an address
             String[] parts = cleanLocation.split(",");
             if (parts.length != 2) {
                 return;
@@ -313,13 +313,13 @@ public class OrganizerWaitingListFragment extends Fragment {
 
         private static String formatJoined(String eventDate, long millis) {
             String cleanEventDate = eventDate == null ? "" : eventDate.trim();
+            if (millis > 0) {
+                return "Joined: " + DateFormat.getDateTimeInstance().format(new Date(millis));
+            }
             if (!TextUtils.isEmpty(cleanEventDate)) {
                 return "Joined: " + cleanEventDate;
             }
-            if (millis <= 0) {
-                return "Joined: Pending";
-            }
-            return "Joined: " + DateFormat.getDateTimeInstance().format(new Date(millis));
+            return "Joined: Pending";
         }
         private static String formatLocation(String location) {
             String cleanLocation = location == null ? "" : location.trim();
