@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.location.Address;
+import android.location.Geocoder;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +27,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 
 import java.text.DateFormat;
+import java.io.IOException;
+import java.util.Locale;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -207,12 +211,104 @@ public class OrganizerWaitingListFragment extends Fragment {
             h.name.setText(e.name);
             h.email.setText(e.email);
             h.joined.setText(formatJoined(e.eventDate, e.joinedAtMillis));
+
+            // Show something immediately (coordinates or "Unknown")
             h.location.setText(formatLocation(e.location));
+
+            // Then try to reverse-geocode the coordinates to a street address
+            reverseGeocodeIfNeeded(h.location, e.location);
         }
+
 
         @Override
         public int getItemCount() {
             return items.size();
+        }
+
+        /**
+         * If the location string looks like "lat, lng", use Geocoder on a background
+         * thread to turn it into a human-readable address and update the TextView.
+         */
+        private static void reverseGeocodeIfNeeded(TextView locationView, String rawLocation) {
+            final String cleanLocation = rawLocation == null ? "" : rawLocation.trim();
+            if (TextUtils.isEmpty(cleanLocation)) {
+                return; // already showing "Location: Unknown"
+            }
+
+            // If it doesn't look like "lat, lng", assume it's already an address
+            String[] parts = cleanLocation.split(",");
+            if (parts.length != 2) {
+                return;
+            }
+
+            final double lat;
+            final double lng;
+            try {
+                lat = Double.parseDouble(parts[0].trim());
+                lng = Double.parseDouble(parts[1].trim());
+            } catch (NumberFormatException ex) {
+                return; // not valid coordinates
+            }
+
+            if (!Geocoder.isPresent()) {
+                // No geocoder backend on this device – keep the coordinates
+                return;
+            }
+
+            // Do network work off the main thread
+            new Thread(() -> {
+                try {
+                    Geocoder geocoder = new Geocoder(locationView.getContext(), Locale.getDefault());
+                    List<Address> results = geocoder.getFromLocation(lat, lng, 1);
+                    if (results != null && !results.isEmpty()) {
+                        String address = buildAddressString(results.get(0));
+                        if (!TextUtils.isEmpty(address)) {
+                            // Post back to the UI thread to update the TextView
+                            locationView.post(() ->
+                                    locationView.setText("Location: " + address));
+                        }
+                    }
+                } catch (IOException ignored) {
+                    // If it fails, we just keep showing the coordinates
+                }
+            }).start();
+        }
+
+        /**
+         * Build a short readable address from an Address object.
+         */
+        private static String buildAddressString(Address addr) {
+            StringBuilder sb = new StringBuilder();
+
+            // Street / feature
+            if (!TextUtils.isEmpty(addr.getThoroughfare())) {
+                sb.append(addr.getThoroughfare());
+                if (!TextUtils.isEmpty(addr.getSubThoroughfare())) {
+                    sb.append(" ").append(addr.getSubThoroughfare());
+                }
+            } else if (!TextUtils.isEmpty(addr.getFeatureName())) {
+                sb.append(addr.getFeatureName());
+            }
+
+            // City
+            if (!TextUtils.isEmpty(addr.getLocality())) {
+                if (sb.length() > 0) sb.append(", ");
+                sb.append(addr.getLocality());
+            }
+
+            // State / province
+            if (!TextUtils.isEmpty(addr.getAdminArea())) {
+                if (sb.length() > 0) sb.append(", ");
+                sb.append(addr.getAdminArea());
+            }
+
+            // Country
+            if (!TextUtils.isEmpty(addr.getCountryName())) {
+                if (sb.length() > 0) sb.append(", ");
+                sb.append(addr.getCountryName());
+            }
+
+            return sb.toString();
         }
 
         private static String formatJoined(String eventDate, long millis) {

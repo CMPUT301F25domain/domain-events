@@ -75,11 +75,6 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
             } else if (id == R.id.navHome) {
                 startActivity(new Intent(this, OrganizerDashboardActivity.class));
                 return true;
-            } else if (id == R.id.navImages) {
-//                Toast.makeText(this, "Images placeholder", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, OrganizerImagesActivity.class));
-
-                return true;
             } else if (id == R.id.navProfile) {
                 startActivity(new Intent(this, OrganizerProfileActivity.class));
                 return true;
