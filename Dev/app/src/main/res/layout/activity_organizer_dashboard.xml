@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="48dp"
         android:text="@string/organizer_dashboard"
         android:textAlignment="viewStart"
         android:textColor="#EFE8E8"
