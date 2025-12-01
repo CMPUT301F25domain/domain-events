@@ -12,7 +12,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.example.dev.R;
 import com.example.dev.utils.DeviceIdUtil;
@@ -57,6 +61,19 @@ public class OrganizerProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        final int paddingLeft = view.getPaddingLeft();
+        final int paddingTop = view.getPaddingTop();
+        final int paddingRight = view.getPaddingRight();
+        final int paddingBottom = view.getPaddingBottom();
+
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
+            Insets statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            v.setPadding(paddingLeft, paddingTop + statusBars.top, paddingRight, paddingBottom);
+            return insets;
+        });
+        ViewCompat.requestApplyInsets(view);
+
 
         inputName = view.findViewById(R.id.inputName);
         inputEmail = view.findViewById(R.id.inputEmail);
@@ -125,7 +142,7 @@ public class OrganizerProfileFragment extends Fragment {
         TextView tv = new TextView(getContext());
         tv.setText(text);
         tv.setTextSize(16);
-        tv.setTextColor(0xFF000000);
+        tv.setTextColor(ContextCompat.getColor(requireContext(), R.color.light_text_primary));
         tv.setPadding(0, 10, 0, 10);
 
         historyContainer.addView(tv);
