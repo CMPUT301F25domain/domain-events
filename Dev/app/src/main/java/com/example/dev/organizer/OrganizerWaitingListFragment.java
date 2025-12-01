@@ -206,7 +206,7 @@ public class OrganizerWaitingListFragment extends Fragment {
             Entrant e = items.get(pos);
             h.name.setText(e.name);
             h.email.setText(e.email);
-            h.joined.setText(formatJoined(e.joinedAtMillis));
+            h.joined.setText(formatJoined(e.eventDate, e.joinedAtMillis));
             h.location.setText(formatLocation(e.location));
         }
 
@@ -215,7 +215,11 @@ public class OrganizerWaitingListFragment extends Fragment {
             return items.size();
         }
 
-        private static String formatJoined(long millis) {
+        private static String formatJoined(String eventDate, long millis) {
+            String cleanEventDate = eventDate == null ? "" : eventDate.trim();
+            if (!TextUtils.isEmpty(cleanEventDate)) {
+                return "Joined: " + cleanEventDate;
+            }
             if (millis <= 0) {
                 return "Joined: Pending";
             }

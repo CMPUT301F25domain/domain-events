@@ -13,10 +13,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
  */
 public class OrganizerImagesActivity extends AppCompatActivity {
 
+    private String organizerId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer_images);
+
+        organizerId = getIntent().getStringExtra("organizerID");
 
         final int currentMenuItemId = R.id.navImages;
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
