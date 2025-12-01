@@ -1,4 +1,4 @@
-package com.example.dev.organizer;
+package com.example.dev.firebaseobjects;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -42,6 +42,8 @@ public class EntrantSpinnerAdapter extends ArrayAdapter<Map<String, Object>> {
             view = LayoutInflater.from(getContext()).inflate(R.layout.spinner_item_entrant_status, parent, false);
         }
 
+        view.setBackgroundColor(Color.parseColor("#2C2C2C")); //grey
+
         Map<String, Object> entrant = entrants.get(position);
 
         TextView nameEmail = view.findViewById(R.id.entrant_name_email);
@@ -50,6 +52,8 @@ public class EntrantSpinnerAdapter extends ArrayAdapter<Map<String, Object>> {
         String name = (String) entrant.get("name");
         String email = (String) entrant.get("email");
         nameEmail.setText(name + " (" + email + ")");
+
+        nameEmail.setTextColor(Color.WHITE);
 
         String status = (String) entrant.get("status");
         statusView.setText("Status: " + status);
@@ -70,7 +74,6 @@ public class EntrantSpinnerAdapter extends ArrayAdapter<Map<String, Object>> {
                 statusView.setTextColor(Color.GRAY);
                 break;
         }
-
         return view;
     }
 }

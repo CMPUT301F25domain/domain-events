@@ -26,9 +26,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
  * Design Pattern:
  * - Uses the Activity–Fragment pattern, where this activity serves as the host
  *   and each screen is a Fragment loaded dynamically.
- *
- * Outstanding Issues:
- * - Connect each fragment to Firebase to display and manage the actual image, and profile data.
  */
 
 public class AdminNavActivity extends AppCompatActivity {

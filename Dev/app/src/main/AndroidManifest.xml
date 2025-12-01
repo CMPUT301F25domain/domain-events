@@ -21,10 +21,6 @@
         <!--        <activity-->
         <!--            android:name=".organizer.OrganizerNavActivity"-->
         <!--            android:exported="false" />-->
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
-        </activity>
 
         <activity
             android:name=".AccountSignup"
@@ -64,6 +60,7 @@
             android:exported="false" />
         <activity
             android:name=".organizer.OrganizerWaitingListActivity"
+            android:theme="@style/Theme.Dev.WaitingList"
             android:exported="false" />
         <activity
             android:name=".organizer.PublishEventActivity"

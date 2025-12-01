@@ -42,6 +42,7 @@ public class FirebaseEvent {
         this.attendingCount = attendingCount;
         this.locationRequired = locationRequired;
     }
+    
 
 
     public String getEventId() {

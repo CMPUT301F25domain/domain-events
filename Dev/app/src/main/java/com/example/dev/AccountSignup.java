@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +35,7 @@ public class AccountSignup extends AppCompatActivity {
     private Spinner accountSpi;
     private EditText clearanceEditText, nameEditText, gmailEditText, phoneNumberEditText;
     private Button signupBtn;
-    private TextView loginRedirectText;
+    private ProgressBar progressBar;
     private FirebaseFirestore database;
     private List<String> accountTypes = Arrays.asList("Entrant", "Organizer");     //account type 2, 1 respectively
     private String organizerClearance = "iamorganizer";     //account type 1
@@ -44,7 +45,7 @@ public class AccountSignup extends AppCompatActivity {
     private static final int ROLE_ORGANIZER = 1;
     private String androidId;
     private static final Set<String> ADMIN_IDS = new HashSet<>(Arrays.asList(
-            "accc5edff8dc9f84", "admin_id_2", "admin_id_3", "admin_id_4", "admin_id_5", "admin_id_6"        //ADD YOURSELVES TO THIS
+            "accc5edff8dc9f84", "admin_id_2", "admin_id_3", "admin_id_4", "admin_id_5", "admin_id_6"        //ADD YOURSELVES TO THIS. OPEN LOGCAT AND SERACH FOR DEVICE ID
     ));
 
     @Override
@@ -52,20 +53,26 @@ public class AccountSignup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        Log.d("AndroidID", "Device ID: " + androidId);
-        database = FirebaseFirestore.getInstance();
-
-        if (checkIfAdmin()) {
-            return;
-        }
-
+        progressBar = findViewById(R.id.progressBar);
         accountSpi = findViewById(R.id.spi_account_type);
         clearanceEditText = findViewById(R.id.ET_clearance_password);
         nameEditText = findViewById(R.id.ET_name);
         gmailEditText = findViewById(R.id.ET_gmail);
         phoneNumberEditText = findViewById(R.id.ET_phone_number);
         signupBtn = findViewById(R.id.btn_signup);
+
+        androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        Log.d("AndroidId", "Device is: " + androidId);
+        database = FirebaseFirestore.getInstance();
+
+        if (checkIfAdmin()) {
+            return;
+        }
+
+        progressBar.setVisibility(View.VISIBLE);
+        disableInputs();
+
+        checkIfExistingEntrantOrOrganizer();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this, R.layout.item_spinner_default, accountTypes
@@ -89,7 +96,7 @@ public class AccountSignup extends AppCompatActivity {
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                //do nithing
+                //do nothing
             }
         });
 
@@ -167,7 +174,6 @@ public class AccountSignup extends AppCompatActivity {
                 });
             }
         });
-        checkIfExistingEntrantOrOrganizer();
     }
 
     private boolean checkIfAdmin() {
@@ -181,22 +187,61 @@ public class AccountSignup extends AppCompatActivity {
     }
 
     private void checkIfExistingEntrantOrOrganizer() {
-        database.collection("entrants").document(androidId).get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                Intent intent = new Intent(AccountSignup.this, EntrantBottomNavActivity.class);
-                intent.putExtra("entrantID", androidId);
-                startActivity(intent);
-                finish();
-            } else {
-                database.collection("organizers").document(androidId).get().addOnSuccessListener(documentSnapshot2 -> {
-                    if (documentSnapshot2.exists()) {
+        database.collection("organizers").document(androidId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Toast.makeText(AccountSignup.this, "Existing Organizer", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(AccountSignup.this, OrganizerDashboardActivity.class);
                         intent.putExtra("organizerID", androidId);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
+                    } else {
+                        database.collection("entrants").document(androidId)
+                                .get()
+                                .addOnSuccessListener(documentSnapshot2 -> {
+                                    if (documentSnapshot2.exists()) {
+                                        Toast.makeText(AccountSignup.this, "Existing Entrant", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(AccountSignup.this, EntrantBottomNavActivity.class);
+                                        intent.putExtra("entrantID", androidId);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        progressBar.setVisibility(View.GONE);
+                                        enableInputs();
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    progressBar.setVisibility(View.GONE);
+                                    enableInputs();
+                                    Toast.makeText(AccountSignup.this, "Error connecting to database", Toast.LENGTH_SHORT).show();
+                                });
                     }
+                })
+                .addOnFailureListener(e -> {
+                    progressBar.setVisibility(View.GONE);
+                    enableInputs();
+                    Toast.makeText(AccountSignup.this, "Error connecting to database", Toast.LENGTH_SHORT).show();
                 });
-            }
-        });
+    }
+
+    private void disableInputs() {
+        accountSpi.setEnabled(false);
+        clearanceEditText.setEnabled(false);
+        nameEditText.setEnabled(false);
+        gmailEditText.setEnabled(false);
+        phoneNumberEditText.setEnabled(false);
+        signupBtn.setEnabled(false);
+    }
+
+    private void enableInputs() {
+        accountSpi.setEnabled(true);
+        clearanceEditText.setEnabled(true);
+        nameEditText.setEnabled(true);
+        gmailEditText.setEnabled(true);
+        phoneNumberEditText.setEnabled(true);
+        signupBtn.setEnabled(true);
     }
 }

@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.example.dev.MainActivity;
 import com.example.dev.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -30,14 +29,13 @@ import com.google.firebase.firestore.QuerySnapshot;
  * modular and easy to manage across different screens.
  *
  * Purpose:
- * - Shows a list of sample events that admins can view or remove.
- * - Each event has a “Remove” button that hides it from the list.
+ * - Displays all events stored in Firestore.
+ * - Shows each event’s name and details.
+ * - Allows administrators to remove an event directly from Firebase.
  *
  * Design Pattern:
- * - Uses the Fragment pattern for reusable, switchable UI sections inside the main activity.
- *
- * Outstanding Issues:
- * - Display image beside each event that is not a sample swimming image, but uploaded to firebase by organizer.
+ * - Uses the Fragment pattern for reusable, switchable UI sections inside the main admin activity.
+ * - Updates the event list using Firestore listeners.
  */
 
 public class AdminEventsFragment extends Fragment {
@@ -69,13 +67,6 @@ public class AdminEventsFragment extends Fragment {
                     .replace(R.id.fragment_container, new AdminNotifFragment())
                     .addToBackStack(null)
                     .commit();
-        });
-
-        ImageView backIcon = view.findViewById(R.id.backIcon);
-        backIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            startActivity(intent);
-            requireActivity().finish();
         });
 
 

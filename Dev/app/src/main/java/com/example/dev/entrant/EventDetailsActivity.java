@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -26,12 +27,21 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FieldValue;
 
+import com.example.dev.utils.DeviceIdUtil;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class EventDetailsActivity extends AppCompatActivity {
 
@@ -48,6 +58,9 @@ public class EventDetailsActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FusedLocationProviderClient fusedLocationClient;
     LocationCallback locationCallback;
+
+
+    private static final int LOCATION_PERMISSION_REQUEST = 2001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +91,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         loadPosterImage(posterUrl);
 
         joinLeaveButton = findViewById(R.id.joinLeaveButton);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         loadEventDetailsAndState();
 

@@ -21,7 +21,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dev.MainActivity;
 import com.example.dev.R;
 import com.example.dev.entrant.QRCodeScannerActivity;
 import com.example.dev.entrant.adapters.EntrantEventAdapter;
@@ -57,11 +56,6 @@ public class EntrantHomeFragment extends Fragment {
         ImageView backIcon = view.findViewById(R.id.backIcon);
         ImageView qrIcon = view.findViewById(R.id.qrScanIcon);
 
-        backIcon.setOnClickListener(v -> {
-            Intent i = new Intent(getActivity(), MainActivity.class);
-            startActivity(i);
-            requireActivity().finish();
-        });
 
         qrIcon.setOnClickListener(v -> {
             Intent i = new Intent(getActivity(), QRCodeScannerActivity.class);
