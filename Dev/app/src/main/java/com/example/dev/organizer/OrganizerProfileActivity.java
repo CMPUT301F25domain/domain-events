@@ -6,10 +6,11 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dev.R;
+import com.example.dev.utils.DeviceIdUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
- * Placeholder screen for organizer profiles.
+ * Organizer profile screen hosting OrganizerProfileFragment.
  */
 public class OrganizerProfileActivity extends AppCompatActivity {
     private String organizerId;
@@ -20,6 +21,15 @@ public class OrganizerProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_organizer_profile);
 
         organizerId = getIntent().getStringExtra("organizerID");
+        if (organizerId == null) {
+            organizerId = DeviceIdUtil.getDeviceId(this);
+        }
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.organizer_profile_container, OrganizerProfileFragment.newInstance(organizerId))
+                    .commit();
+        }
 
         final int currentMenuItemId = R.id.navProfile;
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -30,10 +40,11 @@ public class OrganizerProfileActivity extends AppCompatActivity {
             if (id == currentMenuItemId) {
                 return true;
             } else if (id == R.id.navHome) {
-                startActivity(new Intent(this, OrganizerDashboardActivity.class));
+                Intent intent = new Intent(this, OrganizerDashboardActivity.class);
+                intent.putExtra("organizerID", organizerId);
+                startActivity(intent);
                 return true;
             } else if (id == R.id.navProfile) {
-                startActivity(new Intent(this, OrganizerProfileActivity.class));
                 return true;
             }
             return false;
