@@ -45,7 +45,7 @@ public class AccountSignup extends AppCompatActivity {
     private static final int ROLE_ORGANIZER = 1;
     private String androidId;
     private static final Set<String> ADMIN_IDS = new HashSet<>(Arrays.asList(
-            "accc5edff8dc9f84", "admin_id_2", "admin_id_3", "admin_id_4", "admin_id_5", "admin_id_6"        //ADD YOURSELVES TO THIS. OPEN LOGCAT AND SERACH FOR DEVICE ID
+            "accc5edff8dc9f84", "1f95d6621798ab84", "admin_id_3", "admin_id_4", "admin_id_5", "admin_id_6"        //ADD YOURSELVES TO THIS. OPEN LOGCAT AND SERACH FOR DEVICE ID
     ));
 
     @Override
