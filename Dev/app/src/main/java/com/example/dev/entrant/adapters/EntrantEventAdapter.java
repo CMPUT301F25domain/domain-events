@@ -62,13 +62,14 @@ public class EntrantEventAdapter extends RecyclerView.Adapter<EntrantEventAdapte
         holder.date.setText("Date: " + event.getEventDate());
 
         // Load image with Glide
-        String posterUrl = event.getPosterUrl();
+        String posterUrl = event.getResolvedPosterUrl();
         if (posterUrl != null && !posterUrl.isEmpty() && !posterUrl.equals("null")) {
             Glide.with(context)
                     .load(posterUrl)
                     .placeholder(R.drawable.images)
                     .error(R.drawable.images)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(holder.image);
         } else {
             holder.image.setImageResource(R.drawable.images);
@@ -80,7 +81,7 @@ public class EntrantEventAdapter extends RecyclerView.Adapter<EntrantEventAdapte
             i.putExtra("eventName", event.getEventName());
             i.putExtra("location", event.getLocation());
             i.putExtra("eventDate", event.getEventDate());
-            i.putExtra("posterUrl", event.getPosterUrl());
+            i.putExtra("posterUrl", posterUrl);
             context.startActivity(i);
         });
     }

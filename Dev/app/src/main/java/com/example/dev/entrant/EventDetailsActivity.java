@@ -119,7 +119,8 @@ public class EventDetailsActivity extends AppCompatActivity {
                     .load(posterUrl)
                     .placeholder(R.drawable.images)
                     .error(R.drawable.images)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(poster);
         } else {
             poster.setImageResource(R.drawable.images);

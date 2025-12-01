@@ -63,7 +63,6 @@ dependencies {
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.zxing:core:3.5.3")
 
-    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     //Testing/Requirements
     testImplementation(libs.junit)
@@ -74,8 +73,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.4.0")
 
     //Geolocation
-    implementation("com.google.android.gms:play-services-location:21.0.1")
-
+    implementation("com.google.android.gms:play-services-location:21.3.0")
     //image
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
