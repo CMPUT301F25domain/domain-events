@@ -15,7 +15,8 @@
         android:text="@string/event_details"
         android:textColor="@color/white"
         android:textSize="22sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"/>
 
     <ProgressBar
         android:id="@+id/progress_bar"
