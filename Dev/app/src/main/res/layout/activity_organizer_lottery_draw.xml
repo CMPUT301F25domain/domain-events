@@ -18,6 +18,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"/>
 
+    <TextView
+        android:id="@+id/tv_current_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
     <Button
         android:id="@+id/btn_Default_Size_Start"
         android:text="Start Draw With Default Size"
