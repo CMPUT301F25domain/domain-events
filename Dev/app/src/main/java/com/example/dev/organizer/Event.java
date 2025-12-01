@@ -12,7 +12,6 @@ public class Event {
     private String location;
     private String closingTime;
     private int capacity;
-    private String posterUrl;
 
     /**
      * Constructs new Event object for display on the dashboard
@@ -22,15 +21,13 @@ public class Event {
      * @param location: Location of the event
      * @param eventClosing: Registration End
      * @param capacity: Placeholder used for now
-     * @param posterUrl: URL for the event poster image
      */
-    public Event(String eventId, String eventName, String category, String location, String eventClosing, int capacity, String posterUrl){
+    public Event(String eventId, String eventName, String category, String location, String eventClosing, int capacity){
         this.eventId = eventId;
         this.title = eventName;
         this.category = category;
         this.location = location;
         this.closingTime = eventClosing;
-        this.posterUrl = posterUrl;
         this.capacity = capacity;
 
     }
@@ -53,9 +50,8 @@ public class Event {
     public int getCapacity(){
         return capacity;
     }
-    public String getPosterUrl(){
-        return posterUrl;
-    }
+
+
 
 
 

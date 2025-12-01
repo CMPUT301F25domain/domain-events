@@ -7,10 +7,4 @@
     </style>
 
     <style name="Theme.Dev" parent="Base.Theme.Dev" />
-    <style name="Theme.Dev.WaitingList" parent="Theme.Dev">
-        <item name="colorPrimary">@color/event_detail_accent</item>
-        <item name="colorPrimaryVariant">@color/event_detail_accent</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="android:statusBarColor">@color/event_detail_accent</item>
-    </style>
 </resources>

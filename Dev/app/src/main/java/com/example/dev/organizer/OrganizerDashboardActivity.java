@@ -2,7 +2,6 @@ package com.example.dev.organizer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -12,9 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dev.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.example.dev.firebaseobjects.EventAdapter;
-import com.example.dev.firebaseobjects.FirebaseEvent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,10 +32,12 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
 
     private Button createEventbtn;
     private RecyclerView recyclerView;
+
     private EventAdapter adapter;
+
     private List<Event> eventList;
-    private FirebaseFirestore database;
-    private String organizerId;
+
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +45,10 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
 
         setContentView(R.layout.activity_organizer_dashboard);
 
-        database = FirebaseFirestore.getInstance();
-        organizerId = getIntent().getStringExtra("organizerID");
+        db = FirebaseFirestore.getInstance();
+
         createEventbtn = findViewById(R.id.btn_create_event);
         recyclerView = findViewById(R.id.recycler_view_events);
-        final int currentMenuItemId = R.id.navHome;
-
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
-        bottomNavigation.setSelectedItemId(currentMenuItemId);
 
         eventList = new ArrayList<>();
         adapter = new EventAdapter(eventList, this);
@@ -64,26 +58,8 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
 
         createEventbtn.setOnClickListener(v -> {
             Intent intent = new Intent(OrganizerDashboardActivity.this, CreateEventActivity.class);
-            intent.putExtra("organizerID", organizerId);
             startActivity(intent);
-        });
 
-        bottomNavigation.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == currentMenuItemId) {
-                return true;
-            } else if (id == R.id.navHome) {
-                Intent intent = new Intent(this, OrganizerDashboardActivity.class);
-                intent.putExtra("organizerID", organizerId);
-                startActivity(intent);
-                return true;
-            } else if (id == R.id.navProfile) {
-                Intent intent = new Intent(this, OrganizerProfileActivity.class);
-                intent.putExtra("organizerID", organizerId);
-                startActivity(intent);
-                return true;
-            }
-            return false;
         });
     }
 
@@ -98,7 +74,7 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
      */
 
     private void getEventsFromFirebase(){
-        database.collection("events").whereEqualTo("organizerId", organizerId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("events").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
@@ -106,19 +82,22 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
 
                     for (QueryDocumentSnapshot document : task.getResult()){
                         FirebaseEvent fbEvent = document.toObject(FirebaseEvent.class);
+
                         Event displayTheNewEvent = new Event(
                                 fbEvent.getEventId(), fbEvent.getEventName(),
                                 "Default Category", fbEvent.getLocation(), fbEvent.getEventDate() + " at " +fbEvent.getEventTime(),
-                                (int) fbEvent.getAttendingCount(),
-                                fbEvent.getPosterUrl()
+                                (int) fbEvent.getAttendingCount()
                         );
+
                         eventList.add(displayTheNewEvent);
+
                     }
 
                     adapter.notifyDataSetChanged();
 
                     if (eventList.isEmpty()){
                         Toast.makeText(OrganizerDashboardActivity.this, "No Events found, Click Create Event to start.", Toast.LENGTH_LONG).show();
+
                     }
                 }
             }
@@ -130,5 +109,7 @@ public class OrganizerDashboardActivity extends AppCompatActivity implements Eve
        Intent detailIntent = new Intent(OrganizerDashboardActivity.this, EventDetailActivity.class);
        detailIntent.putExtra("Event_ID", eventId);
        startActivity(detailIntent);
+
     }
+
 }

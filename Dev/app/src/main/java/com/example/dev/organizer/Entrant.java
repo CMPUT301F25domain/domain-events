@@ -6,13 +6,10 @@ public class Entrant {
     public final String email;
     public final long joinedAtMillis;
     public final String location;
-    public final String eventDate;
 
-    public Entrant(String id, String name, String email, long joinedAtMillis, String location,
-                   String eventDate) {
+    public Entrant(String id, String name, String email, long joinedAtMillis, String location) {
         this.id = id; this.name = name; this.email = email;
         this.joinedAtMillis = joinedAtMillis; this.location = location;
-        this.eventDate = eventDate;
     }
     @Override public String toString() { return name + " <" + email + ">"; }
 }

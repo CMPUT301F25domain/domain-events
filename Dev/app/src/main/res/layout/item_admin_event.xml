@@ -5,12 +5,14 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
     android:padding="10dp"
-    android:background="@drawable/grey_card_bg">
+    android:background="@drawable/grey_card_bg"
+>
 
     <ImageView
         android:id="@+id/eventImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:src="@drawable/swimming"
         android:scaleType="centerCrop"
         android:contentDescription="Event image" />
 

@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.annotationProcessor
-
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
@@ -43,20 +41,14 @@ dependencies {
     implementation(libs.material)
 
     //Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
     implementation(libs.firebase.firestore)
+    implementation("com.google.firebase:firebase-storage")
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.database)
 
-    //AWS Storage
-    implementation("com.amazonaws:aws-android-sdk-core:2.81.1")
-    implementation("com.amazonaws:aws-android-sdk-s3:2.81.1")
-
     //Image loading
     implementation("com.github.bumptech.glide:glide:5.0.5")
-    implementation(libs.google.firebase.storage)
-    implementation(libs.espresso.intents)
-    implementation(libs.fragment.testing)
     annotationProcessor("com.github.bumptech.glide:compiler:5.0.5")
 
     //QR Code
@@ -67,16 +59,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
-    //RecyclerView
-    implementation("androidx.recyclerview:recyclerview:1.4.0")
-
-    //Geolocation
-    implementation("com.google.android.gms:play-services-location:21.3.0")
-
-    //image
-    implementation ("com.github.bumptech.glide:glide:4.16.0")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
-
-    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 }
