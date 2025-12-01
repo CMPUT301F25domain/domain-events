@@ -6,12 +6,15 @@ import com.example.dev.organizer.Entrant;
 import com.example.dev.repo.WaitingListRepository;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
+
 
 public class FirebaseWaitingListRepository implements WaitingListRepository {
 
@@ -61,17 +64,56 @@ public class FirebaseWaitingListRepository implements WaitingListRepository {
     }
 
     @NonNull
-    private Entrant parseEntrant(@NonNull Map<String, Object> map, String eventDate) {
+    public Entrant parseEntrant(@NonNull Map<String, Object> map, String eventDate) {
         String id = safeString(map.get("entrantId"));
         String name = safeString(map.get("name"));
         String email = safeString(map.get("email"));
-        String location = safeString(map.get("location"));
+        String location = resolveLocation(map);
         long joinedAt = parseJoinedAt(map.get("joinedAtMillis"), map.get("timestamp"));
         return new Entrant(id, name, email, joinedAt, location, safeString(eventDate));
     }
 
     private static String safeString(Object value) {
         return value == null ? "" : String.valueOf(value);
+    }
+
+    private String resolveLocation(Map<String, Object> map) {
+        Object locationValue = map.get("location");
+        if (locationValue instanceof GeoPoint) {
+            GeoPoint geo = (GeoPoint) locationValue;
+            return formatLatLng(geo.getLatitude(), geo.getLongitude());
+        }
+
+        String location = safeString(locationValue).trim();
+        if (!location.isEmpty()) {
+            return location;
+        }
+
+        Double lat = toDouble(map.get("latitude"));
+        Double lng = toDouble(map.get("longitude"));
+        if (lat != null && lng != null) {
+            return formatLatLng(lat, lng);
+        }
+
+        return "";
+    }
+
+    private static Double toDouble(Object value) {
+        if (value instanceof Number) {
+            return ((Number) value).doubleValue();
+        }
+        if (value instanceof String) {
+            try {
+                return Double.parseDouble(((String) value).trim());
+            } catch (NumberFormatException ignored) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private static String formatLatLng(double lat, double lng) {
+        return String.format(Locale.US, "%.5f, %.5f", lat, lng);
     }
 
     private static long parseJoinedAt(Object joinedAtMillis, Object timestamp) {
