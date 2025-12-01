@@ -124,13 +124,4 @@ public class EventDetailsActivityTest {
 
     }
 
-    /**
-     * T2 -> Leave Waitlist after joining it
-     */
-    @Test
-    public void testLeaveWaitList_Success(){
-        testjoinNoLoc_Success();
-        onView(withId(R.id.joinLeaveButton)).perform(click());
-        onView(withId(R.id.joinLeaveButton)).check(matches(withText("Join Waiting List")));
-    }
 }

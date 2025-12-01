@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Dev</string>
+    <string name="app_name">Event details</string>
     <string name="nav_back">Back</string>
     <string name="profile_title">My Profile</string>
     <string name="profile_save">Save changes</string>
