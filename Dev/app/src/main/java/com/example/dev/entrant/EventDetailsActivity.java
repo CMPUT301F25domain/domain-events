@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.dev.R;
 import com.example.dev.utils.DeviceIdUtil;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -48,6 +50,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     TextView title, locationView, date;
     Button joinLeaveButton;
+    ImageView poster;
     boolean isJoined = false;
     boolean isLocationRequired = false;
 
@@ -74,9 +77,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         eventId = getIntent().getStringExtra("eventId");
 
-        ImageView poster = findViewById(R.id.eventImage);
-        poster.setImageResource(R.drawable.images);
-
+        poster = findViewById(R.id.eventImage);
         title = findViewById(R.id.title);
         locationView = findViewById(R.id.location);
         date = findViewById(R.id.date);
@@ -84,6 +85,10 @@ public class EventDetailsActivity extends AppCompatActivity {
         title.setText(getIntent().getStringExtra("eventName"));
         locationView.setText("Location: " + getIntent().getStringExtra("location"));
         date.setText("Date: " + getIntent().getStringExtra("eventDate"));
+
+        // Load poster image from URL
+        String posterUrl = getIntent().getStringExtra("posterUrl");
+        loadPosterImage(posterUrl);
 
         joinLeaveButton = findViewById(R.id.joinLeaveButton);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -99,6 +104,19 @@ public class EventDetailsActivity extends AppCompatActivity {
                 handleJoinClick();
             }
         });
+    }
+
+    private void loadPosterImage(String posterUrl) {
+        if (posterUrl != null && !posterUrl.isEmpty() && !posterUrl.equals("null")) {
+            Glide.with(this)
+                    .load(posterUrl)
+                    .placeholder(R.drawable.images)
+                    .error(R.drawable.images)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(poster);
+        } else {
+            poster.setImageResource(R.drawable.images);
+        }
     }
 
     private void loadEventDetailsAndState() {
